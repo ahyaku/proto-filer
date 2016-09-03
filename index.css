@@ -1,0 +1,139 @@
+*, *:before, *:after
+{
+-moz-box-sizing: border-box;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+}
+
+html, body
+{
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+}
+
+body
+{
+  background: #444444;
+  color: #cccccc;
+  /*
+  background: #000000;
+  */
+  font-size: 14px;
+  /* Helvetica/Arial-based sans serif stack */
+  font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+}
+
+.flexbox-parent
+{
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start; /* align items in Main Axis */
+  align-items: stretch; /* align items in Cross Axis */
+  align-content: stretch; /* Extra space in Cross Axis */
+
+  /*
+  background: rgba(255, 255, 255, .1);
+  */
+  border: 1px solid #8888bb;
+  /* border-radius: 7pt; */
+}
+
+.flexbox-item
+{
+  padding: 8px;
+}
+.flexbox-item-grow
+{
+  flex: 1; /* same as flex: 1 1 auto; */
+}
+
+.flexbox-item.header
+{
+  background: rgba(255, 0, 0, .1);
+}
+.flexbox-item.footer
+{
+  background: rgba(0, 255, 0, .1);
+}
+.flexbox-item.content
+{
+  /*background: rgba(0, 0, 255, .1);*/
+  background: rgba(0, 0, 0, 1);
+}
+
+.fill-area
+{
+  display: flex;
+  flex-direction: row;
+
+  justify-content: flex-start; /* align items in Main Axis */
+  align-items: stretch; /* align items in Cross Axis */
+  align-content: stretch; /* Extra space in Cross Axis */
+
+}
+.fill-area-content
+{
+  /*
+  background: rgba(0, 0, 0, .3);
+   */
+  border: 1px solid #000000;
+
+  /* Needed for when the area gets squished too far and there is content that can't be displayed */
+  overflow: auto; 
+  /*
+  */
+}
+
+.filer-body
+{
+  /*position: absolute;*/
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: stretch; /* align items in Cross Axis */
+  /* align-content: stretch; */ /* Extra space in Cross Axis */
+}
+
+/*
+.filer-body-common
+{
+  border: 1px solid #8888bb;
+  flex: auto;
+}
+*/
+
+.list-item
+{
+  border: 1px solid #8888bb;
+  flex: auto;
+  /*
+  overflow-y: scroll;
+  flex-flow: column nowrap;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  overflow-y: auto;
+  -ms-overflow-style: -ms-autohidding-scrollbar;
+  */
+  /* min-height: 0px; */
+  list-style-type: none;
+  color: #ffffff;
+  padding: 0px;
+  margin: 0px;
+  overflow: auto;
+  /*
+  max-height: 50%;
+  */
+  max-width: 50%;
+  /*
+  text-overflow: ellipsis;
+  */
+}
+
+

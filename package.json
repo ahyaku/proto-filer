@@ -1,0 +1,26 @@
+{
+  "name": "proto-filer",
+  "version": "1.0.0",
+  "description": "Filer with vim-like commands",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahyaku/proto-filer.git"
+  },
+  "keywords": [
+    "Electron",
+    "proto-filer"
+  ],
+  "author": "ahyaku",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/ahyaku/proto-filer/issues"
+  },
+  "homepage": "https://github.com/ahyaku/proto-filer#readme",
+  "dependencies": {
+    "flexboxgrid": "^6.3.0"
+  }
+}

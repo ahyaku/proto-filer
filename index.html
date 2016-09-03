@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ProtoFiler</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body id='window'>
+    <div class="flexbox-parent">
+      <div class="flexbox-item header">
+        <div id='dir_cur_left'></div>
+        <div id='dir_cur_right'></div>
+      </div>
+      <div class="flexbox-item fill-area content flexbox-item-grow filer-body">
+        <div id='items_left', class='list-item'></div>
+        <div id='items_right', class='list-item'></div>
+      </div>
+      <div class="flexbox-item footer">
+        Footer
+      </div>
+    </div>
+    <!-- All of the Node.js APIs are available in this renderer process. -->
+  </body>
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+    require('./index.js')
+  </script>
+</html>
