@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ahyaku/proto-filer#readme",
   "dependencies": {
+    "electron": "^1.3.4",
     "flexboxgrid": "^6.3.0"
   }
 }
