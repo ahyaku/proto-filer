@@ -7,7 +7,6 @@ let path = require('path');
 
 let electron = require('electron');
 let remote = electron.remote;
-let file_util = remote.require('./lib/file_util');
 let async = require('async');
 let MediatePane = require('./lib/mediate_pane');
 
