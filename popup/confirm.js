@@ -8,35 +8,42 @@ const event_emitter = events.EventEmitter;
 let procYes;
 let procNo;
 let mode;
-let question;
+let items_selected;
 let ee;
 
 function init(){
+  let msgs = [];
   let e = document.getElementById('window');
   e.addEventListener('keydown', onKeyDown);
 
-  [mode, question] = ipc_renderer.sendSync('check_mode');
+  [mode, items_selected] = ipc_renderer.sendSync('check_mode');
 
   switch(mode){
     case 'delete':
       console.log('delete!!');
       console.log('mode = ' + mode);
-      console.log('question = ' + question);
       procYes = function(){
         ipc_renderer.sendSync('delete');
         closePopup();
       }
       procNo = closePopup;
+      let arr = Object.keys(items_selected);
+      if( arr.length > 1){
+        msgs[0] = 'Delete ' + arr.length + ' items?';
+      }else{
+        msgs[0] = 'Delete this item?';
+        msgs[1] = arr[0];
+      }
       break;
     case 'quit':
       console.log('quit!!');
       console.log('mode = ' + mode);
-      console.log('question = ' + question);
       procYes = function(){
         closeMainWindow();
         //closePopup();
       };
       procNo = closePopup;
+      msgs[0] = 'Quit ProtoFiler?';
       break;
     default:
       console.log('default!!');
@@ -44,8 +51,23 @@ function init(){
       break;
   }
 
-  let node_id = document.getElementById('question');
-  node_id.innerHTML = question;
+  /* Show messages on the popup window. */
+  {
+    let node_id = document.getElementById('message');
+    let node_frg = document.createDocumentFragment();
+
+    /* Delete the older message. */
+    node_id.textContent = null;
+
+    for(let e of msgs){
+      let node = document.createElement('div');
+      node.appendChild( document.createTextNode(e) );
+      node.setAttribute('flex', '0 0 auto;');
+      node.setAttribute('style', 'color:#FFFFFF;');
+      node_frg.appendChild(node);
+    }
+    node_id.appendChild(node_frg);
+  }
 
   ee = new event_emitter;
   ee.on('test', function(arg){

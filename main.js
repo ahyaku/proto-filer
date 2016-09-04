@@ -20,7 +20,6 @@ let mainWindow
 let confWindow
 
 let g_mode;
-let g_question;
 let g_items_seleted;
 let g_dir_cur;
 
@@ -148,7 +147,7 @@ electron.ipcMain.on('delete', (event) => {
 });
 
 //electron.ipcMain.on('popup', (event, mode, question) => {
-electron.ipcMain.on('popup', (event, mode, question, params) => {
+electron.ipcMain.on('popup', (event, mode, params) => {
 //electron.ipcMain.on('popup', (event, args) => {
   console.log('popup');
   //mainWindow.setFocusable(false);
@@ -175,15 +174,15 @@ electron.ipcMain.on('popup', (event, mode, question, params) => {
   });
 
   g_mode = mode;
-  g_question = question;
 
   switch(g_mode){
     case 'delete':
       g_dir_cur = params.dir_cur;
-      g_items_seleted = params.items_selected;
+      g_items_selected = params.items_selected;
       console.log('mode: ' + mode);
-      console.log('question: ' + question);
       console.log('dir_cur: ' + params.dir_cur);
+      let len = Object.keys(params.items_selected).length;
+      console.log('len: ' + len);
       let count = 0;
       for(let key in params.items_selected){
         console.log('count: ' + count++ + ', key: ' + key + ', item: ' + params.items_selected[key]);
@@ -215,5 +214,5 @@ electron.ipcMain.on('closePopup', (event) => {
 electron.ipcMain.on('check_mode', (event) => {
   console.log('check_mode is called!!');
   //event.returnValue = g_mode;
-  event.returnValue = [g_mode, g_question];
+  event.returnValue = [g_mode, g_items_selected];
 });
