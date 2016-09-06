@@ -20,7 +20,7 @@ let mainWindow
 let confWindow
 
 let g_mode;
-let g_items_seleted;
+let g_items_selected
 let g_dir_cur;
 
 function createWindow () {
