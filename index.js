@@ -20,6 +20,8 @@ function init(){
                                  'items_right',
                                  'dir_cur_left',
                                  'dir_cur_right',
+                                 'pane_cmd_left',
+                                 'pane_cmd_right',
                                  'C:\\Go',
                                  'C:\\tmp\\test');
 

@@ -6,16 +6,22 @@
     <link rel="stylesheet" href="index.css">
   </head>
   <body id='window'>
-    <div class="flexbox-parent">
-      <div class="flexbox-item header">
+    <div class="main-contaner">
+      <div class="main-item header fix">
         <div id='dir_cur_left'></div>
         <div id='dir_cur_right'></div>
       </div>
-      <div class="flexbox-item fill-area content flexbox-item-grow filer-body">
-        <div id='items_left', class='list-item'></div>
-        <div id='items_right', class='list-item'></div>
+      <div class='main-item content stretch filer-body main-item-grow'>
+        <div class='pane-cmd'>
+          <div class='pane-cmd sub', id='pane_cmd_left'></div>
+          <div class='pane-cmd sub', id='pane_cmd_right'></div>
+        </div>
+        <div class='filer-body sub main-item-grow'>
+          <div id='items_left', class="pane-item-list sub"></div>
+          <div id='items_right', class="pane-item-list sub"></div>
+        </div>
       </div>
-      <div class="flexbox-item footer">
+      <div class="main-item footer fix">
         Footer
       </div>
     </div>
