@@ -47,8 +47,8 @@ function onKeyDown(e){
   //console.log('key: ' + e);
   //console.log('key_code: ' + e.keyCode);
   //console.log('event.shiftKey: ' + event.shiftKey);
-  console.log('event.target: ' + event.target);
-  console.log('event.target.id: ' + event.target.id);
+  //console.log('event.target: ' + event.target);
+  //console.log('event.target.id: ' + event.target.id);
   switch(e.keyCode){
     case 72: /* 'h' */
       mediate_pane.changeDirUpper();
@@ -104,6 +104,7 @@ function onKeyDown(e){
       mediate_pane.openItem();
       break;           
     case 191: /* '/' */
+      mediate_pane.isearch();
       break;
     default:
       /* Do Nothing.. */
