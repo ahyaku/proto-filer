@@ -2,13 +2,13 @@
 
 //let ipc = require('ipc');
 //let {ipcRenderer} = require('electron');
-let fs = require('fs');
-let path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-let electron = require('electron');
-let remote = electron.remote;
-let async = require('async');
-let MediatePane = require('./lib/mediate_pane');
+const electron = require('electron');
+const remote = electron.remote;
+const async = require('async');
+const MediatePane = require('./lib/mediate_pane');
 
 let mediate_pane;
 
@@ -47,6 +47,8 @@ function onKeyDown(e){
   //console.log('key: ' + e);
   //console.log('key_code: ' + e.keyCode);
   //console.log('event.shiftKey: ' + event.shiftKey);
+  console.log('event.target: ' + event.target);
+  console.log('event.target.id: ' + event.target.id);
   switch(e.keyCode){
     case 72: /* 'h' */
       mediate_pane.changeDirUpper();
@@ -67,6 +69,7 @@ function onKeyDown(e){
     case 9: /* 'tab' */
       //toggleFocus();
       mediate_pane.switchPane();
+      //document.activeElement.blur();
       break;
     case 32: /* 'space' */
       //console.log('HERE!!!!');
@@ -100,6 +103,8 @@ function onKeyDown(e){
     case 13: /* 'enter' */
       mediate_pane.openItem();
       break;           
+    case 191: /* '/' */
+      break;
     default:
       /* Do Nothing.. */
       break;
