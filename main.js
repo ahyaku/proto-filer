@@ -5,6 +5,7 @@ const util = require('util');
 const path = require('path');
 const electron = require('electron');
 const shell = electron.shell;
+const keypress = require('keypress');
 
 // Module to control application life.
 const app = electron.app
@@ -66,6 +67,9 @@ function createWindow () {
   {
     g_mode = null;
   }
+
+  //keypress(process.stdin);
+  
 }
 
 // This method will be called when Electron has finished
@@ -215,4 +219,20 @@ electron.ipcMain.on('check_mode', (event) => {
   console.log('check_mode is called!!');
   //event.returnValue = g_mode;
   event.returnValue = [g_mode, g_items_selected];
+});
+
+electron.ipcMain.on('isearch_start', (event) => {
+  console.log('isearch_start @ main process');
+
+  //process.stdin.on('keypress', function(ch, key){
+  //  console.log('keypress key: ' + key);
+  //  if(key && key.ctrl && key.name == 'c'){
+  //    console.log('ctrl + c !!');
+  //    process.stdin.pause();
+  //  }
+  //});
+  ////process.stdin.setRawMode(true);
+  ////process.stdin.resume();
+
+  event.returnValue = true;
 });

@@ -6,27 +6,27 @@
     <link rel="stylesheet" href="index.css">
   </head>
   <body id='window'>
-    <div class="main-contaner">
+    <div class="main-container">
       <div class="main-item header fix">
         <div id='dir_cur_left'></div>
         <div id='dir_cur_right'></div>
       </div>
       <div class='main-item content stretch filer-body main-item-grow'>
         <div class='pane-cmd'>
+          <!--
           <div class='pane-cmd sub', id='pane_cmd_left'></div>
           <div class='pane-cmd sub', id='pane_cmd_right'></div>
-          <!--
+          -->
             <form class='pane-cmd sub'>
               <input type="text" id='pane_cmd_left' class='pane-cmd-text main-item-grow'>
             </form>
             <form class='pane-cmd sub'>
               <input type="text" id='pane_cmd_right' class='pane-cmd-text main-item-grow'>
             </form>
-          -->
         </div>
-        <div class='filer-body sub main-item-grow'>
-          <div id='items_left', class="pane-item-list"></div>
-          <div id='items_right', class="pane-item-list"></div>
+        <div id='item_list', class='filer-body sub main-item-grow'>
+          <div id='item_list_left', class="pane-item-list"></div>
+          <div id='item_list_right', class="pane-item-list"></div>
         </div>
       </div>
       <div class="main-item footer fix">

@@ -12,12 +12,28 @@ const MediatePane = require('./lib/mediate_pane');
 
 let mediate_pane;
 
-function init(){
-  let e = document.getElementById('window');
-//  let e_head = document.getElementById('path_cur');
+let e_left;
+let e_right;
+let e_list;
 
-  mediate_pane = new MediatePane('items_left', 
-                                 'items_right',
+function init(){
+  //let e = document.getElementById('window');
+  //e.addEventListener('keydown', onKeyDown);
+
+  e_left = document.getElementById('item_list_left');
+  e_right = document.getElementById('item_list_right');
+  e_list = document.getElementById('item_list');
+  //e_left.addEventListener('keydown', onKeyDown);
+  //e_right.addEventListener('keydown', onKeyDown);
+
+  document.addEventListener('keydown', onKeyDown);
+
+
+  //document.getElementById('pane_cmd_left').blur();
+  //document.getElementById('pane_cmd_right').blur();
+
+  mediate_pane = new MediatePane('item_list_left', 
+                                 'item_list_right',
                                  'dir_cur_left',
                                  'dir_cur_right',
                                  'pane_cmd_left',
@@ -33,7 +49,6 @@ function init(){
   //                               'C:\\Go');
 
   mediate_pane.update;
-  e.addEventListener('keydown', onKeyDown);
 
 //  e_head.innerHTML = pane_left.dir_cur_full;
  
@@ -44,6 +59,12 @@ function init(){
 }
 
 function onKeyDown(e){
+  //e_list.focus();
+
+  document.getElementById('pane_cmd_left').blur();
+  document.getElementById('pane_cmd_right').blur();
+
+  console.log("active: " + document.activeElement.id);
   //console.log('key: ' + e);
   //console.log('key_code: ' + e.keyCode);
   //console.log('event.shiftKey: ' + event.shiftKey);
