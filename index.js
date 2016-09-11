@@ -61,8 +61,8 @@ function init(){
 function onKeyDown(e){
   //e_list.focus();
 
-  document.getElementById('pane_cmd_left').blur();
-  document.getElementById('pane_cmd_right').blur();
+  //document.getElementById('pane_cmd_left').blur();
+  //document.getElementById('pane_cmd_right').blur();
 
   console.log("active: " + document.activeElement.id);
   //console.log('key: ' + e);
