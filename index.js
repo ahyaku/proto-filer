@@ -10,11 +10,18 @@ const remote = electron.remote;
 const async = require('async');
 const MediatePane = require('./lib/mediate_pane');
 
+let KEY_INPUT_MODE = {
+  NORMAL : 0,
+  SEARCH : 1,
+};
+
 let mediate_pane;
 
 let e_left;
 let e_right;
 let e_list;
+
+let key_input_mode;
 
 function init(){
   //let e = document.getElementById('window');
@@ -56,6 +63,9 @@ function init(){
   //console.log('ret = ' + ret);
 
 //  console.log(electron.ipcRenderer.sendSync('synchronous-message', 'ping'));
+
+
+  key_input_mode = KEY_INPUT_MODE.NORMAL;
 }
 
 function onKeyDown(e){
@@ -64,12 +74,27 @@ function onKeyDown(e){
   //document.getElementById('pane_cmd_left').blur();
   //document.getElementById('pane_cmd_right').blur();
 
-  console.log("active: " + document.activeElement.id);
+  //console.log("active: " + document.activeElement.id);
   //console.log('key: ' + e);
-  //console.log('key_code: ' + e.keyCode);
+  console.log('key_code: ' + e.keyCode);
   //console.log('event.shiftKey: ' + event.shiftKey);
+  console.log('event.ctrlKey: ' + event.ctrlKey);
   //console.log('event.target: ' + event.target);
   //console.log('event.target.id: ' + event.target.id);
+  switch(key_input_mode){
+    case KEY_INPUT_MODE.NORMAL:
+      checkKeyNormal(e);
+      break;
+    case KEY_INPUT_MODE.SEARCH:
+      break;
+    default:
+      /* Do Nothing.. */
+      break;
+  }
+
+}
+
+function checkKeyNormal(e){
   switch(e.keyCode){
     case 72: /* 'h' */
       mediate_pane.changeDirUpper();
@@ -125,7 +150,26 @@ function onKeyDown(e){
       mediate_pane.openItem();
       break;           
     case 191: /* '/' */
-      mediate_pane.isearch();
+      key_input_mode = KEY_INPUT_MODE.SEARCH;
+      mediate_pane.startIsearch();
+      break;
+    default:
+      /* Do Nothing.. */
+      break;
+  }
+}
+
+function checkKeySearch(e){
+  switch(e.keyCode){
+    case 27:  /* ESC */
+      key_input_mode = KEY_INPUT_MODE.NORMAL;
+      mediate_pane.endIsearch();
+      break;
+    case 219: /* '[' */
+      if(event.ctrlKey == true){
+        key_input_mode = KEY_INPUT_MODE.NORMAL;
+        mediate_pane.endIsearch();
+      }
       break;
     default:
       /* Do Nothing.. */
