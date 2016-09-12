@@ -10,6 +10,8 @@ const remote = electron.remote;
 const async = require('async');
 const MediatePane = require('./lib/mediate_pane');
 
+const app = electron.app;
+
 let KEY_INPUT_MODE = {
   NORMAL : 0,
   SEARCH : 1,
@@ -23,6 +25,9 @@ let e_list;
 
 let key_input_mode;
 
+let id_pane_cmd_left;
+let id_pane_cmd_right;
+
 function init(){
   //let e = document.getElementById('window');
   //e.addEventListener('keydown', onKeyDown);
@@ -32,6 +37,9 @@ function init(){
   e_list = document.getElementById('item_list');
   //e_left.addEventListener('keydown', onKeyDown);
   //e_right.addEventListener('keydown', onKeyDown);
+
+  id_pane_cmd_left = document.getElementById('pane_cmd_left');
+  id_pane_cmd_right = document.getElementById('pane_cmd_right');
 
   document.addEventListener('keydown', onKeyDown);
 
@@ -66,6 +74,11 @@ function init(){
 
 
   key_input_mode = KEY_INPUT_MODE.NORMAL;
+
+
+  //app.on('/form_right', function(req, res){
+  //  console.log('form_right: ' + req.body);
+  //});
 }
 
 function onKeyDown(e){
@@ -76,9 +89,9 @@ function onKeyDown(e){
 
   //console.log("active: " + document.activeElement.id);
   //console.log('key: ' + e);
-  console.log('key_code: ' + e.keyCode);
+  //console.log('key_code: ' + e.keyCode);
   //console.log('event.shiftKey: ' + event.shiftKey);
-  console.log('event.ctrlKey: ' + event.ctrlKey);
+  //console.log('event.ctrlKey: ' + event.ctrlKey);
   //console.log('event.target: ' + event.target);
   //console.log('event.target.id: ' + event.target.id);
   switch(key_input_mode){
@@ -86,12 +99,12 @@ function onKeyDown(e){
       checkKeyNormal(e);
       break;
     case KEY_INPUT_MODE.SEARCH:
+      checkKeySearch(e);
       break;
     default:
       /* Do Nothing.. */
       break;
   }
-
 }
 
 function checkKeyNormal(e){
@@ -161,17 +174,30 @@ function checkKeyNormal(e){
 
 function checkKeySearch(e){
   switch(e.keyCode){
-    case 27:  /* ESC */
+    case 27:  /* 'ESC' */
       key_input_mode = KEY_INPUT_MODE.NORMAL;
       mediate_pane.endIsearch();
       break;
     case 219: /* '[' */
+      console.log('Here??');
       if(event.ctrlKey == true){
+        console.log('key: endIsearch!!');
         key_input_mode = KEY_INPUT_MODE.NORMAL;
         mediate_pane.endIsearch();
       }
       break;
+    case 13: /* 'enter */
+      e.preventDefault();
+      break;
     default:
+      //let input_left = id_pane_cmd_left.elements;
+      //let input_right = id_pane_cmd_right.elements;
+      ////console.log('id_pane_cmd_left : ' + id_pane_cmd_left);
+      //console.log('id_pane_cmd_right: ' + id_pane_cmd_right);
+      ////console.log('left : ' + input_left.value);
+      ////console.log('right: ' + input_right);
+      ////console.log('right: ' + id_pane_cmd_right.innerHTML);
+      //console.log('right: ' + id_pane_cmd_right.innerText);
       /* Do Nothing.. */
       break;
   }
