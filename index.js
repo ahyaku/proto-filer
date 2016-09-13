@@ -7,10 +7,17 @@ const path = require('path');
 
 const electron = require('electron');
 const remote = electron.remote;
+const app = electron.app;
 const async = require('async');
+const $ = require('jquery');
+
 const MediatePane = require('./lib/mediate_pane');
 
-const app = electron.app;
+
+//const express = require('express');
+//const bodyParser = require('body-parser');
+
+//let eapp = express();
 
 let KEY_INPUT_MODE = {
   NORMAL : 0,
@@ -64,26 +71,18 @@ function init(){
   //                               'C:\\Go');
 
   mediate_pane.update;
-
-//  e_head.innerHTML = pane_left.dir_cur_full;
- 
-  let ret = electron.ipcRenderer.sendSync('synchronous-message', 'ping');
-  //console.log('ret = ' + ret);
-
-//  console.log(electron.ipcRenderer.sendSync('synchronous-message', 'ping'));
-
-
   key_input_mode = KEY_INPUT_MODE.NORMAL;
 
+  $("#pane_cmd_left").keypress(function(e){
+    console.log('left <> key: ' + e.key);
+  });
+  $("#pane_cmd_right").keypress(function(e){
+    console.log('right <> key: ' + e.key);
+  });
 
-  //app.on('/form_right', function(req, res){
-  //  console.log('form_right: ' + req.body);
-  //});
 }
 
 function onKeyDown(e){
-  //e_list.focus();
-
   //document.getElementById('pane_cmd_left').blur();
   //document.getElementById('pane_cmd_right').blur();
 
@@ -179,25 +178,18 @@ function checkKeySearch(e){
       mediate_pane.endIsearch();
       break;
     case 219: /* '[' */
-      console.log('Here??');
+      //console.log('Here??');
       if(event.ctrlKey == true){
         console.log('key: endIsearch!!');
         key_input_mode = KEY_INPUT_MODE.NORMAL;
         mediate_pane.endIsearch();
       }
       break;
+    case 9:  /* 'tab' */
     case 13: /* 'enter */
       e.preventDefault();
       break;
     default:
-      //let input_left = id_pane_cmd_left.elements;
-      //let input_right = id_pane_cmd_right.elements;
-      ////console.log('id_pane_cmd_left : ' + id_pane_cmd_left);
-      //console.log('id_pane_cmd_right: ' + id_pane_cmd_right);
-      ////console.log('left : ' + input_left.value);
-      ////console.log('right: ' + input_right);
-      ////console.log('right: ' + id_pane_cmd_right.innerHTML);
-      //console.log('right: ' + id_pane_cmd_right.innerText);
       /* Do Nothing.. */
       break;
   }
