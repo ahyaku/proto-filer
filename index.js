@@ -34,6 +34,8 @@ let key_input_mode;
 
 let id_pane_cmd_left;
 let id_pane_cmd_right;
+let reg_pat_left;
+let reg_pat_right;
 
 function init(){
   //let e = document.getElementById('window');
@@ -73,13 +75,25 @@ function init(){
   mediate_pane.update;
   key_input_mode = KEY_INPUT_MODE.NORMAL;
 
-  $("#pane_cmd_left").keypress(function(e){
-    console.log('left <> key: ' + e.key);
-  });
-  $("#pane_cmd_right").keypress(function(e){
-    console.log('right <> key: ' + e.key);
-  });
+  reg_pat_left = '';
+  reg_pat_right = '';
 
+  $("#pane_cmd_left").on('keyup', cb_keyup_left);
+  $("#pane_cmd_right").on('keyup', cb_keyup_right);
+
+}
+
+function cb_keyup_left(e){
+  let val = $('#pane_cmd_left').val();
+  //let val = e.value;
+  console.log('cb_keyup <> val: ' + val);
+  mediate_pane.updatePaneWithRegExp(val.slice(1, val.length));
+}
+function cb_keyup_right(e){
+  let val = $('#pane_cmd_right').val();
+  //let val = e.value;
+  console.log('cb_keyup <> val: ' + val);
+  mediate_pane.updatePaneWithRegExp(val.slice(1, val.length));
 }
 
 function onKeyDown(e){
@@ -183,6 +197,8 @@ function checkKeySearch(e){
         console.log('key: endIsearch!!');
         key_input_mode = KEY_INPUT_MODE.NORMAL;
         mediate_pane.endIsearch();
+        reg_pat_left = '';
+        reg_pat_right = '';
       }
       break;
     case 9:  /* 'tab' */
