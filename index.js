@@ -9,15 +9,8 @@ const electron = require('electron');
 const remote = electron.remote;
 const app = electron.app;
 const async = require('async');
-const $ = require('jquery');
 
 const MediatePane = require('./lib/mediate_pane');
-
-
-//const express = require('express');
-//const bodyParser = require('body-parser');
-
-//let eapp = express();
 
 let KEY_INPUT_MODE = {
   NORMAL : 0,
@@ -25,27 +18,13 @@ let KEY_INPUT_MODE = {
 };
 
 let mediate_pane;
-
-let e_left;
-let e_right;
-let e_list;
-
 let key_input_mode;
-
 let id_pane_cmd_left;
 let id_pane_cmd_right;
-let reg_pat_left;
-let reg_pat_right;
 
 function init(){
   //let e = document.getElementById('window');
   //e.addEventListener('keydown', onKeyDown);
-
-  e_left = document.getElementById('item_list_left');
-  e_right = document.getElementById('item_list_right');
-  e_list = document.getElementById('item_list');
-  //e_left.addEventListener('keydown', onKeyDown);
-  //e_right.addEventListener('keydown', onKeyDown);
 
   id_pane_cmd_left = document.getElementById('pane_cmd_left');
   id_pane_cmd_right = document.getElementById('pane_cmd_right');
@@ -75,25 +54,6 @@ function init(){
   mediate_pane.update;
   key_input_mode = KEY_INPUT_MODE.NORMAL;
 
-  reg_pat_left = '';
-  reg_pat_right = '';
-
-  $("#pane_cmd_left").on('keyup', cb_keyup_left);
-  $("#pane_cmd_right").on('keyup', cb_keyup_right);
-
-}
-
-function cb_keyup_left(e){
-  let val = $('#pane_cmd_left').val();
-  //let val = e.value;
-  console.log('cb_keyup <> val: ' + val);
-  mediate_pane.updatePaneWithRegExp(val.slice(1, val.length));
-}
-function cb_keyup_right(e){
-  let val = $('#pane_cmd_right').val();
-  //let val = e.value;
-  console.log('cb_keyup <> val: ' + val);
-  mediate_pane.updatePaneWithRegExp(val.slice(1, val.length));
 }
 
 function onKeyDown(e){
@@ -139,12 +99,9 @@ function checkKeyNormal(e){
       }
       break;
     case 9: /* 'tab' */
-      //toggleFocus();
       mediate_pane.switchPane();
-      //document.activeElement.blur();
       break;
     case 32: /* 'space' */
-      //console.log('HERE!!!!');
       if(event.shiftKey == true){
         mediate_pane.toggleUp();
       }else{
@@ -192,13 +149,10 @@ function checkKeySearch(e){
       mediate_pane.endIsearch();
       break;
     case 219: /* '[' */
-      //console.log('Here??');
       if(event.ctrlKey == true){
         console.log('key: endIsearch!!');
         key_input_mode = KEY_INPUT_MODE.NORMAL;
         mediate_pane.endIsearch();
-        reg_pat_left = '';
-        reg_pat_right = '';
       }
       break;
     case 9:  /* 'tab' */
