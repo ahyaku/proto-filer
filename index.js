@@ -26,11 +26,66 @@ function init(){
                                      'C:\\tmp\\test');
 
   mediate_pane.update;
+
 }
 
+let data = [
+  {id: 0, name: "hoge", ext: "exe", date: "2016/09/17 20:05:09"},
+  {id: 1, name: "nvim", ext: "vim", date: "2018/04/25 10:25:25"}
+];
+
+let SubDivName = React.createClass({
+  render: function () {
+    let data = this.props.data;
+    return (
+      <div className="subSivName">
+        {data.map(function(e) {
+          return <div key={e.id}> {e.name} </div>
+        })}
+      </div>
+    );
+    //return (
+    //  <div className="subDivName">
+    //    {this.props.data[1].name}
+    //  </div>
+    //);
+  }
+});
+
+let SubDivExt = React.createClass({
+  render: function () {
+    return (
+      <div className="subDivExt">
+        Ext!!
+      </div>
+    );
+  }
+});
+
+let FooterBody = React.createClass({
+  render: function () {
+    return (
+      <div className="footerBody">
+        <SubDivName data={data} />
+        <SubDivExt />
+      </div>
+    );
+  }
+});
+        //<SubDivName data={this.props.data} />
+
 ReactDOM.render(
-  <h1>Are you known?</h1>,
+  //<FooterBody />,
+  <FooterBody data={data} />,
   document.getElementById('footer')
 );
+
+//ReactDOM.render(
+//  <div>
+//    <div>Are you known?</div>
+//    <div>Here it!!</div>
+//  </div>,
+//  document.getElementById('footer')
+//);
 
 init();
