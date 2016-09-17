@@ -12,6 +12,9 @@ const async = require('async');
 
 const MediatePane = require('./lib/mediate_pane');
 
+const React = require('react');
+const ReactDOM = require('react-dom');
+
 function init(){
   let mediate_pane = new MediatePane('item_list_left', 
                                      'item_list_right',
@@ -24,5 +27,10 @@ function init(){
 
   mediate_pane.update;
 }
+
+ReactDOM.render(
+  <h1>Are you known?</h1>,
+  document.getElementById('footer')
+);
 
 init();
