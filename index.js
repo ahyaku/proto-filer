@@ -64,8 +64,10 @@ let SubDivExt = React.createClass({
 
 let FooterBody = React.createClass({
   render: function () {
+    //let _style = "color:0000FF";
     return (
-      <div className="footerBody">
+      //<div className="footerBody" style=_style>
+      <div className="footerBody" style="color:0000FF;">
         <SubDivName data={data} />
         <SubDivExt />
       </div>
