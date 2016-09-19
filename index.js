@@ -30,8 +30,9 @@ function init(){
 }
 
 let data = [
-  {id: 0, name: "hoge", ext: "exe", date: "2016/09/17 20:05:09"},
-  {id: 1, name: "nvim", ext: "vim", date: "2018/04/25 10:25:25"}
+  {name: "hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", ext: "exe", date: "2016/09/17 20:05:09"},
+  {name: "nvim", ext: "vim", date: "2018/04/25 10:25:25"}
+  //{name: "nvimmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm", ext: "vim", date: "2018/04/25 10:25:25"}
 ];
 
 let ItemList = React.createClass({
@@ -39,6 +40,7 @@ let ItemList = React.createClass({
     let data = this.props.data;
     let styleItemList = this.props.styleItemList;
     let styleItem = this.props.styleItem;
+    let styleItemProp = this.props.styleItemProp;
     //let style = {
     //  flex: '1',
     //  minWidth: '0'
@@ -49,19 +51,47 @@ let ItemList = React.createClass({
       //    return <div key={e.id}> {e.name} {e.ext} {e.date} </div>
       //  })}
       //</div>
+      //<div className="itemList" style={styleItemList}>
+      //  {data.map(function(e) {
+      //    //console.log(e.name + ", " + e.ext + ", " + e.date);
+      //    Object.keys(e).map(function(value, index){
+      //      console.log(index + ": " + value + ": " + e[value]);
+      //    });
+      //    return (
+      //      <div key={e.id} style={styleItem}>
+      //        <div>
+      //          {e.name}
+      //        </div>
+      //        <div>
+      //          {e.ext}
+      //        </div>
+      //        <div>
+      //          {e.date} 
+      //        </div>
+      //      </div>
+      //    );
+      //  })}
+      //</div>
+      //<div className="itemList" style={styleItemList}>
+      //  {data.map(function(e, i) {
+      //    return (
+      //      <div key={i} style={styleItem}>
+      //        {Object.keys(e).map(function(value, index){
+      //          console.log(index + ": " + value + ": " + e[value]);
+      //          return (<div key={index} style={styleItemProp}> {e[value]} </div>);
+      //        })}
+      //      </div>
+      //    );
+      //  })}
+      //</div>
       <div className="itemList" style={styleItemList}>
-        {data.map(function(e) {
+        {data.map(function(e, i) {
           return (
-            <div key={e.id} style={styleItem}>
-              <div>
-                {e.name}
-              </div>
-              <div>
-                {e.ext}
-              </div>
-              <div>
-                {e.date} 
-              </div>
+            <div key={i} style={styleItem}>
+              {Object.keys(e).map(function(value, index){
+                console.log(index + ": " + value + ": " + e[value]);
+                return (<div key={index} style={styleItemProp[value]}> {e[value]} </div>);
+              })}
             </div>
           );
         })}
@@ -95,7 +125,8 @@ let FooterBody = React.createClass({
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'stretch',
-      alignContent: 'stretch'
+      alignContent: 'stretch',
+      minWidth: '0'
     };
     let styleItemList = {
       display: 'flex',
@@ -112,14 +143,68 @@ let FooterBody = React.createClass({
       justifyContent: 'flex-start',
       alignItems: 'stretch',
       alignContent: 'stretch',
-      flex: '1',
-      minWidth: '0'
+      //flex: '1',
+      flex: '1 1 auto',
+      minWidth: '0',
     };
+    //let styleItemProp = {
+    //  flexGrow: '1',
+    //  color: '#FFFFFF'
+    //};
+    let styleItemProp = {
+      name: {
+        //border: '1px solid #FFFFFF',
+        flexGrow: '4',
+        color: '#FF0000',
+        minWidth: '0',
+        flexWrap: 'nowrap',
+        whiteSpace: 'nowrap',
+        overflowX: 'hidden',
+        textOverflowX: 'ellipsis',
+        //flex: '1 1 auto'
+        //flexBasis: '60%'
+        //flexBasis: 'auto'
+      },
+      ext: {
+        //border: '1px solid #FFFFFF',
+        flexGrow: '1',
+        color: '#00FF00',
+        textAlign: 'center',
+        //minWidth: '0',
+        //flex: '1 1 auto'
+        //flexBasis: '10%'
+        //flexBasis: '10px'
+        //width: '10px'
+        minWidth: '30px',
+        maxWidth: '30px'
+      },
+      date: {
+        //border: '1px solid #FFFFFF',
+        flexGrow: '1',
+        color: '#0000FF',
+        textAlign: 'center',
+        //minWidth: '0',
+        //flex: '1 1 auto'
+        //flexBasis: '30%'
+        //flexBasis: '30px'
+        //width: '30px'
+        minWidth: '130px',
+        maxWidth: '130px'
+      }
+    };
+    //let styleItemProp = {
+    //  flexGrow: [2, 1, 1],
+    //  color: '#FFFFFF'
+    //};
+    console.log("styleItemProp(name): " + styleItemProp["name"]);
     return (
       //<div className="footerBody" style={{color: + '0000FF'}}>
       <div className="footerBody" style={style} >
-        <ItemList data={data} styleSub={styleItemList} styleItem={styleItem}/>
+        <ItemList data={data} styleSub={styleItemList} styleItem={styleItem} styleItemProp={styleItemProp}/>
       </div>
+      //<div className="footerBody" style={style} >
+      //  <ItemList data={data} styleSub={styleItemList} styleItem={styleItem} styleItemProp={styleItemProp["other"]}/>
+      //</div>
     );
   }
 });
