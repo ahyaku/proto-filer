@@ -34,13 +34,36 @@ let data = [
   {id: 1, name: "nvim", ext: "vim", date: "2018/04/25 10:25:25"}
 ];
 
-let SubDivName = React.createClass({
+let ItemList = React.createClass({
   render: function () {
     let data = this.props.data;
+    let styleItemList = this.props.styleItemList;
+    let styleItem = this.props.styleItem;
+    //let style = {
+    //  flex: '1',
+    //  minWidth: '0'
+    //};
     return (
-      <div className="subSivName">
+      //<div className="itemList" style={styleItemList}>
+      //  {data.map(function(e) {
+      //    return <div key={e.id}> {e.name} {e.ext} {e.date} </div>
+      //  })}
+      //</div>
+      <div className="itemList" style={styleItemList}>
         {data.map(function(e) {
-          return <div key={e.id}> {e.name} </div>
+          return (
+            <div key={e.id} style={styleItem}>
+              <div>
+                {e.name}
+              </div>
+              <div>
+                {e.ext}
+              </div>
+              <div>
+                {e.date} 
+              </div>
+            </div>
+          );
         })}
       </div>
     );
@@ -54,8 +77,11 @@ let SubDivName = React.createClass({
 
 let SubDivExt = React.createClass({
   render: function () {
+    let _style = {
+      color: "#0000FF"
+    };
     return (
-      <div className="subDivExt">
+      <div className="subDivExt" style={_style}>
         Ext!!
       </div>
     );
@@ -64,12 +90,35 @@ let SubDivExt = React.createClass({
 
 let FooterBody = React.createClass({
   render: function () {
-    //let _style = "color:0000FF";
+    let style = {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+      alignContent: 'stretch'
+    };
+    let styleItemList = {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'stretch',
+      alignContent: 'stretch',
+      flex: '1',
+      minWidth: '0'
+    };
+    let styleItem = {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+      alignContent: 'stretch',
+      flex: '1',
+      minWidth: '0'
+    };
     return (
-      //<div className="footerBody" style=_style>
-      <div className="footerBody" style="color:0000FF;">
-        <SubDivName data={data} />
-        <SubDivExt />
+      //<div className="footerBody" style={{color: + '0000FF'}}>
+      <div className="footerBody" style={style} >
+        <ItemList data={data} styleSub={styleItemList} styleItem={styleItem}/>
       </div>
     );
   }
@@ -77,7 +126,6 @@ let FooterBody = React.createClass({
         //<SubDivName data={this.props.data} />
 
 ReactDOM.render(
-  //<FooterBody />,
   <FooterBody data={data} />,
   document.getElementById('footer')
 );
