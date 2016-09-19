@@ -27,11 +27,25 @@ function init(){
 
   mediate_pane.update;
 
+  document.addEventListener('keydown', (e) => {
+    switch(e.keyCode){
+      case 65: /* 'a' */
+        console.log('Press a'); 
+        break;
+      case 66: /* 'b' */
+        console.log('Press b'); 
+        break;
+      default:
+        mediate_pane.checkKey(e);
+        break;
+    }
+  });
+
 }
 
 let data = [
   {name: "hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", ext: "exe", date: "2016/09/17 20:05:09"},
-  {name: "nvim", ext: "vim", date: "2018/04/25 10:25:25"}
+  {name: "image", ext: "png", date: "2018/04/25 10:25:25"}
   //{name: "nvimmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm", ext: "vim", date: "2018/04/25 10:25:25"}
 ];
 
@@ -192,10 +206,6 @@ let FooterBody = React.createClass({
         maxWidth: '130px'
       }
     };
-    //let styleItemProp = {
-    //  flexGrow: [2, 1, 1],
-    //  color: '#FFFFFF'
-    //};
     console.log("styleItemProp(name): " + styleItemProp["name"]);
     return (
       //<div className="footerBody" style={{color: + '0000FF'}}>
