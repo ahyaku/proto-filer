@@ -8,57 +8,11 @@
     <link rel="stylesheet" href="./node_modules/flexboxgrid/css/flexboxgrid.min.css">
     -->
   </head>
-  <body id='window'>
-    <div class="main-container">
-      <div class="main-item header fix">
-        <div id='dir_cur_left'></div>
-        <div id='dir_cur_right'></div>
-      </div>
-      <div class='main-item content stretch filer-body main-item-grow'>
-        <div class='pane-cmd'>
-          <!--
-          <div class='pane-cmd sub', id='pane_cmd_left'></div>
-          <div class='pane-cmd sub', id='pane_cmd_right'></div>
-          -->
-          <form action='/form_left' id='form_cmd_left' class='pane-cmd sub'>
-            <input type="text" name="pane_cmd_left" id='pane_cmd_left' class='pane-cmd-text main-item-grow'>
-          </form>
-          <form action='/form_right' id='form_cmd_right' class='pane-cmd sub'>
-            <input type="text" name="pane_cmd_right" id='pane_cmd_right' class='pane-cmd-text main-item-grow'>
-          </form>
-        </div>
-        <div id='item_list', class='filer-body sub main-item-grow'>
-          <div id='item_list_left', class="pane-item-list"></div>
-          <div id='item_list_right', class="pane-item-list"></div>
-        </div>
-      </div>
-      <div id='footer' class="main-item footer fix">
-        <!--
-        Footer aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        -->
-        <!--
-        <script type="text/babel" src="./react_test.js"></script>
-        -->
-        <!--
-        <script src="./react_test.jsx"></script>
-        -->
-        <script>
-          require('babel-register')
-        </script>
-        <!--
-        <script type="text/babel">
-          ReactDOM.render(
-            <h1>Hello, world!</h1>,
-            document.getElementById('example')
-          );
-        </script>
-        -->
-      </div>
-    </div>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
+  <body id='root'>
   </body>
   <script>
     // You can also require other files to run in this process
-    require('./index.js')
+    require('babel-register')
+    require('./src/index.js')
   </script>
 </html>
