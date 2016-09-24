@@ -1,10 +1,22 @@
 'use strict';
 
 import React from 'react';
+import PaneItemList from '../containers/pane-item-list';
+
+import fs from 'fs';
+import itemList from '../../lib/item_list';
+
+const item_list = new itemList('dummy');
+item_list.dir_cur = fs.realpathSync('C:\\Go');
+item_list.updateItems();
+
+for(let e of item_list.items){
+  console.log(e.name);
+}
 
 const Header = () => {
   const style = {
-    border: '1px solid #FF0000'
+    //border: '1px solid #FF0000'
   };
   return (
     <div style={style}>
@@ -60,7 +72,7 @@ const CmdAndItemList = () => {
   return (
     <div style={style}>
       <Cmd />
-      <ItemList />
+      <PaneItemList item_list={item_list}/>
     </div>
   );
 }
@@ -78,25 +90,6 @@ const Cmd = () => {
   return (
     <div style={style}>
       Cmd
-    </div>
-  );
-}
-
-const ItemList = () => {
-  const style = {
-    display: 'flex',
-    flex: 'auto',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    alignContent: 'stretch',
-    border: '1px solid #FFFFFF',
-    //height: '100vh'
-    height: '100%'
-  };
-  return (
-    <div style={style}>
-      ItemList
     </div>
   );
 }
