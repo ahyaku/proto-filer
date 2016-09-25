@@ -2,9 +2,11 @@
 
 import React from 'react';
 import PaneItemList from '../containers/pane-item-list';
+import Header from './path-cur';
 
 import fs from 'fs';
 import itemList from '../../lib/item_list';
+
 
 const item_list = new itemList('dummy');
 item_list.dir_cur = fs.realpathSync('C:\\Go');
@@ -14,16 +16,37 @@ for(let e of item_list.items){
   console.log(e.name);
 }
 
-const Header = () => {
+const HeaderOld = () => {
   const style = {
     //border: '1px solid #FF0000'
   };
   return (
     <div style={style}>
-      Header
+      HeaderOld
     </div>
   );
 }
+
+//class Header extends React.Component {
+//  constructor(props) {
+//    super(props);
+//    console.log('Header Instantiation!!!');
+//  }
+//
+//  render() {
+//    const style = {
+//      //border: '1px solid #FF0000'
+//    };
+//    return (
+//      <div style={style}>
+//        Header
+//      </div>
+//    );
+//  }
+//}
+
+//let HeaderLeft = new Header('hoge');
+//let HeaderLeft = Header;
 
 const Footer = () => {
   const style = {
@@ -94,6 +117,7 @@ const Cmd = () => {
   );
 }
 
+Header.defaultProps = {path_cur: 'HOGE'};
 
 const App = () => {
   const style = {
@@ -110,14 +134,24 @@ const App = () => {
     //width: '100vw',
     //height: '100vh'
   };
+  //return (
+  //  <div style={style}>
+  //    <HeaderOld />
+  //    <HeaderOld />
+  //    <Body />
+  //    <Footer />
+  //  </div>
+  //);
   return (
     <div style={style}>
-      <Header />
-      <Header />
+      <Header path_cur={"Left"} />
+      <Header path_cur={"Right"} />
       <Body />
       <Footer />
     </div>
   );
 }
+
+//      <Header path_cur={'hoge'} />
 
 export default App;
