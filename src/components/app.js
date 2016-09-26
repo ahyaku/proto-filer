@@ -4,49 +4,16 @@ import React from 'react';
 import PaneItemList from '../containers/pane-item-list';
 import Header from './path-cur';
 
-import fs from 'fs';
-import itemList from '../../lib/item_list';
-
-
-const item_list = new itemList('dummy');
-item_list.dir_cur = fs.realpathSync('C:\\Go');
-item_list.updateItems();
-
-for(let e of item_list.items){
-  console.log(e.name);
-}
-
-const HeaderOld = () => {
-  const style = {
-    //border: '1px solid #FF0000'
-  };
-  return (
-    <div style={style}>
-      HeaderOld
-    </div>
-  );
-}
-
-//class Header extends React.Component {
-//  constructor(props) {
-//    super(props);
-//    console.log('Header Instantiation!!!');
-//  }
+//import fs from 'fs';
+//import itemList from '../../lib/item_list';
 //
-//  render() {
-//    const style = {
-//      //border: '1px solid #FF0000'
-//    };
-//    return (
-//      <div style={style}>
-//        Header
-//      </div>
-//    );
-//  }
+//const item_list = new itemList('dummy');
+//item_list.dir_cur = fs.realpathSync('C:\\');
+//item_list.updateItems();
+//
+//for(let e of item_list.items){
+//  console.log(e.name);
 //}
-
-//let HeaderLeft = new Header('hoge');
-//let HeaderLeft = Header;
 
 const Footer = () => {
   const style = {
@@ -92,10 +59,16 @@ const CmdAndItemList = () => {
     width: '100%',
     minHeight: '100%'
   };
+  //return (
+  //  <div style={style}>
+  //    <Cmd />
+  //    <PaneItemList item_list={item_list}/>
+  //  </div>
+  //);
   return (
     <div style={style}>
       <Cmd />
-      <PaneItemList item_list={item_list}/>
+      <PaneItemList />
     </div>
   );
 }
@@ -134,14 +107,6 @@ const App = () => {
     //width: '100vw',
     //height: '100vh'
   };
-  //return (
-  //  <div style={style}>
-  //    <HeaderOld />
-  //    <HeaderOld />
-  //    <Body />
-  //    <Footer />
-  //  </div>
-  //);
   return (
     <div style={style}>
       <Header path_cur={"Left"} />

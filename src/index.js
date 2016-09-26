@@ -6,11 +6,25 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import App from './components/app';
 
-const hoge = () => {
-  return {items: 'hoge'}
-}
+//const hoge = () => {
+//  return {items: 'hoge'}
+//}
 
-let store = createStore(hoge, {items: "ITEMS_INITIALIZED"} );
+import fs from 'fs';
+import itemList from '../lib/item_list';
+import reducer from './reducers'
+
+const item_list = new itemList('dummy');
+item_list.dir_cur = fs.realpathSync('C:\\');
+item_list.updateItems();
+
+//for(let e of item_list.items){
+//  console.log(e.name);
+//}
+
+
+let store = createStore(reducer, {item_list: item_list} );
+//let store = createStore(hoge, {items: "ITEMS_INITIALIZED"} );
 console.log(store.getState());
 
 //let unsubscribe = store.subscribe(() => {

@@ -2,7 +2,7 @@
 
 import React, { PropTypes } from 'react';
 
-const ItemList = ({item_list}) => {
+const ItemList = ({item_list, onItemListClick}) => {
   //const item_list = this.props;
   const style = {
     display: 'flex',
@@ -21,7 +21,7 @@ const ItemList = ({item_list}) => {
   //  </div>
   //);
   return (
-    <div style={style}>
+    <div style={style} onClick={() => onItemListClick(item_list)}>
       {item_list.items.map(function(e, i){
         return (
           <div key={i}>
