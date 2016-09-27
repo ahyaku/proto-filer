@@ -20,6 +20,7 @@ const ItemList = ({item_list, onItemListClick}) => {
   //    {item_list.items[0].name}
   //  </div>
   //);
+
   return (
     <div style={style} onClick={() => onItemListClick(item_list)}>
       {item_list.items.map(function(e, i){
@@ -31,6 +32,13 @@ const ItemList = ({item_list, onItemListClick}) => {
       })}
     </div>
   );
+
+  //return (
+  //  <div style={style} onClick={() => onItemListClick(item_list)}>
+  //    {item_list.id}
+  //  </div>
+  //);
+  
 }
 
 

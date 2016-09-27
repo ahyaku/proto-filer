@@ -11,10 +11,10 @@ import App from './components/app';
 //}
 
 import fs from 'fs';
-import itemList from '../lib/item_list';
+import ItemListCore from '../lib/item_list';
 import reducer from './reducers'
 
-const item_list = new itemList('dummy');
+const item_list = new ItemListCore('dummy');
 item_list.dir_cur = fs.realpathSync('C:\\');
 item_list.updateItems();
 

@@ -1,8 +1,21 @@
 'use strict';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
+
 import PaneItemList from '../containers/pane-item-list';
 import Header from './path-cur';
+
+import fs from 'fs';
+import ItemListCore from '../../lib/item_list';
+
+const item_list_left = new ItemListCore('LEFT');
+item_list_left.dir_cur = fs.realpathSync('C:\\');
+item_list_left.updateItems();
+
+const item_list_right = new ItemListCore('RIGHT');
+item_list_right.dir_cur = fs.realpathSync('C:\\Hamana20051010gdi');
+item_list_right.updateItems();
 
 //import fs from 'fs';
 //import itemList from '../../lib/item_list';
@@ -42,13 +55,15 @@ const Body = () => {
   };
   return (
     <div style={style}>
-      <CmdAndItemList />
-      <CmdAndItemList />
+      <CmdAndItemList item_list={item_list_left} />
+      <CmdAndItemList item_list={item_list_right} />
     </div>
   );
 }
 
-const CmdAndItemList = () => {
+//const CmdAndItemList = () => {
+const CmdAndItemList = function() {
+  //const item_list = this.props.item_list;
   const style = {
     display: 'flex',
     flex: 'auto',
@@ -68,9 +83,15 @@ const CmdAndItemList = () => {
   return (
     <div style={style}>
       <Cmd />
-      <PaneItemList />
+      <PaneItemList  />
     </div>
   );
+  //return (
+  //  <div style={style}>
+  //    <Cmd />
+  //    <PaneItemList item_list={item_list} />
+  //  </div>
+  //);
 }
 
 const Cmd = () => {
