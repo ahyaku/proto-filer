@@ -21,6 +21,10 @@ const itemList = (state, action) => {
 
     default:
       console.log('reducer: default');
+      console.log('state.item_list.id: ' + state.item_list.id);
+      //for (let e of state.item_list.items){
+      //  console.log(e.name);
+      //}
       return state;
   }
 }

@@ -24,6 +24,7 @@ item_list.updateItems();
 
 
 let store = createStore(reducer, {item_list: item_list} );
+//let store = createStore(reducer);
 //let store = createStore(hoge, {items: "ITEMS_INITIALIZED"} );
 console.log(store.getState());
 
@@ -31,9 +32,14 @@ console.log(store.getState());
 //  console.log(store.getState());
 //});
 
+const style = {
+  overflowY: 'hidden'
+};
+
+
 render(
   <Provider store={store}>
-    <App />
+    <App style={style}/>
   </Provider>,
   document.getElementById('root')
 );

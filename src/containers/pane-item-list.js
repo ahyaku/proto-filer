@@ -4,10 +4,16 @@ import { connect } from 'react-redux';
 import { updateItemList } from '../actions'
 import ItemList from '../components/item-list';
 
-const mapStateToProps = (state, props) => ({
-  item_list: state.item_list
+//const mapStateToProps = (state, props) => ({
+//  item_list: state.item_list
+//  //item_list: props.item_list
+//});
+
+const mapStateToProps = (state, props) => {
+  return {item_list: props.item_list};
+  //return {item_list: state.item_list};
   //item_list: props.item_list
-});
+}
 
 //const mapStateToProps = (state, props) => {
 //  //item_list: state.item_list
