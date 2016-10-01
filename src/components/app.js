@@ -31,8 +31,9 @@ item_list_right.updateItems();
 const Footer = () => {
   const style = {
     border: '1px solid #0000FF',
-    overflowX: 'hidden',
-    minHeight: '20px'
+    flex: '0 0 auto'
+    //overflowX: 'hidden',
+    //minHeight: '20px'
   };
   return (
     <div style={style}>
@@ -43,25 +44,74 @@ const Footer = () => {
 
 const Body = () => {
   const style = {
-    border: '1px solid #00FF00',
     display: 'flex',
-    flex: 'auto',
     flexDirection: 'row',
+    //flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     alignContent: 'stretch',
+    //flex: '1',
+    flex: '1 0 auto',
     //flexWrap: 'nowrap',
+    border: '1px solid #00FF00',
     //height: '0px',
-    width: '100%',
-    minHight: '100%',
-    overflowX: 'hidden',
-    overflowY: 'hidden',
+    //width: '100%',
+    //minHeight: '100%',
+    //overflowX: 'auto',
+    //overflowY: 'auto',
+    overflow: 'auto'
     //position: 'absolute'
+  };
+  //return (
+  //  <div style={style}>
+  //    <CmdAndItemList item_list={item_list_left} />
+  //    <CmdAndItemList item_list={item_list_right} />
+  //  </div>
+  //);
+  //return (
+  //  <div style={style}>
+  //    <CmdAndItemList item_list={item_list_left} />
+  //  </div>
+  //);
+
+  //return (
+  //  <div style={style}>
+  //    <PaneItemList item_list={item_list_left} />
+  //  </div>
+  //);
+
+  let arr = [];
+  for(let i=0; i<20; i++){
+    arr.push("hoge");
+  }
+  console.log(arr);
+  //return (
+  //  <div style={style}>
+  //    {arr.map(function(e, i){
+  //      return(
+  //        <div key={i}>
+  //          {e}
+  //        </div>
+  //      );
+  //    })}
+  //  </div>
+  //);
+  const style_sub = {
+    //flex: '1',
+    flex: '1 0 auto',
+    overflow: 'auto'
   };
   return (
     <div style={style}>
-      <CmdAndItemList item_list={item_list_left} />
-      <CmdAndItemList item_list={item_list_right} />
+      <div style={style_sub}>
+        are
+        <br /><br />
+        you
+        <br /><br />
+        known?
+        <br /><br />
+        ???
+      </div>
     </div>
   );
 }
@@ -118,7 +168,7 @@ class CmdAndItemList extends React.Component {
     const item_list = this.props.item_list;
     const style = {
       display: 'flex',
-      flex: 'auto',
+      flex: '1',
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'stretch',
@@ -127,7 +177,8 @@ class CmdAndItemList extends React.Component {
       minHeight: '100%',
       //minHeight: '0px',
       //height: '100%',
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      overflowY: 'auto'
     };
 
     //return (
@@ -138,9 +189,14 @@ class CmdAndItemList extends React.Component {
     //);
 
     console.log('CmdAndItemList render() <> item_list.id: ' + item_list.id);
+    //return (
+    //  <div style={style}>
+    //    <Cmd />
+    //    <PaneItemList item_list={item_list} />
+    //  </div>
+    //);
     return (
       <div style={style}>
-        <Cmd />
         <PaneItemList item_list={item_list} />
       </div>
     );
@@ -162,12 +218,15 @@ class CmdAndItemList extends React.Component {
 
 const Cmd = () => {
   const style = {
-    display: 'flex',
-    flex: 'auto',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
+    //display: 'flex',
+    //flex: 'auto',
+    //flexDirection: 'row',
+    //justifyContent: 'flex-start',
+    //alignItems: 'flex-start',
+    //alignContent: 'flex-start',
+    //flexBasis: '20px',
+    minHeight: '20px',
+    height: '20px',
     border: '1px solid #FFFFFF',
     overflowX: 'hidden',
     overflowY: 'hidden'
@@ -184,20 +243,21 @@ PathCur.defaultProps = {path_cur: 'HOGE'};
 const App = () => {
   const style = {
     display: 'flex',
-    flex: 'auto',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     alignContent: 'stretch',
+    //flex: '1',
     background: '#333333',
     color: '#FFFFFF',
     width: '100%',
     minHeight: '100%',
     //width: '100vw',
     //height: '100vh'
-    overflowX: 'hidden',
-    overflowY: 'hidden'
+    //overflowX: 'hidden',
+    //overflowY: 'hidden'
   };
+
   return (
     <div style={style}>
       <PathCur path_cur={"Left"} />

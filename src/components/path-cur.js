@@ -16,6 +16,7 @@ class PathCur extends React.Component {
     let path_cur = this.props.path_cur;
     const style = {
       //border: '1px solid #FF0000'
+      flex: '0 0 auto',
       overflowX: 'hidden'
     };
     return (
