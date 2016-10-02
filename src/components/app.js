@@ -32,8 +32,6 @@ const Footer = () => {
   const style = {
     border: '1px solid #0000FF',
     flex: '0 0 auto'
-    //overflowX: 'hidden',
-    //minHeight: '20px'
   };
   return (
     <div style={style}>
@@ -46,28 +44,20 @@ const Body = () => {
   const style = {
     display: 'flex',
     flexDirection: 'row',
-    //flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     alignContent: 'stretch',
-    //flex: '1',
-    flex: '1 0 auto',
-    //flexWrap: 'nowrap',
+    flex: '1',
     border: '1px solid #00FF00',
-    //height: '0px',
-    //width: '100%',
-    //minHeight: '100%',
-    //overflowX: 'auto',
-    //overflowY: 'auto',
     overflow: 'auto'
-    //position: 'absolute'
   };
-  //return (
-  //  <div style={style}>
-  //    <CmdAndItemList item_list={item_list_left} />
-  //    <CmdAndItemList item_list={item_list_right} />
-  //  </div>
-  //);
+  return (
+    <div style={style}>
+      <CmdAndItemList item_list={item_list_left} />
+      <CmdAndItemList item_list={item_list_right} />
+    </div>
+  );
+
   //return (
   //  <div style={style}>
   //    <CmdAndItemList item_list={item_list_left} />
@@ -80,11 +70,11 @@ const Body = () => {
   //  </div>
   //);
 
-  let arr = [];
-  for(let i=0; i<20; i++){
-    arr.push("hoge");
-  }
-  console.log(arr);
+  //let arr = [];
+  //for(let i=0; i<20; i++){
+  //  arr.push("hoge");
+  //}
+  //console.log(arr);
   //return (
   //  <div style={style}>
   //    {arr.map(function(e, i){
@@ -96,73 +86,32 @@ const Body = () => {
   //    })}
   //  </div>
   //);
-  const style_sub = {
-    //flex: '1',
-    flex: '1 0 auto',
-    overflow: 'auto'
-  };
-  return (
-    <div style={style}>
-      <div style={style_sub}>
-        are
-        <br /><br />
-        you
-        <br /><br />
-        known?
-        <br /><br />
-        ???
-      </div>
-    </div>
-  );
-}
 
-////const CmdAndItemList = () => {
-//const CmdAndItemList = function() {
-//  const item_list = this.props.item_list;
-//  const style = {
-//    display: 'flex',
-//    flex: 'auto',
-//    flexDirection: 'column',
-//    justifyContent: 'flex-start',
-//    alignItems: 'stretch',
-//    alignContent: 'stretch',
-//    width: '100%',
-//    minHeight: '100%'
-//  };
-//  //return (
-//  //  <div style={style}>
-//  //    <Cmd />
-//  //    <PaneItemList item_list={item_list}/>
-//  //  </div>
-//  //);
-//
-//  return (
-//    <div style={style}>
-//      <Cmd />
-//      <PaneItemList  />
-//    </div>
-//  );
-//
-//  //return (
-//  //  <div style={style}>
-//  //    <Cmd />
-//  //    <PaneItemList item_list={item_list} />
-//  //  </div>
-//  //);
-//}
+  //const style_sub = {
+  //  //flex: '1',
+  //  flex: '1 0 auto',
+  //  overflow: 'auto'
+  //};
+  //return (
+  //  <div style={style}>
+  //    <div style={style_sub}>
+  //      are
+  //      <br /><br />
+  //      you
+  //      <br /><br />
+  //      known?
+  //      <br /><br />
+  //      ???
+  //    </div>
+  //  </div>
+  //);
+}
 
 class CmdAndItemList extends React.Component {
   constructor(props){
     super(props);
     //console.log('CmdAndItemList <> item_list.id: ' + this.props.item_list.id);
   }
-
-  //return (
-  //  <div style={style}>
-  //    <Cmd />
-  //    <PaneItemList item_list={item_list}/>
-  //  </div>
-  //);
 
   render(){
     const item_list = this.props.item_list;
@@ -174,44 +123,19 @@ class CmdAndItemList extends React.Component {
       alignItems: 'stretch',
       alignContent: 'stretch',
       width: '50%',
-      minHeight: '100%',
-      //minHeight: '0px',
-      //height: '100%',
+      height: '100%',
       overflowX: 'hidden',
       overflowY: 'auto'
     };
 
-    //return (
-    //  <div style={style}>
-    //    <Cmd />
-    //    <PaneItemList />
-    //  </div>
-    //);
-
     console.log('CmdAndItemList render() <> item_list.id: ' + item_list.id);
-    //return (
-    //  <div style={style}>
-    //    <Cmd />
-    //    <PaneItemList item_list={item_list} />
-    //  </div>
-    //);
     return (
       <div style={style}>
+        <Cmd />
         <PaneItemList item_list={item_list} />
       </div>
     );
-
   }
-
-  //render: function(){
-  //  let item_list = this.props.item_list;
-  //  return (
-  //    <div style={style}>
-  //      <Cmd />
-  //      <PaneItemList item_list={item_list} />
-  //    </div>
-  //  );
-  //}
 
 }
 
@@ -240,6 +164,46 @@ const Cmd = () => {
 
 PathCur.defaultProps = {path_cur: 'HOGE'};
 
+//const HeaderTest = () => {
+//  return (
+//    <div>
+//      Header
+//    </div>
+//  );
+//}
+//
+//const BodyTest = () => {
+//  const style = {
+//    overflow: 'hidden',
+//    border: '1px solid #00FFFF',
+//    display: 'flex',
+//    flexDirection: 'row',
+//    justifyContent: 'flex-start',
+//    alignItems: 'stretch',
+//    alignContent: 'stretch',
+//    flex: '1'
+//  };
+//
+//  return (
+//    <div style={style}>
+//      Are
+//      <br/><br/>
+//      You
+//      <br/><br/>
+//      Knwon?
+//      <br/><br/>
+//    </div>
+//  );
+//}
+//
+//const FooterTest = () => {
+//  return (
+//    <div>
+//      Footer
+//    </div>
+//  );
+//}
+
 const App = () => {
   const style = {
     display: 'flex',
@@ -247,15 +211,11 @@ const App = () => {
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     alignContent: 'stretch',
-    //flex: '1',
+    flex: '1',
     background: '#333333',
     color: '#FFFFFF',
     width: '100%',
-    minHeight: '100%',
-    //width: '100vw',
-    //height: '100vh'
-    //overflowX: 'hidden',
-    //overflowY: 'hidden'
+    height: '100%',
   };
 
   return (
@@ -266,8 +226,14 @@ const App = () => {
       <Footer />
     </div>
   );
-}
 
-//      <Header path_cur={'hoge'} />
+  //return (
+  //  <div style={style}>
+  //    <HeaderTest />
+  //    <BodyTest />
+  //    <FooterTest />
+  //  </div>
+  //);
+}
 
 export default App;

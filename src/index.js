@@ -36,7 +36,6 @@ const style = {
   overflowY: 'hidden'
 };
 
-
 render(
   <Provider store={store}>
     <App style={style}/>
