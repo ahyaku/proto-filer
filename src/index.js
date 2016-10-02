@@ -19,11 +19,11 @@ item_list.dir_cur = fs.realpathSync('C:\\');
 item_list.updateItems();
 
 const item_list_left = new ItemListCore(-1, 'INIT_LEFT');
-item_list_left.dir_cur = fs.realpathSync('C:\\gopath');
+item_list_left.dir_cur = fs.realpathSync('C:\\shortcut');
 item_list_left.updateItems();
 
 const item_list_right = new ItemListCore(-1, 'INIT_RIGHT');
-item_list_right.dir_cur = fs.realpathSync('C:\\workspace');
+item_list_right.dir_cur = fs.realpathSync('C:\\msys64');
 item_list_right.updateItems();
 
 let arr_item_list = [];

@@ -8,6 +8,7 @@ import PathCur from './path-cur';
 
 import fs from 'fs';
 import ItemListCore from '../core/item_list';
+import ItemListPages from '../core/item_list_pages';
 
 const item_list_left = new ItemListCore(0, 'LEFT');
 item_list_left.dir_cur = fs.realpathSync('C:\\');
@@ -17,14 +18,16 @@ const item_list_right = new ItemListCore(1, 'RIGHT');
 item_list_right.dir_cur = fs.realpathSync('C:\\Hamana20051010gdi');
 item_list_right.updateItems();
 
-//import fs from 'fs';
-//import itemList from '../../lib/item_list';
-//
-//const item_list = new itemList('dummy');
-//item_list.dir_cur = fs.realpathSync('C:\\');
-//item_list.updateItems();
-//
-//for(let e of item_list.items){
+
+//const pages_left = new ItemListPages(0, 'LEFT', null, null, true, null);
+//pages_left.updatePageCur('C:\\');
+//console.log('pages_left.page_cur: ' + pages_left.page_cur);
+//console.log('pages_left.dir_cur: ' + pages_left.dir_cur);
+//for(let e of pages_left.page_cur.items){
+//  console.log(e.name);
+//}
+
+//for(let e of pages_left.page_cur.items){
 //  console.log(e.name);
 //}
 
@@ -51,10 +54,11 @@ const Body = () => {
     border: '1px solid #00FF00',
     overflow: 'auto'
   };
+
   return (
     <div style={style}>
-      <CmdAndItemList item_list={item_list_left} />
-      <CmdAndItemList item_list={item_list_right} />
+      <CmdAndItemList id={0} />
+      <CmdAndItemList id={1} />
     </div>
   );
 
@@ -114,7 +118,7 @@ class CmdAndItemList extends React.Component {
   }
 
   render(){
-    const item_list = this.props.item_list;
+    const id = this.props.id;
     const style = {
       display: 'flex',
       flex: '1',
@@ -128,11 +132,11 @@ class CmdAndItemList extends React.Component {
       overflowY: 'auto'
     };
 
-    console.log('CmdAndItemList render() <> item_list.id: ' + item_list.id);
+    console.log('CmdAndItemList render() <> id: ' + id);
     return (
       <div style={style}>
         <Cmd />
-        <PaneItemList item_list={item_list} />
+        <PaneItemList id={id} />
       </div>
     );
   }

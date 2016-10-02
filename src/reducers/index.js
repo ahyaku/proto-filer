@@ -1,6 +1,7 @@
 'use strict';
 
-//import ItemListCore from '../../lib/item_list';
+import fs from 'fs';
+import ItemListCore from '../core/item_list';
 
 const itemList = (state, action) => {
   switch(action.type){
@@ -23,16 +24,36 @@ const itemList = (state, action) => {
       //  return state;
       //}
 
+      //let arr_item_list = state.arr_item_list.concat();
+      //for(let i=0; i<state.arr_item_list.length; i++){
+      //  arr_item_list[i].items = i === action.item_list.id
+      //                             ? action.item_list.items.concat()
+      //                             : state.arr_item_list[i].items.concat();
+      //}
+
+      //let arr_item_list = state.arr_item_list.concat();
+      //for(let i=0; i<arr_item_list.length; i++){
+      //  arr_item_list[i].items = state.arr_item_list[i].items.concat();
+      //  if(i === action.item_list.id){
+      //    for(let j=0; j<arr_item_list[i].items.length; j++){
+      //      arr_item_list[i].items[j].name = 'hoge!!';
+      //    }
+      //  }
+      //}
+
       let arr_item_list = state.arr_item_list.concat();
-      for(let i=0; i<state.arr_item_list.length; i++){
-        arr_item_list[i].items = i === action.item_list.id
-                                   ? action.item_list.items.concat()
-                                   : state.arr_item_list[i].items.concat();
+      for(let i=0; i<arr_item_list.length; i++){
+        if(i === action.id){
+          arr_item_list[i] = new ItemListCore(i, 'LEFT');
+          arr_item_list[i].dir_cur = fs.realpathSync('C:\\');
+          arr_item_list[i].updateItems();
+
+        }else{
+          arr_item_list[i].items = state.arr_item_list[i].items.concat();
+        }
       }
 
       return {arr_item_list: arr_item_list};
-
-      //return state;
 
     default:
       console.log('reducer: default');

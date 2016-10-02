@@ -75,7 +75,7 @@ class ItemListPane{
   }
   set is_focused(is_focused){
     this._is_focused = is_focused;
-    this.drawDirCur();
+    //this.drawDirCur();
   }
   get is_focused(){
     return this._is_focused;

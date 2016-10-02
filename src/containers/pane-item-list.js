@@ -70,7 +70,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => ({
   onItemListClick: () => {
-    dispatch(updateItemList(props.item_list));
+    dispatch(updateItemList(props.id));
   },
   props
 });

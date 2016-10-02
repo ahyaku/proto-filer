@@ -2,17 +2,8 @@
 
 import React, { PropTypes } from 'react';
 
-//const ItemList = ({item_list, onItemListClick, props}) => {
 const ItemList = ({arr_item_list, onItemListClick, props}) => {
-  //const item_list = this.props;
-  //console.log('ItemList <> props.item_list.id = ' + props.item_list.id);
-  //console.log('ItemList <> item_list = ' + item_list);
-  //console.log('ItemList <> arr_item_list = ' + arr_item_list);
-  //console.log('ItemList <> arr_item_list.id = ' + arr_item_list.id);
-  console.log('ItemList <> arr_item_list[0] = ' + arr_item_list[0].eid);
-  //console.log('ItemList <> arr_item_list[0].id = ' + arr_item_list[0].id);
-
-  let id = props.item_list.id;
+  let id = props.id;
   let item_list = arr_item_list[id];
 
   const style = {
@@ -51,48 +42,7 @@ const ItemList = ({arr_item_list, onItemListClick, props}) => {
     </div>
   );
 
-  //return (
-  //  <div style={style} onClick={() => onItemListClick(props.item_list)}>
-  //    {props.item_list.items.map(function(e, i){
-  //      return (
-  //        <div key={i}>
-  //          {e.name}
-  //        </div>
-  //      );
-  //    })}
-  //  </div>
-  //);
-
-  //return (
-  //  <div style={style}>
-  //    {item_list.items.map(function(e, i){
-  //      return (
-  //        <div style={style_children} key={i}>
-  //          {e.name}
-  //        </div>
-  //      );
-  //    })}
-  //  </div>
-  //);
-
-  //return (
-  //  <div style={style} onClick={() => onItemListClick(item_list)}>
-  //  </div>
-  //);
-
-  //console.log('ItemList <> item_list.id: ' + item_list.id);
-  //return (
-  //  <div style={style} onClick={() => onItemListClick(item_list)}>
-  //    {item_list.id}
-  //  </div>
-  //);
-  
 }
-
-
-//ItemList.propTypes = {
-//  item_list: PropTypes.object.isRequired
-//};
 
 ItemList.propTypes = {
   arr_item_list: PropTypes.arrayOf(PropTypes.object.isRequired)
