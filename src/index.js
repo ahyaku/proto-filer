@@ -11,19 +11,38 @@ import App from './components/app';
 //}
 
 import fs from 'fs';
-import ItemListCore from '../lib/item_list';
+import ItemListCore from './core/item_list';
 import reducer from './reducers'
 
-const item_list = new ItemListCore('dummy');
+const item_list = new ItemListCore(-1, 'INIT');
 item_list.dir_cur = fs.realpathSync('C:\\');
 item_list.updateItems();
+
+const item_list_left = new ItemListCore(-1, 'INIT_LEFT');
+item_list_left.dir_cur = fs.realpathSync('C:\\gopath');
+item_list_left.updateItems();
+
+const item_list_right = new ItemListCore(-1, 'INIT_RIGHT');
+item_list_right.dir_cur = fs.realpathSync('C:\\workspace');
+item_list_right.updateItems();
+
+let arr_item_list = [];
+arr_item_list.push(item_list_left);
+arr_item_list.push(item_list_right);
 
 //for(let e of item_list.items){
 //  console.log(e.name);
 //}
 
+//const state_init = {
+//  item_list: item_list
+//}
 
-let store = createStore(reducer, {item_list: item_list} );
+const state_init = {
+  arr_item_list: arr_item_list
+}
+
+let store = createStore(reducer, state_init );
 //let store = createStore(reducer);
 //let store = createStore(hoge, {items: "ITEMS_INITIALIZED"} );
 console.log(store.getState());

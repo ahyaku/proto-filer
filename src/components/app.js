@@ -7,13 +7,13 @@ import PaneItemList from '../containers/pane-item-list';
 import PathCur from './path-cur';
 
 import fs from 'fs';
-import ItemListCore from '../../lib/item_list';
+import ItemListCore from '../core/item_list';
 
-const item_list_left = new ItemListCore('LEFT');
+const item_list_left = new ItemListCore(0, 'LEFT');
 item_list_left.dir_cur = fs.realpathSync('C:\\');
 item_list_left.updateItems();
 
-const item_list_right = new ItemListCore('RIGHT');
+const item_list_right = new ItemListCore(1, 'RIGHT');
 item_list_right.dir_cur = fs.realpathSync('C:\\Hamana20051010gdi');
 item_list_right.updateItems();
 
@@ -142,13 +142,6 @@ class CmdAndItemList extends React.Component {
 
 const Cmd = () => {
   const style = {
-    //display: 'flex',
-    //flex: 'auto',
-    //flexDirection: 'row',
-    //justifyContent: 'flex-start',
-    //alignItems: 'flex-start',
-    //alignContent: 'flex-start',
-    //flexBasis: '20px',
     minHeight: '20px',
     height: '20px',
     border: '1px solid #FFFFFF',

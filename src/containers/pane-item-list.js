@@ -10,7 +10,44 @@ import ItemList from '../components/item-list';
 //});
 
 const mapStateToProps = (state, props) => {
-  return {item_list: props.item_list};
+  //console.log("state.item_list.id: " + state.item_list.id);
+  //if(state.item_list.id === 'init'){
+  //  console.log('IS init!!');
+  //}else{
+  //  console.log('IS NOT init!!');
+  //}
+  //return {item_list: props.item_list};
+
+
+  //console.log("mapStateToProps <> props.item_list.eid: " + props.item_list.eid);
+  //console.log("mapStateToProps <> state.arr_item_list[0].eid: " + state.arr_item_list[0].eid);
+  //console.log("mapStateToProps <> state.arr_item_list[1].eid: " + state.arr_item_list[1].eid);
+
+  let arr_item_list = state.arr_item_list.concat();
+  arr_item_list[0].items  = state.arr_item_list[0].items.concat();
+  arr_item_list[1].items  = state.arr_item_list[1].items.concat();
+
+  //console.log("mapStateToProps <> arr_item_list[0].eid: " + arr_item_list[0].eid);
+  //console.log("mapStateToProps <> arr_item_list[1].eid: " + arr_item_list[1].eid);
+
+  return {arr_item_list: arr_item_list};
+
+  //{
+  //  let new_list = Object.assign({}, state.item_list);
+  //  //new_list.items = Object.assign({}, state.item_list.items);
+  //  //new_list.items = [].concat(state.item_list.items);
+  //  new_list.items = state.item_list.items.concat();
+  //  for (let i = 0; i < new_list.items.length; i++){
+  //    new_list.items[i].name = 'hoge!!';
+  //  }
+  //  //for (let i = 0; i < state.item_list.items.length; i++){
+  //  //  console.log(state.item_list.items[i].name);
+  //  //}
+  //  return {item_list: new_list};
+  //}
+
+
+
   //return {item_list: state.item_list};
   //item_list: props.item_list
 }
@@ -31,9 +68,24 @@ const mapStateToProps = (state, props) => {
 //  }
 //});
 
-const mapDispatchToProps = ({
-  onItemListClick: updateItemList
+const mapDispatchToProps = (dispatch, props) => ({
+  onItemListClick: () => {
+    dispatch(updateItemList(props.item_list));
+  },
+  props
 });
+
+//const mapDispatchToProps = ({
+//  onItemListClick: updateItemList
+//});
+
+//const mapDispatchToProps = () => {
+//  return (
+//    onItemListClick: () => {
+//      updateItemList
+//    }
+//  );
+//}
 
 const PaneItemList = connect(
   mapStateToProps,

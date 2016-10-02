@@ -5,9 +5,9 @@ import React from 'react';
 class PathCur extends React.Component {
   constructor(props) {
     super(props);
-    console.log('PathCur Instantiation!!!');
+    //console.log('PathCur Instantiation!!!');
     //console.log('this.props: ' + this.props);
-    console.log('this.props.path_cur: ' + this.props.path_cur);
+    //console.log('this.props.path_cur: ' + this.props.path_cur);
     //console.log('props.path_cur: ' + this.props.path_cur);
     //this._path_cur = this.
   }
