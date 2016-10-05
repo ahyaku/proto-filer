@@ -2,29 +2,21 @@
 
 import React from 'react';
 
-class PathCur extends React.Component {
-  constructor(props) {
-    super(props);
-    //console.log('PathCur Instantiation!!!');
-    //console.log('this.props: ' + this.props);
-    //console.log('this.props.path_cur: ' + this.props.path_cur);
-    //console.log('props.path_cur: ' + this.props.path_cur);
-    //this._path_cur = this.
-  }
+const PathCur = ({arr_path_cur, props}) => {
+  const id = props.id;
+  const path_cur = arr_path_cur[props.id];
+  //console.log('Pathcur <> ' + props);
+  const style = {
+    //border: '1px solid #FF0000'
+    flex: '0 0 auto',
+    overflowX: 'hidden'
+  };
 
-  render() {
-    let path_cur = this.props.path_cur;
-    const style = {
-      //border: '1px solid #FF0000'
-      flex: '0 0 auto',
-      overflowX: 'hidden'
-    };
-    return (
-      <div style={style}>
-        {this.props.path_cur}
-      </div>
-    );
-  }
+  return (
+    <div style={style}>
+      {path_cur}
+    </div>
+  );
 }
 
 export default PathCur;

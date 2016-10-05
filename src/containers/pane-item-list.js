@@ -10,6 +10,7 @@ import ItemList from '../components/item-list';
 //});
 
 const mapStateToProps = (state, props) => {
+//const mapStateToProps = function(state, props){
   //console.log("state.item_list.id: " + state.item_list.id);
   //if(state.item_list.id === 'init'){
   //  console.log('IS init!!');
@@ -19,16 +20,14 @@ const mapStateToProps = (state, props) => {
   //return {item_list: props.item_list};
 
 
-  //console.log("mapStateToProps <> props.item_list.eid: " + props.item_list.eid);
-  //console.log("mapStateToProps <> state.arr_item_list[0].eid: " + state.arr_item_list[0].eid);
-  //console.log("mapStateToProps <> state.arr_item_list[1].eid: " + state.arr_item_list[1].eid);
+  //console.log('mapStateToProp <> state: ' + state);
+  //console.log('mapStateToProp <> state.arr_item_list: ' + state.arr_item_list);
+  //console.log('mapStateToProp <> state.arr_item_list[0].dir_cur: ' + state.arr_item_list[0].dir_cur);
+  //console.log('mapStateToProp <> state.arr_item_list[1].dir_cur: ' + state.arr_item_list[1].dir_cur);
 
   let arr_item_list = state.arr_item_list.concat();
   arr_item_list[0].items  = state.arr_item_list[0].items.concat();
   arr_item_list[1].items  = state.arr_item_list[1].items.concat();
-
-  //console.log("mapStateToProps <> arr_item_list[0].eid: " + arr_item_list[0].eid);
-  //console.log("mapStateToProps <> arr_item_list[1].eid: " + arr_item_list[1].eid);
 
   return {arr_item_list: arr_item_list};
 

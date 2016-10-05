@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import PaneItemList from '../containers/pane-item-list';
-import PathCur from './path-cur';
+import PanePathCur from '../containers/pane-path-cur';
 
 import fs from 'fs';
 import ItemListCore from '../core/item_list';
@@ -159,7 +159,6 @@ const Cmd = () => {
   );
 }
 
-PathCur.defaultProps = {path_cur: 'HOGE'};
 
 //const HeaderTest = () => {
 //  return (
@@ -217,8 +216,8 @@ const App = () => {
 
   return (
     <div style={style}>
-      <PathCur path_cur={"Left"} />
-      <PathCur path_cur={"Right"} />
+      <PanePathCur id={0} />
+      <PanePathCur id={1} />
       <Body />
       <Footer />
     </div>

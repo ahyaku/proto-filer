@@ -42,10 +42,10 @@ const state_init = {
   arr_item_list: arr_item_list
 }
 
-let store = createStore(reducer, state_init );
+let store = createStore(reducer, state_init);
 //let store = createStore(reducer);
 //let store = createStore(hoge, {items: "ITEMS_INITIALIZED"} );
-console.log(store.getState());
+//console.log(store.getState());
 
 //let unsubscribe = store.subscribe(() => {
 //  console.log(store.getState());
