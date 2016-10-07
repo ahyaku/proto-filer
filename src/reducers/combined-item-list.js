@@ -63,6 +63,14 @@ function CombinedItemList(state={}, action){
 
       return {arr_item_list: arr_item_list};
 
+    case 'MOVE_CURSOR_UP':
+      console.log('MOVE_CURSOR_UP!!');
+      return state;
+
+    case 'MOVE_CURSOR_DOWN':
+      console.log('MOVE_CURSOR_DOWN!!');
+      return state;
+
     default:
       console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);
       //for (let e of state.item_list.items){

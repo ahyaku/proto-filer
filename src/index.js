@@ -2,9 +2,11 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import App from './components/app';
+import { checkKeyNormal } from './actions';
 
 //const hoge = () => {
 //  return {items: 'hoge'}
@@ -42,7 +44,7 @@ const state_init = {
   arr_item_list: arr_item_list
 }
 
-let store = createStore(reducer, state_init);
+let store = createStore(reducer, state_init, applyMiddleware(thunk));
 //let store = createStore(reducer);
 //let store = createStore(hoge, {items: "ITEMS_INITIALIZED"} );
 //console.log(store.getState());
@@ -50,6 +52,59 @@ let store = createStore(reducer, state_init);
 //let unsubscribe = store.subscribe(() => {
 //  console.log(store.getState());
 //});
+
+function ListenKeydown(mapEventToAction){
+
+  return function(dispatch){
+    function handleEvent(e){
+      //console.log('key: ' + e);
+      console.log('e.keyCode: ' + e.keyCode);
+      console.log('e.key: ' + e.key);
+      //console.log('event.shiftKey: ' + event.shiftKey);
+      //console.log('event.ctrlKey: ' + event.ctrlKey);
+      //console.log('event.target: ' + event.target);
+      //console.log('event.target.id: ' + event.target.id);
+
+      //switch(e.keyCode){
+      //  case 65: /* 'a' */
+      //    console.log('Press a'); 
+      //    break;
+      //  case 66: /* 'b' */
+      //    console.log('Press b'); 
+      //    break;
+      //  default:
+      //    //mediate_pane.checkKey(e);
+      //    break;
+      //}
+
+      dispatch(mapEventToAction(e));
+    }
+
+    document.addEventListener('keydown', handleEvent);
+    return () => document.removeEventListener('keydown', handleEvent);
+  };
+
+  //return function(){
+  //  console.log('foo');
+  //  //return function(){return 'bar'};
+  //  return () => {return 'bar'};
+  //  //return () => document.removeEventListener('keydown', handleEvent);
+  //}
+}
+
+function mapKeydownToAction(e){
+
+  //return {
+  //  type: 'KEY_DOWN',
+  //  e
+  //};
+
+  return checkKeyNormal(e);
+
+}
+
+//store.dispatch(ListenKeydown);
+const unlistenKeydown = store.dispatch(ListenKeydown(mapKeydownToAction));
 
 const style = {
   overflowY: 'hidden'
