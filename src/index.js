@@ -12,15 +12,15 @@ import fs from 'fs';
 import ItemListCore from './core/item_list';
 import reducer from './reducers'
 
-const item_list = new ItemListCore(-1, 'INIT');
+const item_list = new ItemListCore();
 item_list.dir_cur = fs.realpathSync('C:\\');
 item_list.updateItems();
 
-const item_list_left = new ItemListCore(-1, 'INIT_LEFT');
+const item_list_left = new ItemListCore();
 item_list_left.dir_cur = fs.realpathSync('C:\\shortcut');
 item_list_left.updateItems();
 
-const item_list_right = new ItemListCore(-1, 'INIT_RIGHT');
+const item_list_right = new ItemListCore();
 item_list_right.dir_cur = fs.realpathSync('C:\\msys64');
 item_list_right.updateItems();
 

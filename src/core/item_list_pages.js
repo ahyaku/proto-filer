@@ -17,14 +17,15 @@ let STATE_SEARCH_FILTER = {
 };
 
 class ItemListPages{
-  constructor(id, id_pane, id_dir_cur, id_pane_cmd, is_focused, mediator){
+  //constructor(id, id_pane, id_dir_cur, id_pane_cmd, is_focused, mediator){
+  constructor(){
     this._pages = {};
-    this._id_pane = id_pane;
-    this._id_dir_cur = id_dir_cur;
-    this._is_focused = is_focused;
+    //this._id_pane = id_pane;
+    //this._id_dir_cur = id_dir_cur;
+    //this._is_focused = is_focused;
     //this._mediator = mediator;
 
-    this._id = id;
+    //this._id = id;
 
     //process.stdin.setRawMode(true);
 
@@ -33,7 +34,7 @@ class ItemListPages{
     //this._pane_cmd.blur();
 
     this._state_sf = STATE_SEARCH_FILTER.NONE;
-    this._jid = '#' + id_pane_cmd;
+    //this._jid = '#' + id_pane_cmd;
     //this._id_pane_cmd = id_pane_cmd;
 
     //let cb_keyup = this._getCBKeyUp(this._page_cur, this._jid);
@@ -90,12 +91,12 @@ class ItemListPages{
   get line_cur(){
     return this._page_cur.line_cur;
   }
-  get id(){
-    return this._page_cur.id;
-  }
-  get id_dir_cur(){
-    return this._page_cur.id_dir_cur;
-  }
+  //get id(){
+  //  return this._page_cur.id;
+  //}
+  //get id_dir_cur(){
+  //  return this._page_cur.id_dir_cur;
+  //}
   get items_selected(){
     return this._page_cur.items_selected;
   }
@@ -112,17 +113,17 @@ class ItemListPages{
     return path.join(this._page_cur.dir_cur, lined_item);
   }
 
-  get is_focused(){
-    return this._is_focused;
-  }
+  //get is_focused(){
+  //  return this._is_focused;
+  //}
 
-  set id(id){
-    this._id = id;
-  }
+  //set id(id){
+  //  this._id = id;
+  //}
 
-  get id(){
-    return this._id;
-  }
+  //get id(){
+  //  return this._id;
+  //}
 
   get page_cur(){
     return this._page_cur;
@@ -138,20 +139,20 @@ class ItemListPages{
     if(init_path in this._pages){
       //console.log('updatePageCur() <> stored page!! id_pane: ' + this._id_pane);
       this._page_cur = this._pages[init_path];
-      this._page_cur.is_focused = this._is_focused;
+      //this._page_cur.is_focused = this._is_focused;
       //this._page_cur.drawItems();
       //this._page_cur.drawCursor(this._page_cur.line_cur);
     }else{
       //console.log('updatePageCur() <> new page!! id_pane: ' + this._id_pane);
-      this._pages[init_path] = new item_list(this._id, this._id_pane);
+      this._pages[init_path] = new item_list();
       this._page_cur = this._pages[init_path];
 
       this._page_cur.dir_cur = fs.realpathSync(init_path);
-      this._page_cur.id_dir_cur = this._id_dir_cur;
-      this._page_cur.is_focused = this._is_focused;
-      console.log(util.format('updatePageCur <> %s: %d',
-                              this._id_pane,
-                              this._is_focused));
+      //this._page_cur.id_dir_cur = this._id_dir_cur;
+      //this._page_cur.is_focused = this._is_focused;
+      //console.log(util.format('updatePageCur <> %s: %d',
+      //                        this._id_pane,
+      //                        this._is_focused));
 
       //this._page_cur.mediator = this._mediator;
       //this._page_cur.drawItems();
@@ -198,14 +199,14 @@ class ItemListPages{
     this._page_cur.cursorDown();
   }
 
-  switchPane(is_focused){
-    this._is_focused = is_focused;
-    this._page_cur.switchPane(is_focused);
-    console.log(util.format('switchPane <> %s: %d',
-                            this._id_pane,
-                            this._is_focused));
+  //switchPane(is_focused){
+  //  this._is_focused = is_focused;
+  //  this._page_cur.switchPane(is_focused);
+  //  console.log(util.format('switchPane <> %s: %d',
+  //                          this._id_pane,
+  //                          this._is_focused));
 
-  }
+  //}
 
   drawCursor(cn){
     this._page_cur.drawCursor(cn);

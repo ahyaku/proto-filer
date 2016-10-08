@@ -9,26 +9,27 @@ let util = require('util')
 let Item = require('./item')
 
 class ItemListPane{
-  constructor(id, eid){
-    this._id = id;
-    this._eid = eid;
+  //constructor(id, eid){
+  constructor(){
+    //this._id = id;
+    //this._eid = eid;
     this._dir_prev = null;
     this._items_selected = {};
     this._reg_pat = '';
     this._line_cur = 0;
   }
-  set id(id){
-    this._id = id;
-  }
-  get id(){
-    return this._id;
-  }
-  set eid(eid){
-    this._eid = eid;
-  }
-  get eid(){
-    return this._eid;
-  }
+  //set id(id){
+  //  this._id = id;
+  //}
+  //get id(){
+  //  return this._id;
+  //}
+  //set eid(eid){
+  //  this._eid = eid;
+  //}
+  //get eid(){
+  //  return this._eid;
+  //}
   set dir_cur(dir_cur){
     if(!fs.statSync(dir_cur).isDirectory()){
       util.format('ERROR!!: $s is NOT directory', dir_cur);
@@ -45,19 +46,19 @@ class ItemListPane{
 //    return this._dir_cur_full;
 //  }
 
-  get item_name_cur(){
-    let e = document.getElementById(this._eid).childNodes;
-    let cc = this._line_cur;
+  //get item_name_cur(){
+  //  let e = document.getElementById(this._eid).childNodes;
+  //  let cc = this._line_cur;
 
-    return e[cc].textContent;
-  }
+  //  return e[cc].textContent;
+  //}
 
-  set id_dir_cur(id_dir_cur){
-    this._id_dir_cur = id_dir_cur;
-  }
-  get id_dir_cur(){
-    return this._id_dir_cur;
-  }
+  //set id_dir_cur(id_dir_cur){
+  //  this._id_dir_cur = id_dir_cur;
+  //}
+  //get id_dir_cur(){
+  //  return this._id_dir_cur;
+  //}
 
   set line_cur(line_cur){
     //this._line_prv = this._line_cur;
@@ -86,11 +87,11 @@ class ItemListPane{
     return this._is_focused;
   }
 
-  drawItems(){
-    this.updateItems();
-    this._drawItems();
-    this.drawDirCur();
-  }
+  //drawItems(){
+  //  this.updateItems();
+  //  this._drawItems();
+  //  this.drawDirCur();
+  //}
 
   updateItems(){
     let items = new Array();
@@ -132,75 +133,75 @@ class ItemListPane{
     return this._items_selected;
   }
 
-  _drawItems(){
-    let node_id = document.getElementById(this._eid);
-    let node_frg = document.createDocumentFragment();
+  //_drawItems(){
+  //  let node_id = document.getElementById(this._eid);
+  //  let node_frg = document.createDocumentFragment();
 
-    /* Delete the older item list displayed so far. */
-    node_id.textContent = null;
-    //while(node_id.firstChild) node_id.removeChild(node_id.firstChild);
+  //  /* Delete the older item list displayed so far. */
+  //  node_id.textContent = null;
+  //  //while(node_id.firstChild) node_id.removeChild(node_id.firstChild);
 
-    /* DEBUG */
-    /*
-    let i = 0;
-    while(node_id.firstChild){
-      console.log(i++ + ": node_id.firstChild.innerHTML = " + node_id.firstChild.innerHTML );
-      node_id.removeChild(node_id.firstChild);
-    }
-    */
+  //  /* DEBUG */
+  //  /*
+  //  let i = 0;
+  //  while(node_id.firstChild){
+  //    console.log(i++ + ": node_id.firstChild.innerHTML = " + node_id.firstChild.innerHTML );
+  //    node_id.removeChild(node_id.firstChild);
+  //  }
+  //  */
 
-    //for(let e of this._items){
-    //  let node = document.createElement('div');
-    //  node.appendChild( document.createTextNode(e.name) );
-    //  if(e.is_dir){
-    //    node.setAttribute('style', 'color:#FFFFFF;');
-    //  }else{
-    //    node.setAttribute('style', 'color:#00FF00;');
-    //  }
-    //  node.style.borderBottomWidth = '2px';
-    //  node.style.borderBottomStyle = 'solid';
-    //  node.style.borderBottomColor = '#000000';
-    //  node_frg.appendChild(node);
-    //}
+  //  //for(let e of this._items){
+  //  //  let node = document.createElement('div');
+  //  //  node.appendChild( document.createTextNode(e.name) );
+  //  //  if(e.is_dir){
+  //  //    node.setAttribute('style', 'color:#FFFFFF;');
+  //  //  }else{
+  //  //    node.setAttribute('style', 'color:#00FF00;');
+  //  //  }
+  //  //  node.style.borderBottomWidth = '2px';
+  //  //  node.style.borderBottomStyle = 'solid';
+  //  //  node.style.borderBottomColor = '#000000';
+  //  //  node_frg.appendChild(node);
+  //  //}
 
-    let reg = new RegExp(this._reg_pat);
-    let list = this._items.filter(function(e){
-      //console.log(e.name);
-      return e.name.match(reg);
-    });
+  //  let reg = new RegExp(this._reg_pat);
+  //  let list = this._items.filter(function(e){
+  //    //console.log(e.name);
+  //    return e.name.match(reg);
+  //  });
 
-    for(let e of list){
-      let node = document.createElement('div');
-      node.appendChild( document.createTextNode(e.name) );
-      if(e.is_dir){
-        node.setAttribute('style', 'color:#FFFFFF;');
-      }else{
-        node.setAttribute('style', 'color:#00FF00;');
-      }
-      node.style.borderBottomWidth = '2px';
-      node.style.borderBottomStyle = 'solid';
-      node.style.borderBottomColor = '#000000';
+  //  for(let e of list){
+  //    let node = document.createElement('div');
+  //    node.appendChild( document.createTextNode(e.name) );
+  //    if(e.is_dir){
+  //      node.setAttribute('style', 'color:#FFFFFF;');
+  //    }else{
+  //      node.setAttribute('style', 'color:#00FF00;');
+  //    }
+  //    node.style.borderBottomWidth = '2px';
+  //    node.style.borderBottomStyle = 'solid';
+  //    node.style.borderBottomColor = '#000000';
 
-      node.style.cssText += 'margin: 0px 0px -4px; padding: 0px 0px;';
-      node.style.zIndex = '0';
+  //    node.style.cssText += 'margin: 0px 0px -4px; padding: 0px 0px;';
+  //    node.style.zIndex = '0';
 
-      node_frg.appendChild(node);
-    };
+  //    node_frg.appendChild(node);
+  //  };
 
-    this._inum_filterd = list.length;
+  //  this._inum_filterd = list.length;
 
-    node_id.appendChild(node_frg);
-  }
+  //  node_id.appendChild(node_frg);
+  //}
 
-  drawDirCur(){
-    let node_id = document.getElementById(this._id_dir_cur);
-    if(this._is_focused){
-      node_id.setAttribute('style', 'color:#FFFFFF;');
-    }else{
-      node_id.setAttribute('style', 'color:#CCCCCC;');
-    }
-    node_id.innerHTML = this._dir_cur;
-  }
+  //drawDirCur(){
+  //  let node_id = document.getElementById(this._id_dir_cur);
+  //  if(this._is_focused){
+  //    node_id.setAttribute('style', 'color:#FFFFFF;');
+  //  }else{
+  //    node_id.setAttribute('style', 'color:#CCCCCC;');
+  //  }
+  //  node_id.innerHTML = this._dir_cur;
+  //}
 
   cursorUp(){
     this.drawCursor(this._line_cur-1);
@@ -254,32 +255,32 @@ class ItemListPane{
     this._line_cur = cn;
   }
 
-  scrollPane(e, cn){
-    let pane = document.getElementById(this._eid);
+  //scrollPane(e, cn){
+  //  let pane = document.getElementById(this._eid);
 
-    //console.log('----------------------------------------------');
-    //console.log('pane.scrollTop: ' + pane.scrollTop);
-    //console.log('pane.offsetTop: ' + pane.offsetTop);
-    //console.log('e[cn].offsetTop: ' + e[cn].offsetTop);
-    //console.log(util.format('[pane.scrollWidth, pane.scrollHeight] = [%d, %d]'
-    //                                             , pane.scrollWidth
-    //                                             , pane.scrollHeight));
-    //console.log(util.format('[pane.clientWidth, pane.clientHeight] = [%d, %d]'
-    //                                             , pane.clientWidth
-    //                                             , pane.clientHeight));
+  //  //console.log('----------------------------------------------');
+  //  //console.log('pane.scrollTop: ' + pane.scrollTop);
+  //  //console.log('pane.offsetTop: ' + pane.offsetTop);
+  //  //console.log('e[cn].offsetTop: ' + e[cn].offsetTop);
+  //  //console.log(util.format('[pane.scrollWidth, pane.scrollHeight] = [%d, %d]'
+  //  //                                             , pane.scrollWidth
+  //  //                                             , pane.scrollHeight));
+  //  //console.log(util.format('[pane.clientWidth, pane.clientHeight] = [%d, %d]'
+  //  //                                             , pane.clientWidth
+  //  //                                             , pane.clientHeight));
 
-    let line_pos = e[cn].offsetTop + e[cn].clientHeight;
-    let scrollTop_abs = pane.scrollTop + pane.offsetTop;
-    let scrollBottom_abs = scrollTop_abs + pane.clientHeight;
+  //  let line_pos = e[cn].offsetTop + e[cn].clientHeight;
+  //  let scrollTop_abs = pane.scrollTop + pane.offsetTop;
+  //  let scrollBottom_abs = scrollTop_abs + pane.clientHeight;
 
-    if(e[cn].offsetTop < scrollTop_abs){
-      scrollTop_abs = e[cn].offsetTop;
-      pane.scrollTop = scrollTop_abs - pane.offsetTop; 
-    }else if(line_pos > scrollBottom_abs){
-      scrollTop_abs = line_pos - pane.clientHeight;
-      pane.scrollTop = scrollTop_abs - pane.offsetTop; 
-    }
-  }
+  //  if(e[cn].offsetTop < scrollTop_abs){
+  //    scrollTop_abs = e[cn].offsetTop;
+  //    pane.scrollTop = scrollTop_abs - pane.offsetTop; 
+  //  }else if(line_pos > scrollBottom_abs){
+  //    scrollTop_abs = line_pos - pane.clientHeight;
+  //    pane.scrollTop = scrollTop_abs - pane.offsetTop; 
+  //  }
+  //}
 
   toggleUp(){
     //document.activeElement.blur();
@@ -294,56 +295,56 @@ class ItemListPane{
     this.drawCursor(this._line_cur+1);
   }
 
-  toggleItemSelect(){
-    let e = document.getElementById(this._eid).childNodes;
-    let cn = this._line_cur;
-    //let prop;
+  //toggleItemSelect(){
+  //  let e = document.getElementById(this._eid).childNodes;
+  //  let cn = this._line_cur;
+  //  //let prop;
 
-    //console.log('toggle: ' + this._items[cn].selected);
-    this._items[cn].selected = !this._items[cn].selected;
-    //console.log('toggle: ' + this._items[cn].selected);
+  //  //console.log('toggle: ' + this._items[cn].selected);
+  //  this._items[cn].selected = !this._items[cn].selected;
+  //  //console.log('toggle: ' + this._items[cn].selected);
 
-    //console.log('style.cssText <> ' + e[cn].style.cssText);
+  //  //console.log('style.cssText <> ' + e[cn].style.cssText);
 
-    //let color = window.getComputedStyle(e[cn]).getPropertyValue('color');
-    //console.log('color <> ' + color);
+  //  //let color = window.getComputedStyle(e[cn]).getPropertyValue('color');
+  //  //console.log('color <> ' + color);
 
-    //e[cn].style.borderBottomWidth = '2px';
-    //e[cn].style.borderBottomStyle = 'solid';
+  //  //e[cn].style.borderBottomWidth = '2px';
+  //  //e[cn].style.borderBottomStyle = 'solid';
 
-    if(this._items[cn].selected == true){
-      //prop = 'color: ' + color + '; background-color: rgba(0, 0, 255, 1);';
-      e[cn].style.cssText += 'background: rgba(0, 0, 255, 1);';
-      //e[cn].style.borderBottomColor = '#0000FF';
-      this._items_selected[this._items[cn].name] = this._items[cn];
-      //this._items_selected.push('hoge');
-      //console.log('_items: ' + this._items[cn].name);
-    }else{
-      //prop = 'color: ' + color + '; background-color: rgba(0, 0, 0, 1);';
-      e[cn].style.cssText += 'background: rgba(0, 0, 0, 1);';
-      //e[cn].style.borderBottomColor = '#000000';
-      delete this._items_selected[this._items[cn].name];
-    }
-    //e[cn].style.cssText += 'min-width: 0;';
+  //  if(this._items[cn].selected == true){
+  //    //prop = 'color: ' + color + '; background-color: rgba(0, 0, 255, 1);';
+  //    e[cn].style.cssText += 'background: rgba(0, 0, 255, 1);';
+  //    //e[cn].style.borderBottomColor = '#0000FF';
+  //    this._items_selected[this._items[cn].name] = this._items[cn];
+  //    //this._items_selected.push('hoge');
+  //    //console.log('_items: ' + this._items[cn].name);
+  //  }else{
+  //    //prop = 'color: ' + color + '; background-color: rgba(0, 0, 0, 1);';
+  //    e[cn].style.cssText += 'background: rgba(0, 0, 0, 1);';
+  //    //e[cn].style.borderBottomColor = '#000000';
+  //    delete this._items_selected[this._items[cn].name];
+  //  }
+  //  //e[cn].style.cssText += 'min-width: 0;';
 
-    //e[cn].style.borderBottomWidth = '2px';
-    //e[cn].style.borderBottomStyle = 'solid';
-    //e[cn].style.borderBottomColor = '#000000';
-    //e[cn].style.cssText += 'margin: 0px 0px -4px; padding: 0px 0px;';
-    //e[cn].style.zIndex = '0';
+  //  //e[cn].style.borderBottomWidth = '2px';
+  //  //e[cn].style.borderBottomStyle = 'solid';
+  //  //e[cn].style.borderBottomColor = '#000000';
+  //  //e[cn].style.cssText += 'margin: 0px 0px -4px; padding: 0px 0px;';
+  //  //e[cn].style.zIndex = '0';
 
-    /* For DEBUG */
-    console.log('--------------------------------');
-    let count = 0;
-    for(let key in this._items_selected){
-      console.log('count: ' + count++ + ', key: ' + key + ', item: ' + this._items_selected[key].name);
-    }
-    console.log('--------------------------------');
+  //  /* For DEBUG */
+  //  console.log('--------------------------------');
+  //  let count = 0;
+  //  for(let key in this._items_selected){
+  //    console.log('count: ' + count++ + ', key: ' + key + ', item: ' + this._items_selected[key].name);
+  //  }
+  //  console.log('--------------------------------');
 
-    //console.log('style.cssText <> ' + e[cn].style.cssText);
-    //e[cn].setAttribute('style', prop);
+  //  //console.log('style.cssText <> ' + e[cn].style.cssText);
+  //  //e[cn].setAttribute('style', prop);
 
-  }
+  //}
 
   updatePane(){
     this.drawItems();
