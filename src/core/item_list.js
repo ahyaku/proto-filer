@@ -15,6 +15,7 @@ class ItemListPane{
     this._dir_prev = null;
     this._items_selected = {};
     this._reg_pat = '';
+    this._line_cur = 0;
   }
   set id(id){
     this._id = id;
@@ -69,6 +70,10 @@ class ItemListPane{
   //  //  this._line_cur = line_cur;
   //  //}
   //}
+
+  set line_cur(line_cur){
+    this._line_cur = line_cur;
+  }
 
   get line_cur(){
     return this._line_cur;
