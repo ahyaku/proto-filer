@@ -10,13 +10,13 @@ import fs from 'fs';
 import ItemListCore from '../core/item_list';
 import ItemListPages from '../core/item_list_pages';
 
-const item_list_left = new ItemListCore(0, 'LEFT');
-item_list_left.dir_cur = fs.realpathSync('C:\\');
-item_list_left.updateItems();
-
-const item_list_right = new ItemListCore(1, 'RIGHT');
-item_list_right.dir_cur = fs.realpathSync('C:\\Hamana20051010gdi');
-item_list_right.updateItems();
+//const item_list_left = new ItemListCore(0, 'LEFT');
+//item_list_left.dir_cur = fs.realpathSync('C:\\');
+//item_list_left.updateItems();
+//
+//const item_list_right = new ItemListCore(1, 'RIGHT');
+//item_list_right.dir_cur = fs.realpathSync('C:\\Hamana20051010gdi');
+//item_list_right.updateItems();
 
 
 //const pages_left = new ItemListPages(0, 'LEFT', null, null, true, null);

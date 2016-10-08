@@ -24,6 +24,7 @@ let g_items_selected
 let g_dir_cur;
 
 function createWindow () {
+  console.log(process.versions);
   {
     //let path = fs.realpathSync('C:\\');
     //let items = fs.readdirSync(path);

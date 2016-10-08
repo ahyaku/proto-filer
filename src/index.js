@@ -8,10 +8,6 @@ import { Provider } from 'react-redux';
 import App from './components/app';
 import { checkKeyNormal } from './actions';
 
-//const hoge = () => {
-//  return {items: 'hoge'}
-//}
-
 import fs from 'fs';
 import ItemListCore from './core/item_list';
 import reducer from './reducers'
@@ -32,21 +28,18 @@ let arr_item_list = [];
 arr_item_list.push(item_list_left);
 arr_item_list.push(item_list_right);
 
+const active_pane_id = 1;
+
 //for(let e of item_list.items){
 //  console.log(e.name);
 //}
 
-//const state_init = {
-//  item_list: item_list
-//}
-
 const state_init = {
-  arr_item_list: arr_item_list
+  arr_item_list: arr_item_list,
+  active_pane_id: active_pane_id
 }
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
-//let store = createStore(reducer);
-//let store = createStore(hoge, {items: "ITEMS_INITIALIZED"} );
 //console.log(store.getState());
 
 //let unsubscribe = store.subscribe(() => {
@@ -65,18 +58,6 @@ function ListenKeydown(mapEventToAction){
       //console.log('event.target: ' + event.target);
       //console.log('event.target.id: ' + event.target.id);
 
-      //switch(e.keyCode){
-      //  case 65: /* 'a' */
-      //    console.log('Press a'); 
-      //    break;
-      //  case 66: /* 'b' */
-      //    console.log('Press b'); 
-      //    break;
-      //  default:
-      //    //mediate_pane.checkKey(e);
-      //    break;
-      //}
-
       dispatch(mapEventToAction(e));
     }
 
@@ -84,26 +65,12 @@ function ListenKeydown(mapEventToAction){
     return () => document.removeEventListener('keydown', handleEvent);
   };
 
-  //return function(){
-  //  console.log('foo');
-  //  //return function(){return 'bar'};
-  //  return () => {return 'bar'};
-  //  //return () => document.removeEventListener('keydown', handleEvent);
-  //}
 }
 
 function mapKeydownToAction(e){
-
-  //return {
-  //  type: 'KEY_DOWN',
-  //  e
-  //};
-
   return checkKeyNormal(e);
-
 }
 
-//store.dispatch(ListenKeydown);
 const unlistenKeydown = store.dispatch(ListenKeydown(mapKeydownToAction));
 
 const style = {

@@ -59,21 +59,21 @@ class ItemListPane{
     return this._id_dir_cur;
   }
 
-  //set line_cur(line_cur){
-  //  //this._line_prv = this._line_cur;
-  //  this._line_cur = line_cur;
-  //  //if( line_cur < 0 ){
-  //  //  this._line_cur = this._items.length - 1;
-  //  //}else if( line_cur >= this._items.length ){
-  //  //  this._line_cur = 0;
-  //  //}else{
-  //  //  this._line_cur = line_cur;
-  //  //}
-  //}
-
   set line_cur(line_cur){
+    //this._line_prv = this._line_cur;
     this._line_cur = line_cur;
+    if( line_cur < 0 ){
+      this._line_cur = this._items.length - 1;
+    }else if( line_cur >= this._items.length ){
+      this._line_cur = 0;
+    }else{
+      this._line_cur = line_cur;
+    }
   }
+
+  //set line_cur(line_cur){
+  //  this._line_cur = line_cur;
+  //}
 
   get line_cur(){
     return this._line_cur;

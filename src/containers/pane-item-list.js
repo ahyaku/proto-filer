@@ -25,11 +25,16 @@ const mapStateToProps = (state, props) => {
   //console.log('mapStateToProp <> state.arr_item_list[0].dir_cur: ' + state.arr_item_list[0].dir_cur);
   //console.log('mapStateToProp <> state.arr_item_list[1].dir_cur: ' + state.arr_item_list[1].dir_cur);
 
+  //let arr_item_list = state.arr_item_list.concat();
+  //arr_item_list[0].items  = state.arr_item_list[0].items.concat();
+  //arr_item_list[1].items  = state.arr_item_list[1].items.concat();
+  //return {arr_item_list: arr_item_list};
+
   let arr_item_list = state.arr_item_list.concat();
   arr_item_list[0].items  = state.arr_item_list[0].items.concat();
   arr_item_list[1].items  = state.arr_item_list[1].items.concat();
-
-  return {arr_item_list: arr_item_list};
+  //console.log('mapStateToProps <> state.active_pane_id: ' + state.active_pane_id);
+  return {arr_item_list: arr_item_list, active_pane_id: state.active_pane_id};
 
   //{
   //  let new_list = Object.assign({}, state.item_list);

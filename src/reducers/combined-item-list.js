@@ -10,7 +10,7 @@ import ItemListCore from '../core/item_list';
 //let arr_item_list = [];
 //arr_item_list.push(item_list);
 
-function CombinedItemList(state={}, action){
+function CombinedItemList(state, action){
 //const CombinedItemList = (state={}, action) => {
   switch(action.type){
     //case 'UPDATE_ITEM_LIST':
@@ -69,15 +69,11 @@ function CombinedItemList(state={}, action){
         let arr_item_list = state.arr_item_list.concat();
         for(let i=0; i<arr_item_list.length; i++){
           arr_item_list[i].items = state.arr_item_list[i].items.concat();
-          let line_cur = state.arr_item_list[i].line_cur;
-          arr_item_list[i].line_cur = (line_cur - 1) < 0
-                                      ? state.arr_item_list[i].items.length - 1
-                                      : line_cur - 1;
         }
-        return {arr_item_list: arr_item_list};
+        const idx = state.active_pane_id;
+        arr_item_list[idx].line_cur = state.arr_item_list[idx].line_cur - 1;
+        return Object.assign({}, state, {arr_item_list: arr_item_list});
       }
-
-      //return state;
 
     case 'MOVE_CURSOR_DOWN':
       console.log('MOVE_CURSOR_DOWN!!');
@@ -85,16 +81,11 @@ function CombinedItemList(state={}, action){
         let arr_item_list = state.arr_item_list.concat();
         for(let i=0; i<arr_item_list.length; i++){
           arr_item_list[i].items = state.arr_item_list[i].items.concat();
-          let line_cur = state.arr_item_list[i].line_cur;
-          arr_item_list[i].line_cur = (line_cur + 1) >= state.arr_item_list[i].items.length
-                                      ? 0
-                                      : line_cur + 1;
-
         }
-        return {arr_item_list: arr_item_list};
+        const idx = state.active_pane_id;
+        arr_item_list[idx].line_cur = state.arr_item_list[idx].line_cur + 1;
+        return Object.assign({}, state, {arr_item_list: arr_item_list});
       }
-
-      //return state;
 
     default:
       console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);
