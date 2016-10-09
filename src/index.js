@@ -44,15 +44,15 @@ const active_pane_id = 1;
 //  console.log(e.name);
 //}
 
-const state_init = {
-  arr_item_list: arr_item_list,
-  active_pane_id: active_pane_id
-}
-
 //const state_init = {
-//  arr_pages: arr_pages,
+//  arr_item_list: arr_item_list,
 //  active_pane_id: active_pane_id
 //}
+
+const state_init = {
+  arr_pages: arr_pages,
+  active_pane_id: active_pane_id
+}
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
 //console.log(store.getState());

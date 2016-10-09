@@ -12,13 +12,19 @@ import ItemList from '../components/item-list';
 const mapStateToProps = (state, props) => {
 //const mapStateToProps = function(state, props){
 
+  //let id = props.id;
+  //let arr_item_list = state.arr_item_list;
+  //let item_list = arr_item_list[id];
+  //console.log('mapStateToProps <> item_list.dir_cur: ' + item_list.dir_cur);
+  //item_list.items = arr_item_list[id].items;
+  //return {item_list: item_list, active_pane_id: state.active_pane_id, line_cur: item_list.line_cur};
+
   let id = props.id;
-  //console.log('id = ' + id);
-  let arr_item_list = state.arr_item_list.concat();
-  let item_list = arr_item_list[id];
+  let item_list = state.arr_pages[id].page_cur;
   console.log('mapStateToProps <> item_list.dir_cur: ' + item_list.dir_cur);
-  item_list.items = arr_item_list[id].items.concat();
+  item_list.items = state.arr_pages[id].items;
   return {item_list: item_list, active_pane_id: state.active_pane_id, line_cur: item_list.line_cur};
+
 }
 
 //const mapStateToProps = (state, props) => {

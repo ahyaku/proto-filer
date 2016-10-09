@@ -65,28 +65,48 @@ function CombinedItemList(state, action){
 
     case 'MOVE_CURSOR_UP':
       console.log('MOVE_CURSOR_UP!!');
+      //{
+      //  let arr_item_list_cur = state.arr_item_list;
+      //  let arr_item_list = arr_item_list_cur;
+      //  for(let i=0; i<arr_item_list.length; i++){
+      //    arr_item_list[i].items = arr_item_list_cur[i].items;
+      //  }
+      //  const idx = state.active_pane_id;
+      //  arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur - 1;
+      //  return Object.assign({}, state, {arr_item_list: arr_item_list});
+      //}
+
       {
-        let arr_item_list_cur = state.arr_item_list;
-        let arr_item_list = arr_item_list_cur.concat();
-        for(let i=0; i<arr_item_list.length; i++){
-          arr_item_list[i].items = arr_item_list_cur[i].items.concat();
+        let arr_pages = state.arr_pages;
+        for(let i=0; i<arr_pages.length; i++){
+          arr_pages[i].page_cur.items = state.arr_pages[i].page_cur.items;
         }
         const idx = state.active_pane_id;
-        arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur - 1;
-        return Object.assign({}, state, {arr_item_list: arr_item_list});
+        arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur - 1;
+        return Object.assign({}, state, {arr_pages: arr_pages});
       }
 
     case 'MOVE_CURSOR_DOWN':
       console.log('MOVE_CURSOR_DOWN!!');
+      //{
+      //  let arr_item_list_cur = state.arr_item_list;
+      //  let arr_item_list = arr_item_list_cur
+      //  for(let i=0; i<arr_item_list.length; i++){
+      //    arr_item_list[i].items = arr_item_list_cur[i].items
+      //  }
+      //  const idx = state.active_pane_id;
+      //  arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur + 1;
+      //  return Object.assign({}, state, {arr_item_list: arr_item_list});
+      //}
+
       {
-        let arr_item_list_cur = state.arr_item_list;
-        let arr_item_list = arr_item_list_cur.concat();
-        for(let i=0; i<arr_item_list.length; i++){
-          arr_item_list[i].items = arr_item_list_cur[i].items.concat();
+        let arr_pages = state.arr_pages;
+        for(let i=0; i<arr_pages.length; i++){
+          arr_pages[i].page_cur.items = state.arr_pages[i].page_cur.items;
         }
         const idx = state.active_pane_id;
-        arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur + 1;
-        return Object.assign({}, state, {arr_item_list: arr_item_list});
+        arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur + 1;
+        return Object.assign({}, state, {arr_pages: arr_pages});
       }
 
     default:
