@@ -141,6 +141,9 @@ class CmdAndItemList extends React.Component {
     );
   }
 
+  componentDidUpdate(prevProps, prevState){
+    console.log('componentDidUpdate()!!');
+  }
 }
 
 
