@@ -2,9 +2,15 @@
 
 import React, { PropTypes } from 'react';
 
-const ItemList = ({arr_item_list, active_pane_id, onItemListClick, props}) => {
+/* [NOTE]
+ *     Not sure the reason why but without argument 'line_cur',
+ *     this function is NOT called when keydown occurs.
+ *     To call this function, some value or status change must be detected
+ *     but some change in the array is NOT detected???
+ * */
+const ItemList = ({item_list, active_pane_id, onItemListClick, props, line_cur}) => {
+  //console.log('HEREEEEEEEEEEEEEEEEEEEEEEEE');
   let id = props.id;
-  let item_list = arr_item_list[id];
 
   const style = {
     //display: 'flex',
@@ -40,6 +46,7 @@ const ItemList = ({arr_item_list, active_pane_id, onItemListClick, props}) => {
   };
 
   let idx = item_list.line_cur;
+  console.log('item_list.line_cur = ' + item_list.line_cur);
   if(idx >= item_list.items.length){
     console.log('ERROR!! <> idx >= item_list.items.length');
     idx = item_list.items.length - 1;
@@ -72,9 +79,10 @@ const ItemList = ({arr_item_list, active_pane_id, onItemListClick, props}) => {
 
 }
 
-ItemList.propTypes = {
-  arr_item_list: PropTypes.arrayOf(PropTypes.object.isRequired),
-  active_pane_id: PropTypes.number
-};
+//ItemList.propTypes = {
+//  //arr_item_list: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+//  item_list: PropTypes.object.isRequired,
+//  active_pane_id: PropTypes.number.isRequired
+//};
 
 export default ItemList;

@@ -10,7 +10,17 @@ import { checkKeyNormal } from './actions';
 
 import fs from 'fs';
 import ItemListCore from './core/item_list';
+import ItemListPages from './core/item_list_pages';
 import reducer from './reducers'
+
+
+const pages_left = new ItemListPages();
+pages_left.updatePageCur('C:\\shortcut');
+const pages_right = new ItemListPages();
+pages_right.updatePageCur('C:\\msys64');
+let arr_pages = [];
+arr_pages.push(pages_left);
+arr_pages.push(pages_right);
 
 const item_list = new ItemListCore();
 item_list.dir_cur = fs.realpathSync('C:\\');
@@ -38,6 +48,11 @@ const state_init = {
   arr_item_list: arr_item_list,
   active_pane_id: active_pane_id
 }
+
+//const state_init = {
+//  arr_pages: arr_pages,
+//  active_pane_id: active_pane_id
+//}
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
 //console.log(store.getState());

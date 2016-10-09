@@ -66,29 +66,31 @@ function CombinedItemList(state, action){
     case 'MOVE_CURSOR_UP':
       console.log('MOVE_CURSOR_UP!!');
       {
-        let arr_item_list = state.arr_item_list.concat();
+        let arr_item_list_cur = state.arr_item_list;
+        let arr_item_list = arr_item_list_cur.concat();
         for(let i=0; i<arr_item_list.length; i++){
-          arr_item_list[i].items = state.arr_item_list[i].items.concat();
+          arr_item_list[i].items = arr_item_list_cur[i].items.concat();
         }
         const idx = state.active_pane_id;
-        arr_item_list[idx].line_cur = state.arr_item_list[idx].line_cur - 1;
+        arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur - 1;
         return Object.assign({}, state, {arr_item_list: arr_item_list});
       }
 
     case 'MOVE_CURSOR_DOWN':
       console.log('MOVE_CURSOR_DOWN!!');
       {
-        let arr_item_list = state.arr_item_list.concat();
+        let arr_item_list_cur = state.arr_item_list;
+        let arr_item_list = arr_item_list_cur.concat();
         for(let i=0; i<arr_item_list.length; i++){
-          arr_item_list[i].items = state.arr_item_list[i].items.concat();
+          arr_item_list[i].items = arr_item_list_cur[i].items.concat();
         }
         const idx = state.active_pane_id;
-        arr_item_list[idx].line_cur = state.arr_item_list[idx].line_cur + 1;
+        arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur + 1;
         return Object.assign({}, state, {arr_item_list: arr_item_list});
       }
 
     default:
-      console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);
+      //console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);
       //for (let e of state.item_list.items){
       //  console.log(e.name);
       //}

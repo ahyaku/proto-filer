@@ -16,7 +16,7 @@ import CombinedItemList from './combined-item-list';
 
 function itemList(state, action){
   console.log('itemList() <> state: ' + state);
-  console.log('itemList() <> state.arr_item_list: ' + state.arr_item_list);
+  //console.log('itemList() <> state.arr_item_list: ' + state.arr_item_list);
 
   //return {
   //  CombinedItemList : CombinedItemList(state, action)
@@ -25,7 +25,7 @@ function itemList(state, action){
   let state_ret = CombinedItemList(state, action);
 
   console.log('itemList() <> state_ret: ' + state_ret);
-  console.log('itemList() <> state_ret.arr_item_list: ' + state_ret.arr_item_list);
+  //console.log('itemList() <> state_ret.arr_item_list: ' + state_ret.arr_item_list);
 
   //return {
   //  CombinedItemList : state_ret

@@ -7,8 +7,8 @@ import PaneItemList from '../containers/pane-item-list';
 import PanePathCur from '../containers/pane-path-cur';
 
 import fs from 'fs';
-import ItemListCore from '../core/item_list';
-import ItemListPages from '../core/item_list_pages';
+//import ItemListCore from '../core/item_list';
+//import ItemListPages from '../core/item_list_pages';
 
 //const item_list_left = new ItemListCore(0, 'LEFT');
 //item_list_left.dir_cur = fs.realpathSync('C:\\');
