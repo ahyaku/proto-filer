@@ -45,19 +45,30 @@ class ItemListView extends React.Component {
       //position: 'absolute'
     };
 
-    let style_item_cur;
+    let style_item_cur = {
+      zIndex: '1',
+      //margin: '0px 0px -3px',
+      margin: '-3px 0px 0px',
+      padding: '0px 0px',
+      //boxSizing: 'border-box'
+    }
+    //let style_item_cur;
     if(id === active_pane_id){
-      style_item_cur = {
-        borderBottom: 'solid 2px #00FF00'
-      };
+      style_item_cur['borderBottom'] = 'solid 1px #00FF00';
+      //style_item_cur['boxShadow'] = '0 0 0 2px #00FF00';
     }else{
-      style_item_cur = {
-        borderBottom: 'solid 2px #333333'
-      };
+      style_item_cur['borderBottom'] = 'solid 1px #333333';
+      //style_item_cur['boxShadow'] = '0 0 0 2px #333333';
     }
 
     const style_item_other = {
-      borderBottom: 'solid 2px #333333'
+      borderBottom: 'solid 1px #333333',
+      //boxShadow: '0 0 0 2px #333333',
+      zIndex: '0',
+      //margin: '0px 0px -3px',
+      margin: '-3px 0px 0px',
+      padding: '0px 0px',
+      //boxSizing: 'border-box'
     };
 
     let idx = item_list.line_cur;
@@ -101,6 +112,7 @@ class ItemListView extends React.Component {
     let ref_item_cur = ReactDOM.findDOMNode(this.refs.item_cur);
 
     let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+
     let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
     let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
 
@@ -113,6 +125,7 @@ class ItemListView extends React.Component {
       scrollTop_abs = line_pos - ref_item_list.clientHeight;
       ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
     }
+    //ref_item_list.scrollTop = 10000;
   }
 }
 

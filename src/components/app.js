@@ -33,14 +33,42 @@ import fs from 'fs';
 
 const Footer = () => {
   const style = {
-    border: '1px solid #0000FF',
-    flex: '0 0 auto'
+    border: 'solid 1px #0000FF',
+    //flex: '0 0 auto'
+    //boxSizing: 'border-box'
   };
   return (
     <div style={style}>
       Footer
     </div>
   );
+
+  //const style1 = {
+  //  border: 'solid 10px #FF0000',
+  //  zIndex: '0',
+  //  //margin: '0px 0px -10px',
+  //  //margin: '-10px 0px 0px',
+  //  //flex: '0 0 auto'
+  //  //boxSizing: 'border-box'
+  //};
+  //const style2 = {
+  //  border: 'solid 10px #00FF00',
+  //  //zIndex: '1',
+  //  //margin: '0px 0px -10px',
+  //  //flex: '0 0 auto'
+  //  boxSizing: 'border-box'
+  //};
+  //return (
+  //  <div style={style}>
+  //    <div style={style1}>
+  //      Foo
+  //    </div>
+  //    <div style={style2}>
+  //      Bar
+  //    </div>
+  //  </div>
+  //);
+
 }
 
 const Body = () => {
