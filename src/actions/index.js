@@ -46,6 +46,9 @@ export const checkKeyNormal = (e) => {
     case 9: /* 'tab' */
       //this.switchPane();
       //break;
+      return {
+        type: 'SWITCH_ACTIVE_PANE'
+      }
     case 32: /* 'space' */
       //if(event.shiftKey == true){
       //  this.toggleUp();

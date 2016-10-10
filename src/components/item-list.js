@@ -47,7 +47,6 @@ class ItemListView extends React.Component {
 
     let style_item_cur = {
       zIndex: '1',
-      //margin: '0px 0px -3px',
       margin: '-3px 0px 0px',
       padding: '0px 0px',
       //boxSizing: 'border-box'
@@ -65,7 +64,6 @@ class ItemListView extends React.Component {
       borderBottom: 'solid 1px #333333',
       //boxShadow: '0 0 0 2px #333333',
       zIndex: '0',
-      //margin: '0px 0px -3px',
       margin: '-3px 0px 0px',
       padding: '0px 0px',
       //boxSizing: 'border-box'

@@ -109,6 +109,19 @@ function CombinedItemList(state, action){
         return Object.assign({}, state, {arr_pages: arr_pages});
       }
 
+    case 'SWITCH_ACTIVE_PANE':
+      let active_pane_id;
+      switch(state.active_pane_id){
+        case 0:
+          return Object.assign({}, state, {active_pane_id: 1});
+        case 1:
+          return Object.assign({}, state, {active_pane_id: 0});
+        default:
+          /* Do Nothing.. */
+          console.log('ERROR!! Incorrect Value \'active_pane_id\'!!');
+          return Object.assign({}, state, {active_pane_id});
+      }
+
     default:
       //console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);
       //for (let e of state.item_list.items){
