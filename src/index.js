@@ -66,8 +66,8 @@ function ListenKeydown(mapEventToAction){
   return function(dispatch){
     function handleEvent(e){
       //console.log('key: ' + e);
-      console.log('e.keyCode: ' + e.keyCode);
-      console.log('e.key: ' + e.key);
+      //console.log('e.keyCode: ' + e.keyCode);
+      //console.log('e.key: ' + e.key);
       //console.log('event.shiftKey: ' + event.shiftKey);
       //console.log('event.ctrlKey: ' + event.ctrlKey);
       //console.log('event.target: ' + event.target);

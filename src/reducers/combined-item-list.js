@@ -64,7 +64,7 @@ function CombinedItemList(state, action){
     //  return {arr_item_list: arr_item_list};
 
     case 'MOVE_CURSOR_UP':
-      console.log('MOVE_CURSOR_UP!!');
+      //console.log('MOVE_CURSOR_UP!!');
       //{
       //  let arr_item_list_cur = state.arr_item_list;
       //  let arr_item_list = arr_item_list_cur;
@@ -87,7 +87,7 @@ function CombinedItemList(state, action){
       }
 
     case 'MOVE_CURSOR_DOWN':
-      console.log('MOVE_CURSOR_DOWN!!');
+      //console.log('MOVE_CURSOR_DOWN!!');
       //{
       //  let arr_item_list_cur = state.arr_item_list;
       //  let arr_item_list = arr_item_list_cur
@@ -109,6 +109,20 @@ function CombinedItemList(state, action){
         return Object.assign({}, state, {arr_pages: arr_pages});
       }
 
+    case 'CHANGE_DIR_UPPER':
+      {
+        const idx = state.active_pane_id;
+        let state_new = Object.assign({}, state);
+        state_new.arr_pages[idx].changeDirUpper();
+        return state_new;
+      }
+    case 'CHANGE_DIR_LOWER':
+      {
+        const idx = state.active_pane_id;
+        let state_new = Object.assign({}, state);
+        state_new.arr_pages[idx].changeDirLower();
+        return state_new;
+      }
     case 'SWITCH_ACTIVE_PANE':
       let active_pane_id;
       switch(state.active_pane_id){

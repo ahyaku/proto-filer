@@ -3,6 +3,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import util from 'util';
+import ITEM_TYPE_KIND from '../core/item_type';
 
 /* [NOTE]
  *     Not sure the reason why but without argument 'line_cur',
@@ -20,14 +21,8 @@ class ItemListView extends React.Component {
   constructor(props){
     super(props);
     //console.log('Here it!!');
-  }
 
-  render(){
-    let item_list = this.props.item_list;
-    let active_pane_id = this.props.active_pane_id;
-    let id = this.props.id;
-
-    const style = {
+    this._style = {
       //display: 'flex',
       flex: '1',
       //flexDirection: 'column',
@@ -45,32 +40,70 @@ class ItemListView extends React.Component {
       //position: 'absolute'
     };
 
-    let style_item_cur = {
-      zIndex: '1',
+    //  zIndex: '1',
+    //  borderBottom: 'solid 1px #333333',
+
+    this._style_base = {
+      zIndex: '0',
+      borderBottom: 'solid 1px #333333',
       margin: '-3px 0px 0px',
       padding: '0px 0px',
+      overflowX: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflowX: 'ellipsis'
+      //textOverflowX: 'hidden'
       //boxSizing: 'border-box'
-    }
-    //let style_item_cur;
-    if(id === active_pane_id){
-      style_item_cur['borderBottom'] = 'solid 1px #00FF00';
-      //style_item_cur['boxShadow'] = '0 0 0 2px #00FF00';
-    }else{
-      style_item_cur['borderBottom'] = 'solid 1px #333333';
-      //style_item_cur['boxShadow'] = '0 0 0 2px #333333';
     }
 
-    const style_item_other = {
-      borderBottom: 'solid 1px #333333',
-      //boxShadow: '0 0 0 2px #333333',
-      zIndex: '0',
-      margin: '-3px 0px 0px',
-      padding: '0px 0px',
-      //boxSizing: 'border-box'
-    };
+    this._styles = [];
+    const len = Object.keys(ITEM_TYPE_KIND).length;
+    console.log('len: ' + len);
+    for(let i=0; i<len; i++){
+      this._styles.push(Object.assign({}, this._style_base));
+    }
+
+    this._styles[ITEM_TYPE_KIND.DIR]['color']  = '#FF80FF';
+    this._styles[ITEM_TYPE_KIND.TEXT]['color'] = '#FFFFFF';
+
+  }
+
+  render(){
+    let item_list = this.props.item_list;
+    let active_pane_id = this.props.active_pane_id;
+    let id = this.props.id;
+
+//    let style_item_cur = {
+//      zIndex: '1',
+//      margin: '-3px 0px 0px',
+//      padding: '0px 0px',
+//      overflowX: 'hidden',
+//      whiteSpace: 'nowrap',
+//      textOverflowX: 'ellipsis'
+//      //textOverflowX: 'hidden'
+//      //boxSizing: 'border-box'
+//    }
+//
+//    if(id === active_pane_id){
+//      style_item_cur['borderBottom'] = 'solid 1px #00FF00';
+//    }else{
+//      style_item_cur['borderBottom'] = 'solid 1px #333333';
+//    }
+//
+//    const style_item_other = {
+//      borderBottom: 'solid 1px #333333',
+//      //boxShadow: '0 0 0 2px #333333',
+//      zIndex: '0',
+//      margin: '-3px 0px 0px',
+//      padding: '0px 0px',
+//      overflowX: 'hidden',
+//      whiteSpace: 'nowrap',
+//      textOverflowX: 'ellipsis'
+//      //textOverflowX: 'hidden'
+//      //boxSizing: 'border-box'
+//    };
 
     let idx = item_list.line_cur;
-    console.log('item_list.line_cur = ' + item_list.line_cur);
+    //console.log('item_list.line_cur = ' + item_list.line_cur);
     if(idx >= item_list.items.length){
       console.log('ERROR!! <> idx >= item_list.items.length');
       idx = item_list.items.length - 1;
@@ -79,35 +112,78 @@ class ItemListView extends React.Component {
     let item_cur = item_list.items[idx];
     let items_tail = item_list.items.slice(idx+1, item_list.length);
 
+    //this._style_item_cur = Object.assign({}, this._style_base, {zIndex: '1'});
+    this._style_item_cur = Object.assign({}, this._styles[item_cur.kind], {zIndex: '1'});
+    //console.log('item_cur.name: ' + item_cur.name + ', item_cur.ext: ' + item_cur.ext + ', item_cur.kind: ' + item_cur.kind);
+    //this._style_item_cur = Object.assign({}, this._styles[0], {zIndex: '1'});
+    if(id === active_pane_id){
+      this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
+    }else{
+      this._style_item_cur['borderBottom'] = 'solid 1px #333333';
+    }
+
+    if(item_list.items.length <= 0){
+      return (
+        <div>
+        </div>
+      );
+    }
+
     return (
-      <div style={style} ref="item_list">
-        {items_head.map(function(e, i){
+      <div style={this._style} ref="item_list">
+        {items_head.map((e, i) => {
           return (
-            <div key={i} style={style_item_other}>
+            <div key={i} style={this._styles[e.kind]}>
               {e.name}
             </div>
           );
         })}
-        <div style={style_item_cur} ref="item_cur">
+        <div style={this._style_item_cur} ref="item_cur">
           {item_cur.name}
         </div>
-        {items_tail.map(function(e, i){
+        {items_tail.map((e, i) => {
           return (
-            <div key={i} style={style_item_other}>
+            <div key={i} style={this._styles[e.kind]}>
               {e.name}
             </div>
           );
         })}
       </div>
     );
+
+    //return (
+    //  <div style={this._style} ref="item_list">
+    //    {items_head.map((e, i) => {
+    //      return (
+    //        <div key={i} style={this._style_base}>
+    //          {e.name}
+    //        </div>
+    //      );
+    //    })}
+    //    <div style={this._style_item_cur} ref="item_cur">
+    //      {item_cur.name}
+    //    </div>
+    //    {items_tail.map((e, i) => {
+    //      return (
+    //        <div key={i} style={this._style_base}>
+    //          {e.name}
+    //        </div>
+    //      );
+    //    })}
+    //  </div>
+    //);
   }
 
   componentDidUpdate(){
-    console.log('Are you known???');
+    //console.log('Are you known???');
     //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
 
     let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);
     let ref_item_cur = ReactDOM.findDOMNode(this.refs.item_cur);
+
+    if(ref_item_cur == null){
+      return;
+    }
 
     let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
 
@@ -123,7 +199,6 @@ class ItemListView extends React.Component {
       scrollTop_abs = line_pos - ref_item_list.clientHeight;
       ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
     }
-    //ref_item_list.scrollTop = 10000;
   }
 }
 

@@ -21,7 +21,7 @@ const mapStateToProps = (state, props) => {
 
   let id = props.id;
   let item_list = state.arr_pages[id].page_cur;
-  console.log('mapStateToProps <> item_list.dir_cur: ' + item_list.dir_cur);
+  //console.log('mapStateToProps <> item_list.dir_cur: ' + item_list.dir_cur);
   item_list.items = state.arr_pages[id].items;
   return {item_list: item_list, active_pane_id: state.active_pane_id, line_cur: item_list.line_cur};
 

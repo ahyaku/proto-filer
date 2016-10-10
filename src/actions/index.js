@@ -15,12 +15,6 @@ export const checkKeyNormal = (e) => {
   //                        pane_left.is_focused,
   //                        pane_right.is_focused));
   switch(e.keyCode){
-    case 72: /* 'h' */
-      //this.changeDirUpper();
-      //break;
-      return {
-        type: 'MOVE_TO_PARENT_DIR'
-      };
     case 74: /* 'j' */
       //this.cursorDown();
       //break;
@@ -33,6 +27,12 @@ export const checkKeyNormal = (e) => {
       return {
         type: 'MOVE_CURSOR_UP'
       };
+    case 72: /* 'h' */
+      //this.changeDirUpper();
+      //break;
+      return {
+        type: 'CHANGE_DIR_UPPER'
+      };
     case 76: /* 'l' */
       //if(event.ctrlKey == true){
       //  this.updatePane();
@@ -41,7 +41,7 @@ export const checkKeyNormal = (e) => {
       //}
       //break;
       return {
-        type: 'MOVE_TO_CURSOR_DIR'
+        type: 'CHANGE_DIR_LOWER'
       };
     case 9: /* 'tab' */
       //this.switchPane();

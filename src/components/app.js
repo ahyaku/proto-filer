@@ -80,7 +80,8 @@ const Body = () => {
     alignContent: 'stretch',
     flex: '1',
     border: '1px solid #00FF00',
-    overflow: 'auto'
+    overflow: 'auto',
+    textOverflowX: 'ellipsis'
   };
 
   return (
@@ -156,7 +157,8 @@ class CmdAndItemList extends React.Component {
       alignContent: 'stretch',
       width: '50%',
       height: '100%',
-      overflowX: 'hidden',
+      //overflowX: 'hidden',
+      textOverflowX: 'ellipsis',
       overflowY: 'auto'
     };
 
