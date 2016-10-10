@@ -102,6 +102,13 @@ class ItemListView extends React.Component {
 //      //boxSizing: 'border-box'
 //    };
 
+    if(item_list.items.length <= 0){
+      return (
+        <div>
+        </div>
+      );
+    }
+
     let idx = item_list.line_cur;
     //console.log('item_list.line_cur = ' + item_list.line_cur);
     if(idx >= item_list.items.length){
@@ -122,12 +129,6 @@ class ItemListView extends React.Component {
       this._style_item_cur['borderBottom'] = 'solid 1px #333333';
     }
 
-    if(item_list.items.length <= 0){
-      return (
-        <div>
-        </div>
-      );
-    }
 
     return (
       <div style={this._style} ref="item_list">
