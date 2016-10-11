@@ -130,7 +130,7 @@ class ItemListPages{
   }
 
   updatePageCur(init_path){
-    if(!fs.statSync(init_path).isDirectory()){
+    if(!ipc_renderer.sendSync('fs.isDirectory', init_path)){
       console.log('updatePageCur() <> NOT Directory!!');
       return this._page_cur;
     }
@@ -139,27 +139,25 @@ class ItemListPages{
     if(init_path in this._pages){
       //console.log('updatePageCur() <> stored page!! id_pane: ' + this._id_pane);
       this._page_cur = this._pages[init_path];
-      //this._page_cur.is_focused = this._is_focused;
-      //this._page_cur.drawItems();
-      //this._page_cur.drawCursor(this._page_cur.line_cur);
+      this._page_cur.updateItems();
     }else{
       //console.log('updatePageCur() <> new page!! id_pane: ' + this._id_pane);
-      this._pages[init_path] = new item_list();
+
+      //this._pages[init_path] = new item_list();
+      //this._page_cur = this._pages[init_path];
+      //this._page_cur.dir_cur = fs.realpathSync(init_path);
+      //this._page_cur.updateItems();
+
+      let page = new item_list();
+      page.dir_cur = fs.realpathSync(init_path);
+      if(!page.updateItems()){
+        return;
+      }
+
+      this._pages[init_path] = page;
       this._page_cur = this._pages[init_path];
-
-      this._page_cur.dir_cur = fs.realpathSync(init_path);
-      //this._page_cur.id_dir_cur = this._id_dir_cur;
-      //this._page_cur.is_focused = this._is_focused;
-      //console.log(util.format('updatePageCur <> %s: %d',
-      //                        this._id_pane,
-      //                        this._is_focused));
-
-      //this._page_cur.mediator = this._mediator;
-      //this._page_cur.drawItems();
-      //this._page_cur.drawCursor(0);
     }
 
-    this._page_cur.updateItems();
 
     //console.log('this._page_cur.dir_cur: ' + this._page_cur.dir_cur);
     //for(let e of this._page_cur.items){
@@ -185,7 +183,7 @@ class ItemListPages{
     let lined_item = this._page_cur.items[this._page_cur.line_cur].name;
     let init_path = path.join(this._page_cur.dir_cur, lined_item);
 
-    if(fs.statSync(init_path).isDirectory){
+    if(ipc_renderer.sendSync('fs.isDirectory', init_path)){
       this.updatePageCur(init_path, true);
 
     }

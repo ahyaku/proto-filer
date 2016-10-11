@@ -94,16 +94,19 @@ class ItemListPane{
   //}
 
   updateItems(){
-    let items = new Array();
     let dir_cur = this._dir_cur;
     //let es = fs.readdirSync(dir_cur);
     let es = ipc_renderer.sendSync('fs.readdirSync', dir_cur);
+    console.log('updateItems() <> dir_cur: ' + dir_cur);
+    console.log('updateItems() <> es: ' + es);
+    /* If file access of fs.readdirSync is denied, es == null */
     if(es == null){
       console.log('ERROR <> es is null!!');
       this._dir_cur = this._dir_prev;
-      return;
+      return false;
     }
 
+    let items = new Array();
     es.map(function(e){
       let item = new Item();
       item.name = e;
@@ -114,8 +117,9 @@ class ItemListPane{
     this._items = items;
     this._inum_filterd = this._items.length;
 
-    //this._items = fs.readdirSync(this._dir_cur);
+    return true;
   }
+
   set items(items){
     this._items = items;
   }

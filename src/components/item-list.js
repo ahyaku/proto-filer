@@ -102,6 +102,11 @@ class ItemListView extends React.Component {
 //      //boxSizing: 'border-box'
 //    };
 
+    //console.log('------------------------------');
+    //for(let e of item_list.items){
+    //  console.log(e.name);
+    //}
+    //console.log('------------------------------');
     if(item_list.items.length <= 0){
       return (
         <div>
