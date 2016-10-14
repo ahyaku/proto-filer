@@ -13,10 +13,11 @@ class ItemListPane{
   constructor(){
     //this._id = id;
     //this._eid = eid;
-    this._dir_prev = null;
+    //this._dir_prev = null;
     this._items_selected = {};
     this._reg_pat = '';
     this._line_cur = 0;
+    this._scroll_top = 0;
   }
   //set id(id){
   //  this._id = id;
@@ -35,7 +36,7 @@ class ItemListPane{
       util.format('ERROR!!: $s is NOT directory', dir_cur);
       return null;
     }
-    this._dir_prev = this._dir_cur;
+    //this._dir_prev = this._dir_cur;
     this._dir_cur = dir_cur;
     //this._dir_cur_full = fs.realpathSync(dir_cur)
   }
@@ -97,12 +98,12 @@ class ItemListPane{
     let dir_cur = this._dir_cur;
     //let es = fs.readdirSync(dir_cur);
     let es = ipc_renderer.sendSync('fs.readdirSync', dir_cur);
-    console.log('updateItems() <> dir_cur: ' + dir_cur);
-    console.log('updateItems() <> es: ' + es);
+    //console.log('updateItems() <> dir_cur: ' + dir_cur);
+    //console.log('updateItems() <> es: ' + es);
     /* If file access of fs.readdirSync is denied, es == null */
     if(es == null){
       console.log('ERROR <> es is null!!');
-      this._dir_cur = this._dir_prev;
+      //this._dir_cur = this._dir_prev;
       return false;
     }
 
@@ -135,6 +136,12 @@ class ItemListPane{
   }
   get items_selected(){
     return this._items_selected;
+  }
+  set scroll_top(scroll_top){
+    this._scroll_top;
+  }
+  get scroll_top(){
+    return this._scroll_top;
   }
 
   //_drawItems(){

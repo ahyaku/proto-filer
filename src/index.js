@@ -51,7 +51,8 @@ const active_pane_id = 0;
 
 const state_init = {
   arr_pages: arr_pages,
-  active_pane_id: active_pane_id
+  active_pane_id: active_pane_id,
+  is_dir_changed: false
 }
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));

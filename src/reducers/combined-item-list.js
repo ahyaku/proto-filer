@@ -112,15 +112,23 @@ function CombinedItemList(state, action){
     case 'CHANGE_DIR_UPPER':
       {
         const idx = state.active_pane_id;
-        let state_new = Object.assign({}, state);
+        //let state_new = Object.assign({}, state);
+        let state_new = Object.assign({}, state, {is_dir_changed: true});
         state_new.arr_pages[idx].changeDirUpper();
+        state_new.is_dir_changed = true;
+        //console.log('state.is_dir_changed: ' + state.is_dir_changed);
+        //console.log('state_new.is_dir_changed: ' + state_new.is_dir_changed);
         return state_new;
       }
     case 'CHANGE_DIR_LOWER':
       {
         const idx = state.active_pane_id;
-        let state_new = Object.assign({}, state);
+        //let state_new = Object.assign({}, state);
+        let state_new = Object.assign({}, state, {is_dir_changed: true});
         state_new.arr_pages[idx].changeDirLower();
+        state_new.is_dir_changed = true;
+        //console.log('state.is_dir_changed: ' + state.is_dir_changed);
+        //console.log('state_new.is_dir_changed: ' + state_new.is_dir_changed);
         return state_new;
       }
     case 'SWITCH_ACTIVE_PANE':
@@ -133,7 +141,7 @@ function CombinedItemList(state, action){
         default:
           /* Do Nothing.. */
           console.log('ERROR!! Incorrect Value \'active_pane_id\'!!');
-          return Object.assign({}, state, {active_pane_id});
+          return Object.assign({}, state);
       }
 
     default:

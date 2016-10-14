@@ -129,11 +129,16 @@ class ItemListPages{
     return this._page_cur;
   }
 
+  //get page_prev(){
+  //  return this._page_prev;
+  //}
+
   updatePageCur(init_path){
     if(!ipc_renderer.sendSync('fs.isDirectory', init_path)){
       console.log('updatePageCur() <> NOT Directory!!');
       return this._page_cur;
     }
+    //this._page_prev = this._page_cur;
 
     //console.log('updatePageCur() <> init_path: ' + init_path);
     if(init_path in this._pages){

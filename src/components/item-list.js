@@ -11,9 +11,9 @@ import ITEM_TYPE_KIND from '../core/item_type';
  *     To call this function, some value or status change must be detected
  *     but some change in the array is NOT detected???
  * */
-const ItemList = ({item_list, active_pane_id, onItemListClick, props, line_cur}) => {
+const ItemList = ({item_list, active_pane_id, line_cur, is_dir_changed, onItemListClick, props}) => {
   return (
-    <ItemListView item_list={item_list} active_pane_id={active_pane_id} id={props.id} />
+    <ItemListView item_list={item_list} active_pane_id={active_pane_id} is_dir_changed={is_dir_changed} id={props.id} />
   );
 }
 
@@ -57,7 +57,7 @@ class ItemListView extends React.Component {
 
     this._styles = [];
     const len = Object.keys(ITEM_TYPE_KIND).length;
-    console.log('len: ' + len);
+    //console.log('len: ' + len);
     for(let i=0; i<len; i++){
       this._styles.push(Object.assign({}, this._style_base));
     }
@@ -180,9 +180,11 @@ class ItemListView extends React.Component {
     //);
   }
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prevState){
     //console.log('Are you known???');
     //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
+
+    let scrollTop;
 
     let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);
     let ref_item_cur = ReactDOM.findDOMNode(this.refs.item_cur);
@@ -191,20 +193,72 @@ class ItemListView extends React.Component {
       return;
     }
 
-    let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+    //console.log('prevProps: ' + prevProps);
+    //console.log('prevProps.id: ' + prevProps.id);
+    //console.log('this.state: ' + this.state);
+    console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
+    console.log('this.props.is_dir_changed: ' + this.props.is_dir_changed);
 
-    let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
-    let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
-
-    let delta = 5;
-
-    if(ref_item_cur.offsetTop < scrollTop_abs){
-      scrollTop_abs = ref_item_cur.offsetTop;
-      ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-    }else if(line_pos > scrollBottom_abs){
-      scrollTop_abs = line_pos - ref_item_list.clientHeight;
-      ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+    if(prevState != null){
+      console.log('prevState: ' + prevState);
+      //console.log('prevState.active_pane_id: ' + prevState.active_pane_id);
+      //console.log('this.state.scrollTop: ' + this.state.scrollTop);
+      //console.log('this.prevState.scrollTop: ' + this.prevState.scrollTop);
+      //console.log('prevState.scrollTop: ' + prevState.scrollTop);
+    }else{
+      console.log('prevState is NULL!!');
     }
+    let id = prevProps.id;
+    //if(prevState.is_dir_changed){
+    //  scrollTop = state.arr_pages[id].page_cur.scroll_top;
+    //}else{
+      let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+      let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
+      let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
+      let delta = 5;
+
+      if(ref_item_cur.offsetTop < scrollTop_abs){
+        scrollTop_abs = ref_item_cur.offsetTop;
+        scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+        ref_item_list.scrollTop = scrollTop;
+        //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+      }else if(line_pos > scrollBottom_abs){
+        scrollTop_abs = line_pos - ref_item_list.clientHeight;
+        scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+        ref_item_list.scrollTop = scrollTop;
+        //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+      }else{
+        scrollTop = ref_item_list.scrollTop;
+      }
+
+      //let state = Object.assign({}, prevState);
+      //state.arr_pages[id].page_cur.scroll_top = scrollTop;
+      //state.is_dir_changed = false;
+      ////this.setState(state);
+      //this.setState({scrollTop: scrollTop});
+    //}
+
+
+    //let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+    //let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
+    //let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
+    //let delta = 5;
+
+    //if(ref_item_cur.offsetTop < scrollTop_abs){
+    //  scrollTop_abs = ref_item_cur.offsetTop;
+    //  scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+    //  ref_item_list.scrollTop = scrollTop;
+    //  //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+    //}else if(line_pos > scrollBottom_abs){
+    //  scrollTop_abs = line_pos - ref_item_list.clientHeight;
+    //  scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+    //  ref_item_list.scrollTop = scrollTop;
+    //  //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+    //}else{
+    //  scrollTop = ref_item_list.scrollTop;
+    //}
+
+    console.log('componentDidUpdate <> id: ' + prevProps.id);
   }
 }
 
