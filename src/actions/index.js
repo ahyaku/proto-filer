@@ -48,7 +48,7 @@ export const checkKeyNormal = (e) => {
       //break;
       return {
         type: 'SWITCH_ACTIVE_PANE'
-      }
+      };
     case 32: /* 'space' */
       //if(event.shiftKey == true){
       //  this.toggleUp();
@@ -84,6 +84,9 @@ export const checkKeyNormal = (e) => {
       //key_input_mode = KEY_INPUT_MODE.SEARCH;
       //this.startIsearch();
       //break;
+      return {
+        type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS'
+      };
     default:
       /* Do Nothing.. */
       //break;

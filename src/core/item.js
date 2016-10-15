@@ -1,6 +1,7 @@
 'use strict';
 
-import ITEM_TYPE_KIND from './item_type';
+//import ITEM_TYPE_KIND from './item_type';
+import {ITEM_TYPE_KIND} from './item_type';
 
 //let ATTR = {
 //  FILE  : 0,

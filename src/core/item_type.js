@@ -1,6 +1,6 @@
 'use strict';
 
-const ITEM_TYPE_KIND = {
+export const ITEM_TYPE_KIND = {
   DIR      : 0,
   TEXT     : 1,
   EXE      : 2,
@@ -12,4 +12,9 @@ const ITEM_TYPE_KIND = {
   OTHER    : 8
 };
 
-export default ITEM_TYPE_KIND;
+export const KEY_INPUT_MODE = {
+  NORMAL : 0,
+  SEARCH : 1,
+};
+
+//export default ITEM_TYPE_KIND;

@@ -11,7 +11,8 @@ import { checkKeyNormal } from './actions';
 import fs from 'fs';
 //import ItemListCore from './core/item_list';
 import ItemListPages from './core/item_list_pages';
-import reducer from './reducers'
+import reducer from './reducers';
+import {KEY_INPUT_MODE} from './core/item_type';
 
 
 const pages_left = new ItemListPages();
@@ -52,7 +53,8 @@ const active_pane_id = 0;
 const state_init = {
   arr_pages: arr_pages,
   active_pane_id: active_pane_id,
-  action_type: 'NONE'
+  action_type: 'NONE',
+  input_mode: KEY_INPUT_MODE.NORMAL
 }
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
@@ -64,7 +66,7 @@ let store = createStore(reducer, state_init, applyMiddleware(thunk));
 
 function ListenKeydown(mapEventToAction){
 
-  return function(dispatch){
+  return function(dispatch, getState){
     function handleEvent(e){
       //console.log('key: ' + e);
       //console.log('e.keyCode: ' + e.keyCode);
@@ -74,7 +76,7 @@ function ListenKeydown(mapEventToAction){
       //console.log('event.target: ' + event.target);
       //console.log('event.target.id: ' + event.target.id);
 
-      dispatch(mapEventToAction(e));
+      dispatch(mapEventToAction(e, getState));
     }
 
     document.addEventListener('keydown', handleEvent);
@@ -83,7 +85,8 @@ function ListenKeydown(mapEventToAction){
 
 }
 
-function mapKeydownToAction(e){
+function mapKeydownToAction(e, getState){
+  console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
   return checkKeyNormal(e);
 }
 

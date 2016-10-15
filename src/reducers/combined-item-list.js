@@ -123,6 +123,13 @@ function CombinedItemList(state, action){
                                {action_type: action.type});
       }
 
+    case 'SWITCH_INPUT_MODE_NORMAL':
+      console.log('SWITCH_INPUT_MODE_NORMAL');
+      return state;
+    case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
+      console.log('SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS');
+      return state;
+
     default:
       //console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);
       //for (let e of state.item_list.items){

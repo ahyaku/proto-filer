@@ -3,7 +3,8 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import util from 'util';
-import ITEM_TYPE_KIND from '../core/item_type';
+//import ITEM_TYPE_KIND from '../core/item_type';
+import {ITEM_TYPE_KIND} from '../core/item_type';
 
 /* [NOTE]
  *     Not sure the reason why but without argument 'line_cur',
