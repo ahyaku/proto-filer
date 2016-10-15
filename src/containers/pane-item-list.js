@@ -24,7 +24,10 @@ const mapStateToProps = (state, props) => {
   //console.log('mapStateToProps <> item_list.dir_cur: ' + item_list.dir_cur);
   item_list.items = state.arr_pages[id].items;
   //console.log('map <> state.is_dir_changed: ' + state.is_dir_changed);
-  return {item_list: item_list, active_pane_id: state.active_pane_id, line_cur: item_list.line_cur, is_dir_changed: state.is_dir_changed};
+  return {item_list: item_list, 
+          active_pane_id: state.active_pane_id,
+          line_cur: item_list.line_cur,
+          action_type: state.action_type};
 
 }
 

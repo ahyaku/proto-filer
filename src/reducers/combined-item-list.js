@@ -64,18 +64,6 @@ function CombinedItemList(state, action){
     //  return {arr_item_list: arr_item_list};
 
     case 'MOVE_CURSOR_UP':
-      //console.log('MOVE_CURSOR_UP!!');
-      //{
-      //  let arr_item_list_cur = state.arr_item_list;
-      //  let arr_item_list = arr_item_list_cur;
-      //  for(let i=0; i<arr_item_list.length; i++){
-      //    arr_item_list[i].items = arr_item_list_cur[i].items;
-      //  }
-      //  const idx = state.active_pane_id;
-      //  arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur - 1;
-      //  return Object.assign({}, state, {arr_item_list: arr_item_list});
-      //}
-
       {
         let arr_pages = state.arr_pages;
         for(let i=0; i<arr_pages.length; i++){
@@ -83,22 +71,12 @@ function CombinedItemList(state, action){
         }
         const idx = state.active_pane_id;
         arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur - 1;
-        return Object.assign({}, state, {arr_pages: arr_pages});
+        return Object.assign({}, state,
+                             {arr_pages: arr_pages},
+                             {action_type: action.type});
       }
 
     case 'MOVE_CURSOR_DOWN':
-      //console.log('MOVE_CURSOR_DOWN!!');
-      //{
-      //  let arr_item_list_cur = state.arr_item_list;
-      //  let arr_item_list = arr_item_list_cur
-      //  for(let i=0; i<arr_item_list.length; i++){
-      //    arr_item_list[i].items = arr_item_list_cur[i].items
-      //  }
-      //  const idx = state.active_pane_id;
-      //  arr_item_list[idx].line_cur = arr_item_list_cur[idx].line_cur + 1;
-      //  return Object.assign({}, state, {arr_item_list: arr_item_list});
-      //}
-
       {
         let arr_pages = state.arr_pages;
         for(let i=0; i<arr_pages.length; i++){
@@ -106,42 +84,43 @@ function CombinedItemList(state, action){
         }
         const idx = state.active_pane_id;
         arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur + 1;
-        return Object.assign({}, state, {arr_pages: arr_pages});
+        return Object.assign({}, state,
+                             {arr_pages: arr_pages},
+                             {action_type: action.type});
       }
 
     case 'CHANGE_DIR_UPPER':
       {
         const idx = state.active_pane_id;
-        //let state_new = Object.assign({}, state);
-        let state_new = Object.assign({}, state, {is_dir_changed: true});
+        let state_new = Object.assign({}, state);
         state_new.arr_pages[idx].changeDirUpper();
-        state_new.is_dir_changed = true;
-        //console.log('state.is_dir_changed: ' + state.is_dir_changed);
-        //console.log('state_new.is_dir_changed: ' + state_new.is_dir_changed);
+        state_new.action_type = action.type;
         return state_new;
       }
     case 'CHANGE_DIR_LOWER':
       {
         const idx = state.active_pane_id;
-        //let state_new = Object.assign({}, state);
-        let state_new = Object.assign({}, state, {is_dir_changed: true});
+        let state_new = Object.assign({}, state);
         state_new.arr_pages[idx].changeDirLower();
-        state_new.is_dir_changed = true;
-        //console.log('state.is_dir_changed: ' + state.is_dir_changed);
-        //console.log('state_new.is_dir_changed: ' + state_new.is_dir_changed);
+        state_new.action_type = action.type;
         return state_new;
       }
     case 'SWITCH_ACTIVE_PANE':
       let active_pane_id;
       switch(state.active_pane_id){
         case 0:
-          return Object.assign({}, state, {active_pane_id: 1});
+          return Object.assign({}, state,
+                               {active_pane_id: 1},
+                               {action_type: action.type});
         case 1:
-          return Object.assign({}, state, {active_pane_id: 0});
+          return Object.assign({}, state,
+                               {active_pane_id: 0},
+                               {action_type: action.type});
         default:
           /* Do Nothing.. */
           console.log('ERROR!! Incorrect Value \'active_pane_id\'!!');
-          return Object.assign({}, state);
+          return Object.assign({}, state,
+                               {action_type: action.type});
       }
 
     default:
@@ -151,8 +130,6 @@ function CombinedItemList(state, action){
       //}
       return state;
   }
-
-  //return state;
 }
 
 export default CombinedItemList;

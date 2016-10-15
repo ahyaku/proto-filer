@@ -11,17 +11,21 @@ import ITEM_TYPE_KIND from '../core/item_type';
  *     To call this function, some value or status change must be detected
  *     but some change in the array is NOT detected???
  * */
-const ItemList = ({item_list, active_pane_id, line_cur, is_dir_changed, onItemListClick, props}) => {
+const ItemList = ({item_list, active_pane_id, line_cur, action_type, onItemListClick, props}) => {
+//  arr_pos = [];
+//  for(let i=0; i<2; i++){
+//    arr_pos[i] = [];
+//  }
+//  arr_pos[0][0] = 'foo';
+//  arr_pos[1][0] = 'bar';
   return (
-    <ItemListView item_list={item_list} active_pane_id={active_pane_id} is_dir_changed={is_dir_changed} id={props.id} />
+    <ItemListView item_list={item_list} active_pane_id={active_pane_id} action_type={action_type} id={props.id} />
   );
 }
 
 class ItemListView extends React.Component {
   constructor(props){
     super(props);
-    //console.log('Here it!!');
-
     this._style = {
       //display: 'flex',
       flex: '1',
@@ -39,9 +43,6 @@ class ItemListView extends React.Component {
       overflowY: 'scroll',
       //position: 'absolute'
     };
-
-    //  zIndex: '1',
-    //  borderBottom: 'solid 1px #333333',
 
     this._style_base = {
       zIndex: '0',
@@ -65,42 +66,16 @@ class ItemListView extends React.Component {
     this._styles[ITEM_TYPE_KIND.DIR]['color']  = '#FF80FF';
     this._styles[ITEM_TYPE_KIND.TEXT]['color'] = '#FFFFFF';
 
+    this._arr_pos = [];
+    for(let i=0; i<2; i++){
+      this._arr_pos[i] = [];
+    }
   }
 
   render(){
     let item_list = this.props.item_list;
     let active_pane_id = this.props.active_pane_id;
     let id = this.props.id;
-
-//    let style_item_cur = {
-//      zIndex: '1',
-//      margin: '-3px 0px 0px',
-//      padding: '0px 0px',
-//      overflowX: 'hidden',
-//      whiteSpace: 'nowrap',
-//      textOverflowX: 'ellipsis'
-//      //textOverflowX: 'hidden'
-//      //boxSizing: 'border-box'
-//    }
-//
-//    if(id === active_pane_id){
-//      style_item_cur['borderBottom'] = 'solid 1px #00FF00';
-//    }else{
-//      style_item_cur['borderBottom'] = 'solid 1px #333333';
-//    }
-//
-//    const style_item_other = {
-//      borderBottom: 'solid 1px #333333',
-//      //boxShadow: '0 0 0 2px #333333',
-//      zIndex: '0',
-//      margin: '-3px 0px 0px',
-//      padding: '0px 0px',
-//      overflowX: 'hidden',
-//      whiteSpace: 'nowrap',
-//      textOverflowX: 'ellipsis'
-//      //textOverflowX: 'hidden'
-//      //boxSizing: 'border-box'
-//    };
 
     //console.log('------------------------------');
     //for(let e of item_list.items){
@@ -115,7 +90,6 @@ class ItemListView extends React.Component {
     }
 
     let idx = item_list.line_cur;
-    //console.log('item_list.line_cur = ' + item_list.line_cur);
     if(idx >= item_list.items.length){
       console.log('ERROR!! <> idx >= item_list.items.length');
       idx = item_list.items.length - 1;
@@ -124,10 +98,7 @@ class ItemListView extends React.Component {
     let item_cur = item_list.items[idx];
     let items_tail = item_list.items.slice(idx+1, item_list.length);
 
-    //this._style_item_cur = Object.assign({}, this._style_base, {zIndex: '1'});
     this._style_item_cur = Object.assign({}, this._styles[item_cur.kind], {zIndex: '1'});
-    //console.log('item_cur.name: ' + item_cur.name + ', item_cur.ext: ' + item_cur.ext + ', item_cur.kind: ' + item_cur.kind);
-    //this._style_item_cur = Object.assign({}, this._styles[0], {zIndex: '1'});
     if(id === active_pane_id){
       this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
     }else{
@@ -157,30 +128,9 @@ class ItemListView extends React.Component {
       </div>
     );
 
-    //return (
-    //  <div style={this._style} ref="item_list">
-    //    {items_head.map((e, i) => {
-    //      return (
-    //        <div key={i} style={this._style_base}>
-    //          {e.name}
-    //        </div>
-    //      );
-    //    })}
-    //    <div style={this._style_item_cur} ref="item_cur">
-    //      {item_cur.name}
-    //    </div>
-    //    {items_tail.map((e, i) => {
-    //      return (
-    //        <div key={i} style={this._style_base}>
-    //          {e.name}
-    //        </div>
-    //      );
-    //    })}
-    //  </div>
-    //);
   }
 
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(){
     //console.log('Are you known???');
     //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
 
@@ -193,73 +143,42 @@ class ItemListView extends React.Component {
       return;
     }
 
-    //console.log('prevProps: ' + prevProps);
-    //console.log('prevProps.id: ' + prevProps.id);
-    //console.log('this.state: ' + this.state);
-    console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
-    console.log('this.props.is_dir_changed: ' + this.props.is_dir_changed);
+    let id = this.props.id;
+    let dir_cur = this.props.item_list.dir_cur;
 
-    if(prevState != null){
-      console.log('prevState: ' + prevState);
-      //console.log('prevState.active_pane_id: ' + prevState.active_pane_id);
-      //console.log('this.state.scrollTop: ' + this.state.scrollTop);
-      //console.log('this.prevState.scrollTop: ' + this.prevState.scrollTop);
-      //console.log('prevState.scrollTop: ' + prevState.scrollTop);
-    }else{
-      console.log('prevState is NULL!!');
+    //console.log('this.props.item_list.dir_cur: ' + this.props.item_list.dir_cur);
+    //console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
+    //console.log('this.props.action_type: ' + this.props.action_type);
+
+    switch(this.props.action_type){
+      case 'CHANGE_DIR_UPPER':
+      case 'CHANGE_DIR_LOWER':
+        ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
+        return;
+      default:
+        {
+          let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+          let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
+          let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
+          let delta = 5;
+
+          if(ref_item_cur.offsetTop < scrollTop_abs){
+            scrollTop_abs = ref_item_cur.offsetTop;
+            scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+            ref_item_list.scrollTop = scrollTop;
+          }else if(line_pos > scrollBottom_abs){
+            scrollTop_abs = line_pos - ref_item_list.clientHeight;
+            scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+            ref_item_list.scrollTop = scrollTop;
+          }else{
+            scrollTop = ref_item_list.scrollTop;
+          }
+          this._arr_pos[id][dir_cur] = scrollTop;
+        }
+        return;
     }
-    let id = prevProps.id;
-    //if(prevState.is_dir_changed){
-    //  scrollTop = state.arr_pages[id].page_cur.scroll_top;
-    //}else{
-      let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
-      let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
-      let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
-      let delta = 5;
-
-      if(ref_item_cur.offsetTop < scrollTop_abs){
-        scrollTop_abs = ref_item_cur.offsetTop;
-        scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-        ref_item_list.scrollTop = scrollTop;
-        //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-      }else if(line_pos > scrollBottom_abs){
-        scrollTop_abs = line_pos - ref_item_list.clientHeight;
-        scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-        ref_item_list.scrollTop = scrollTop;
-        //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-      }else{
-        scrollTop = ref_item_list.scrollTop;
-      }
-
-      //let state = Object.assign({}, prevState);
-      //state.arr_pages[id].page_cur.scroll_top = scrollTop;
-      //state.is_dir_changed = false;
-      ////this.setState(state);
-      //this.setState({scrollTop: scrollTop});
-    //}
-
-
-    //let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
-    //let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
-    //let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
-    //let delta = 5;
-
-    //if(ref_item_cur.offsetTop < scrollTop_abs){
-    //  scrollTop_abs = ref_item_cur.offsetTop;
-    //  scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-    //  ref_item_list.scrollTop = scrollTop;
-    //  //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-    //}else if(line_pos > scrollBottom_abs){
-    //  scrollTop_abs = line_pos - ref_item_list.clientHeight;
-    //  scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-    //  ref_item_list.scrollTop = scrollTop;
-    //  //ref_item_list.scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-    //}else{
-    //  scrollTop = ref_item_list.scrollTop;
-    //}
-
-    console.log('componentDidUpdate <> id: ' + prevProps.id);
   }
+
 }
 
 
