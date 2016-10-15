@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import ItemListCore from '../core/item_list';
+import { KEY_INPUT_MODE } from '../core/item_type';
 
 //const item_list = new ItemListCore(-1, 'INIT');
 //item_list.dir_cur = fs.realpathSync('C:\\');
@@ -124,11 +125,11 @@ function CombinedItemList(state, action){
       }
 
     case 'SWITCH_INPUT_MODE_NORMAL':
-      console.log('SWITCH_INPUT_MODE_NORMAL');
-      return state;
+      //console.log('SWITCH_INPUT_MODE_NORMAL');
+      return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.NORMAL});
     case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
-      console.log('SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS');
-      return state;
+      //console.log('SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS');
+      return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.SEARCH});
 
     default:
       //console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);

@@ -5,6 +5,8 @@ import ReactDOM from 'react-dom';
 
 import PaneItemList from '../containers/pane-item-list';
 import PanePathCur from '../containers/pane-path-cur';
+//import Cmd from './cmd';
+import PathCmd from './cmd';
 
 import fs from 'fs';
 //import ItemListCore from '../core/item_list';
@@ -165,7 +167,7 @@ class CmdAndItemList extends React.Component {
     console.log('CmdAndItemList render() <> id: ' + id);
     return (
       <div style={style}>
-        <Cmd />
+        <PathCmd />
         <PaneItemList id={id} />
       </div>
     );
@@ -174,22 +176,6 @@ class CmdAndItemList extends React.Component {
   componentDidUpdate(prevProps, prevState){
     console.log('componentDidUpdate()!!');
   }
-}
-
-
-const Cmd = () => {
-  const style = {
-    minHeight: '20px',
-    height: '20px',
-    border: '1px solid #FFFFFF',
-    overflowX: 'hidden',
-    overflowY: 'hidden'
-  };
-  return (
-    <div style={style}>
-      Cmd
-    </div>
-  );
 }
 
 

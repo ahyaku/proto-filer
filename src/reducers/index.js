@@ -4,6 +4,9 @@ import { combineReducers } from 'redux';
 import CombinedItemList from './combined-item-list';
 //import * as CombinedItemList from './combined-item-list';
 
+import CombinedCmd from './combined-cmd';
+import { KEY_INPUT_MODE } from '../core/item_type';
+
 //const itemList = combineReducers({
 //  CombinedItemList : CombinedItemList
 //});
@@ -20,7 +23,24 @@ function itemList(state, action){
   //  CombinedItemList : CombinedItemList(state, action)
   //}
 
-  let state_ret = CombinedItemList(state, action);
+
+  console.log('reducer <> state.input_mode: ' + state.input_mode);
+  //let state_ret = CombinedItemList(state, action);
+
+  let state_ret;
+  switch(state.input_mode){
+    case KEY_INPUT_MODE.NORMAL:
+      state_ret = CombinedItemList(state, action);
+      break;
+    case KEY_INPUT_MODE.SEARCH:
+      state_ret = CombinedCmd(state, action);
+      //state_ret = Object.assign({}, state);
+      break;
+    default:
+      /* Do Nothing.. */
+      break;
+  }
+
 
   //return {
   //  CombinedItemList : state_ret

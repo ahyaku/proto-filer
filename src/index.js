@@ -6,7 +6,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import App from './components/app';
-import { checkKeyNormal } from './actions';
+import { checkKeyNormal, checkKeySearch } from './actions';
 
 import fs from 'fs';
 //import ItemListCore from './core/item_list';
@@ -54,7 +54,8 @@ const state_init = {
   arr_pages: arr_pages,
   active_pane_id: active_pane_id,
   action_type: 'NONE',
-  input_mode: KEY_INPUT_MODE.NORMAL
+  input_mode: KEY_INPUT_MODE.NORMAL,
+  msg_cmd: ''
 }
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
@@ -86,8 +87,13 @@ function ListenKeydown(mapEventToAction){
 }
 
 function mapKeydownToAction(e, getState){
-  console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
-  return checkKeyNormal(e);
+  //console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
+  switch(getState().input_mode){
+    case KEY_INPUT_MODE.NORMAL:
+      return checkKeyNormal(e);
+    case KEY_INPUT_MODE.SEARCH:
+      return checkKeySearch(e);
+  }
 }
 
 const unlistenKeydown = store.dispatch(ListenKeydown(mapKeydownToAction));

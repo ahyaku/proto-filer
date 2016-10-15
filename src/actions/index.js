@@ -96,5 +96,47 @@ export const checkKeyNormal = (e) => {
   }
 }
 
+export const checkKeySearch = (e) => {
+  switch(e.keyCode){
+    case 27:  /* 'ESC' */
+      //key_input_mode = KEY_INPUT_MODE.NORMAL;
+      //this.endIsearch();
+      //break;
+      return {
+        type: 'SWITCH_INPUT_MODE_NORMAL',
+        c: ''
+      };
+    case 219: /* '[' */
+      //if(event.ctrlKey == true){
+      //  console.log('key: endIsearch!!');
+      //  key_input_mode = KEY_INPUT_MODE.NORMAL;
+      //  this.endIsearch();
+      //}
+      //break;
+      if(event.ctrlKey == true){
+        return {
+          type: 'SWITCH_INPUT_MODE_NORMAL',
+          c: ''
+        };
+      }
+      console.log('action <> e.key: ' + e.key);
+      return {
+        type: 'RECEIVE_INPUT',
+        c: e.key
+      };
+    case 9:  /* 'tab' */
+    case 13: /* 'enter */
+      e.preventDefault();
+      //break;
+    default:
+      /* Do Nothing.. */
+      //break;
+      console.log('action <> e.key: ' + e.key);
+      return {
+        type: 'RECEIVE_INPUT',
+        c: e.key
+      };
+  }
+}
 
 
