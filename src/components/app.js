@@ -6,7 +6,8 @@ import ReactDOM from 'react-dom';
 import PaneItemList from '../containers/pane-item-list';
 import PanePathCur from '../containers/pane-path-cur';
 //import Cmd from './cmd';
-import PathCmd from './cmd';
+//import PathCmd from './cmd';
+import PathCmd from '../containers/pane-cmd';
 
 import fs from 'fs';
 //import ItemListCore from '../core/item_list';

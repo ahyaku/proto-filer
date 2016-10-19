@@ -85,7 +85,8 @@ export const checkKeyNormal = (e) => {
       //this.startIsearch();
       //break;
       return {
-        type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS'
+        type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
+        c: '/'
       };
     default:
       /* Do Nothing.. */
@@ -97,6 +98,7 @@ export const checkKeyNormal = (e) => {
 }
 
 export const checkKeySearch = (e) => {
+  console.log('e.keyCode: ' + e.keyCode);
   switch(e.keyCode){
     case 27:  /* 'ESC' */
       //key_input_mode = KEY_INPUT_MODE.NORMAL;
@@ -134,7 +136,8 @@ export const checkKeySearch = (e) => {
       console.log('action <> e.key: ' + e.key);
       return {
         type: 'RECEIVE_INPUT',
-        c: e.key
+        c: e.key,
+        event: event
       };
   }
 }

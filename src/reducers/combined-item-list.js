@@ -129,7 +129,9 @@ function CombinedItemList(state, action){
       return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.NORMAL});
     case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
       //console.log('SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS');
-      return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.SEARCH});
+      return Object.assign({}, state,
+                           {input_mode: KEY_INPUT_MODE.SEARCH},
+                           {msg_cmd: action.c});
 
     default:
       //console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);

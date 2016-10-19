@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const Cmd = () => {
+const Cmd = ({msg_cmd}) => {
   const style = {
     minHeight: '20px',
     height: '20px',
@@ -10,9 +10,12 @@ const Cmd = () => {
     overflowX: 'hidden',
     overflowY: 'hidden'
   };
+
+  //console.log('msg_cmd: ' + msg_cmd);
+
   return (
     <div style={style}>
-      Cmd
+      {msg_cmd}
     </div>
   );
 }

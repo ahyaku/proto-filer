@@ -31,6 +31,8 @@ function itemList(state, action){
   switch(state.input_mode){
     case KEY_INPUT_MODE.NORMAL:
       state_ret = CombinedItemList(state, action);
+      console.log('itemList <> action.c: ' + action.c);
+      state_ret = CombinedCmd(state_ret, action);
       break;
     case KEY_INPUT_MODE.SEARCH:
       state_ret = CombinedCmd(state, action);
