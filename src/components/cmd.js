@@ -1,8 +1,10 @@
 'use strict';
 
 import React from 'react';
+import { KEY_INPUT_MODE } from '../core/item_type';
 
-const Cmd = ({msg_cmd}) => {
+//const Cmd = ({msg_cmd}) => {
+const Cmd = ({msg_cmd, input_mode}) => {
   const style = {
     minHeight: '20px',
     height: '20px',

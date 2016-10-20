@@ -24,14 +24,17 @@ function itemList(state, action){
   //}
 
 
-  console.log('reducer <> state.input_mode: ' + state.input_mode);
+  //console.log('reducer <> state.input_mode: ' + state.input_mode);
+  //console.log('reducer <> state.msg_cmd: ' + state.msg_cmd);
+
   //let state_ret = CombinedItemList(state, action);
 
   let state_ret;
   switch(state.input_mode){
     case KEY_INPUT_MODE.NORMAL:
       state_ret = CombinedItemList(state, action);
-      console.log('itemList <> action.c: ' + action.c);
+      //console.log('reducer <> itemList <> action.c: ' + action.c);
+      //console.log('reducer <> state_ret.msg_cmd: ' + state_ret.msg_cmd);
       state_ret = CombinedCmd(state_ret, action);
       break;
     case KEY_INPUT_MODE.SEARCH:

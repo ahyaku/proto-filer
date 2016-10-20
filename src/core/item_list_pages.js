@@ -20,6 +20,8 @@ class ItemListPages{
   //constructor(id, id_pane, id_dir_cur, id_pane_cmd, is_focused, mediator){
   constructor(){
     this._pages = {};
+    this._msg_cmd = '';
+
     //this._id_pane = id_pane;
     //this._id_dir_cur = id_dir_cur;
     //this._is_focused = is_focused;
@@ -33,7 +35,7 @@ class ItemListPages{
     //this._pane_cmd.updatePane();
     //this._pane_cmd.blur();
 
-    this._state_sf = STATE_SEARCH_FILTER.NONE;
+    //this._state_sf = STATE_SEARCH_FILTER.NONE;
     //this._jid = '#' + id_pane_cmd;
     //this._id_pane_cmd = id_pane_cmd;
 
@@ -81,6 +83,13 @@ class ItemListPages{
   //    page_cur.updatePaneWithRegExp(val.slice(1, val.length));
   //  }
   //}
+
+  set msg_cmd(msg_cmd){
+    this._msg_cmd = msg_cmd;
+  }
+  get msg_cmd(){
+    return this._msg_cmd;
+  }
 
   get dir_cur(){
     return this._page_cur.dir_cur;

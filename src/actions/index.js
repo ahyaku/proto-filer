@@ -14,26 +14,28 @@ export const checkKeyNormal = (e) => {
   //console.log(util.format('pane_left: %d, pane_right: %d',
   //                        pane_left.is_focused,
   //                        pane_right.is_focused));
-  switch(e.keyCode){
-    case 74: /* 'j' */
+
+  //console.log('checkKeyNormal <> e.key: ' + e.key);
+  switch(e.key){
+    case 'j': /* 'j' */
       //this.cursorDown();
       //break;
       return {
         type: 'MOVE_CURSOR_DOWN'
       };
-    case 75: /* 'k' */
+    case 'k': /* 'k' */
       //this.cursorUp();
       //break;
       return {
         type: 'MOVE_CURSOR_UP'
       };
-    case 72: /* 'h' */
+    case 'h': /* 'h' */
       //this.changeDirUpper();
       //break;
       return {
         type: 'CHANGE_DIR_UPPER'
       };
-    case 76: /* 'l' */
+    case 'l': /* 'l' */
       //if(event.ctrlKey == true){
       //  this.updatePane();
       //}else{
@@ -43,50 +45,52 @@ export const checkKeyNormal = (e) => {
       return {
         type: 'CHANGE_DIR_LOWER'
       };
-    case 9: /* 'tab' */
+    case 'Tab': /* 'tab' */
       //this.switchPane();
       //break;
       return {
         type: 'SWITCH_ACTIVE_PANE'
       };
-    case 32: /* 'space' */
-      //if(event.shiftKey == true){
-      //  this.toggleUp();
-      //}else{
-      //  this.toggleDown();
-      //}
-      //break;
-    case 79: /* 'o' */
-      //if(event.shiftKey == true){
-      //  this.syncPaneOther2Cur();
-      //}else{
-      //  this.syncPaneCur2Other();
-      //}
-      //break;           
-    case 67: /* 'c' */
-      //this.copyItems();
-      //break;           
-    case 68: /* 'd' */
-      //this.deleteItems();
-      //break;           
-    case 77: /* 'm' */
-      //break;           
-    case 81: /* 'q' */
-      //this.closeMainWindow();
-      //break;           
-    case 188: /* ',' */
-      //this.showContextMenu();
-      //break;           
-    case 13: /* 'enter' */
-      //this.openItem();
-      //break;           
-    case 191: /* '/' */
+    //case 'Space': /* 'space' */
+    //  //if(event.shiftKey == true){
+    //  //  this.toggleUp();
+    //  //}else{
+    //  //  this.toggleDown();
+    //  //}
+    //  //break;
+    //case 'o': /* 'o' */
+    //  //if(event.shiftKey == true){
+    //  //  this.syncPaneOther2Cur();
+    //  //}else{
+    //  //  this.syncPaneCur2Other();
+    //  //}
+    //  //break;           
+    //case 'c': /* 'c' */
+    //  //this.copyItems();
+    //  //break;           
+    //case 'd': /* 'd' */
+    //  //this.deleteItems();
+    //  //break;           
+    //case 'm': /* 'm' */
+    //  //break;           
+    //case 'q': /* 'q' */
+    //  //this.closeMainWindow();
+    //  //break;           
+    //case '.': /* ',' */
+    //  //this.showContextMenu();
+    //  //break;           
+    //case 'Enter':
+    //  console.log('HERE!!');
+    //  //this.openItem();
+    //  //break;           
+    //  break;
+    case '/': /* '/' */
       //key_input_mode = KEY_INPUT_MODE.SEARCH;
       //this.startIsearch();
       //break;
       return {
         type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
-        c: '/'
+        c: e.key
       };
     default:
       /* Do Nothing.. */
@@ -98,42 +102,21 @@ export const checkKeyNormal = (e) => {
 }
 
 export const checkKeySearch = (e) => {
-  console.log('e.keyCode: ' + e.keyCode);
-  switch(e.keyCode){
-    case 27:  /* 'ESC' */
-      //key_input_mode = KEY_INPUT_MODE.NORMAL;
-      //this.endIsearch();
-      //break;
+  //console.log('e.keyCode: ' + e.keyCode);
+  if(event.ctrlKey == true){
+    return _checkKeySearchWithCtrl(e);
+  }else{
+    return _checkKeySearch(e);
+  }
+}
+
+const _checkKeySearchWithCtrl = (e) => {
+  switch(e.key){
+    case '[':
       return {
-        type: 'SWITCH_INPUT_MODE_NORMAL',
-        c: ''
+        type: 'SWITCH_INPUT_MODE_NORMAL'
       };
-    case 219: /* '[' */
-      //if(event.ctrlKey == true){
-      //  console.log('key: endIsearch!!');
-      //  key_input_mode = KEY_INPUT_MODE.NORMAL;
-      //  this.endIsearch();
-      //}
-      //break;
-      if(event.ctrlKey == true){
-        return {
-          type: 'SWITCH_INPUT_MODE_NORMAL',
-          c: ''
-        };
-      }
-      console.log('action <> e.key: ' + e.key);
-      return {
-        type: 'RECEIVE_INPUT',
-        c: e.key
-      };
-    case 9:  /* 'tab' */
-    case 13: /* 'enter */
-      e.preventDefault();
-      //break;
     default:
-      /* Do Nothing.. */
-      //break;
-      console.log('action <> e.key: ' + e.key);
       return {
         type: 'RECEIVE_INPUT',
         c: e.key,
@@ -142,4 +125,31 @@ export const checkKeySearch = (e) => {
   }
 }
 
+const _checkKeySearch = (e) => {
+  switch(e.key){
+    case 'Escape':
+      return {
+        type: 'SWITCH_INPUT_MODE_NORMAL'
+      };
+    case '[':
+      return {
+        type: 'RECEIVE_INPUT',
+        c: e.key
+      };
+    case 'Tab':
+    case 'Enter':
+      return {
+        type: 'RECEIVE_INPUT',
+        c: '',
+        event: event
+      };
+    default:
+      /* Do Nothing.. */
+      return {
+        type: 'RECEIVE_INPUT',
+        c: e.key,
+        event: event
+      };
+  }
+}
 

@@ -2,37 +2,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import fs from 'fs';
 
 import PaneItemList from '../containers/pane-item-list';
 import PanePathCur from '../containers/pane-path-cur';
-//import Cmd from './cmd';
-//import PathCmd from './cmd';
 import PathCmd from '../containers/pane-cmd';
-
-import fs from 'fs';
-//import ItemListCore from '../core/item_list';
-//import ItemListPages from '../core/item_list_pages';
-
-//const item_list_left = new ItemListCore(0, 'LEFT');
-//item_list_left.dir_cur = fs.realpathSync('C:\\');
-//item_list_left.updateItems();
-//
-//const item_list_right = new ItemListCore(1, 'RIGHT');
-//item_list_right.dir_cur = fs.realpathSync('C:\\Hamana20051010gdi');
-//item_list_right.updateItems();
-
-
-//const pages_left = new ItemListPages(0, 'LEFT', null, null, true, null);
-//pages_left.updatePageCur('C:\\');
-//console.log('pages_left.page_cur: ' + pages_left.page_cur);
-//console.log('pages_left.dir_cur: ' + pages_left.dir_cur);
-//for(let e of pages_left.page_cur.items){
-//  console.log(e.name);
-//}
-
-//for(let e of pages_left.page_cur.items){
-//  console.log(e.name);
-//}
 
 const Footer = () => {
   const style = {
@@ -168,7 +142,7 @@ class CmdAndItemList extends React.Component {
     console.log('CmdAndItemList render() <> id: ' + id);
     return (
       <div style={style}>
-        <PathCmd />
+        <PathCmd id={id} />
         <PaneItemList id={id} />
       </div>
     );
