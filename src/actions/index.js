@@ -114,7 +114,8 @@ const _checkKeySearchWithCtrl = (e) => {
   switch(e.key){
     case '[':
       return {
-        type: 'SWITCH_INPUT_MODE_NORMAL'
+        type: 'SWITCH_INPUT_MODE_NORMAL',
+        is_clear_cmd: true
       };
     default:
       return {
@@ -129,7 +130,13 @@ const _checkKeySearch = (e) => {
   switch(e.key){
     case 'Escape':
       return {
-        type: 'SWITCH_INPUT_MODE_NORMAL'
+        type: 'SWITCH_INPUT_MODE_NORMAL',
+        is_clear_cmd: true
+      };
+    case 'Enter':
+      return {
+        type: 'SWITCH_INPUT_MODE_NORMAL',
+        is_clear_cmd: false
       };
     case '[':
       return {
@@ -137,12 +144,6 @@ const _checkKeySearch = (e) => {
         c: e.key
       };
     case 'Tab':
-    case 'Enter':
-      return {
-        type: 'RECEIVE_INPUT',
-        c: '',
-        event: event
-      };
     default:
       /* Do Nothing.. */
       return {

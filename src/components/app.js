@@ -139,7 +139,7 @@ class CmdAndItemList extends React.Component {
       overflowY: 'auto'
     };
 
-    console.log('CmdAndItemList render() <> id: ' + id);
+    //console.log('CmdAndItemList render() <> id: ' + id);
     return (
       <div style={style}>
         <PathCmd id={id} />

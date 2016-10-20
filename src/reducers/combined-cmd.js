@@ -20,7 +20,8 @@ function CombinedCmd(state, action){
       return state_new;
     case 'SWITCH_INPUT_MODE_NORMAL':
       state_new.input_mode = KEY_INPUT_MODE.NORMAL;
-      if(msg_cmd.length <= 1){
+      if( (action.is_clear_cmd == true) ||
+          (msg_cmd.length <= 1)         ){
         state_new.arr_pages[idx].msg_cmd = '';
       }
       return state_new;
