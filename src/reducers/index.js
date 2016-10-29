@@ -39,6 +39,7 @@ function itemList(state, action){
       break;
     case KEY_INPUT_MODE.SEARCH:
       state_ret = CombinedCmd(state, action);
+      state_ret = CombinedItemList(state_ret, action);
       //state_ret = Object.assign({}, state);
       break;
     default:

@@ -22,6 +22,8 @@ class ItemListPages{
     this._pages = {};
     this._msg_cmd = '';
 
+    this._test = {are: 'ARE', you: 'YOU', known: 'KNOWN'};
+
     //this._id_pane = id_pane;
     //this._id_dir_cur = id_dir_cur;
     //this._is_focused = is_focused;
@@ -75,6 +77,10 @@ class ItemListPages{
 
   }
 
+  get test(){
+    return this._test;
+  }
+
   //_getCBKeyUp(page_cur, jid){
   //  return function(e){
   //    let val = $(jid).val();
@@ -94,8 +100,39 @@ class ItemListPages{
   get dir_cur(){
     return this._page_cur.dir_cur;
   }
+  //get items(){
+  //  return this._page_cur.items;
+  //}
+
+  filterItems(pattern){
+    if(pattern == ''){
+      return this._page_cur.items;
+    }else{
+      let reg = new RegExp(pattern);
+      return this._page_cur.items.filter(function(e){
+        //console.log(e.name);
+        return e.name.match(reg);
+      });
+    }
+
+    //if(pattern == ''){
+    //  this._items = this._page_cur.items;
+    //}else{
+    //  let reg = new RegExp(pattern);
+    //  this._items = this._page_cur.items.filter(function(e){
+    //    //console.log(e.name);
+    //    return e.name.match(reg);
+    //  });
+    //}
+
+  }
+
+  set items(items){
+    this._items = items;
+  }
+
   get items(){
-    return this._page_cur.items;
+    return this._items;
   }
   get line_cur(){
     return this._page_cur.line_cur;
@@ -145,6 +182,7 @@ class ItemListPages{
   updatePageCur(init_path){
     if(!ipc_renderer.sendSync('fs.isDirectory', init_path)){
       console.log('updatePageCur() <> NOT Directory!!');
+      this._items = this._page_cur.items;
       return this._page_cur;
     }
     //this._page_prev = this._page_cur;
@@ -172,6 +210,7 @@ class ItemListPages{
       this._page_cur = this._pages[init_path];
     }
 
+    this._items = this._page_cur.items;
 
     //console.log('this._page_cur.dir_cur: ' + this._page_cur.dir_cur);
     //for(let e of this._page_cur.items){

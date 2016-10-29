@@ -1,6 +1,7 @@
 'use strict';
 
 import fs from 'fs';
+import im from 'immutable';
 import ItemListCore from '../core/item_list';
 import { KEY_INPUT_MODE } from '../core/item_type';
 
@@ -132,6 +133,143 @@ function CombinedItemList(state, action){
       //console.log('combined-item-list <> action.c: ' + action.c);
       return Object.assign({}, state,
                            {input_mode: KEY_INPUT_MODE.SEARCH});
+    case 'RECEIVE_INPUT':
+      const idx = state.active_pane_id;
+
+      //let state_new = Object.assign({}, state);
+
+      //let state_new = Object.assign({}, state,
+      //      {arr_pages: state.arr_pages.map((e)=>{
+      //        return e;
+      //      })}
+      //    );
+
+      //let state_new = Object.assign({}, state,
+      //      {arr_pages: state.arr_pages.map((pages)=>{
+      //        return pages.map((e, i, arr)=>{
+      //          return e;
+      //        });
+      //      })}
+      //    );
+
+      //let tmp = Immutable.fromJS(state);
+      //let state_new = tmp.toJS();
+
+      //var arr = [0, 1, 2, 3, 4];
+      //var numbers = im.array(arr);
+      //console.log('array0: ' + arr);
+      //console.log('array0: ' + numbers);
+
+      //const im_arr_emp = im.array();
+      //const im_arr = im_arr_emp.assoc([0, 1, 2, 3]);
+      //console.log('im_arr: ' + im_arr);
+
+      //const im_state = im.object(state);
+      //let state_new = im_state.mutable();
+
+      const msg_cmd = state.arr_pages[idx].msg_cmd;
+      const pattern = msg_cmd.slice(1, msg_cmd.length);
+      //state_new.arr_pages[idx].filterItems(pattern);
+
+      //const im_items = im.object(state.arr_pages[idx].items);
+      //let reg = new RegExp(pattern);
+      //return this._page_cur.items.filter(function(e){
+      //  //console.log(e.name);
+      //  return e.name.match(reg);
+      //});
+
+
+      //state_new.arr_pages[idx].items = im_items.mutable();
+
+
+
+      //state_new.arr_pages[idx].items = state_new.arr_pages[idx].filterItems(pattern);
+      const im_state = im.fromJS(state);
+      //console.log('im_state: ' + im_state.get('arr_pages').get(idx));
+      //console.log('im_state: ' + im_state.get('arr_pages').get(idx).items);
+      const reg = new RegExp(pattern);
+      //const filtered = im_state.get('arr_pages').get(idx).items.filter(function(e){
+      //  return e;
+      //  //return (e.get('name').search(reg) > -1);
+      //});
+      //const filtered = im_state.get('arr_pages').get(idx).items;
+
+      //console.log('filtered: ' + filtered);
+      //console.log('filtered: ' + filtered.size);
+      //console.log('filtered: ' + filtered.toJS());
+
+      const tmp = { arr_pages: [{name: 'name0', age: 0}, {name: 'name1', age: 1}, {name: 'name2', age: 2}], other: "other_hoge"  };
+      const im_tmp = im.fromJS(tmp);
+      const t = im_tmp.getIn(['arr_pages', 0]);
+      console.log('t: ' + t);
+
+      //const im_items_org = im_state.getIn(['arr_pages', idx]).items;
+      //const im_items_org = im_state.getIn(['arr_pages', idx, 'page_cur']);
+      //const im_items_org = im_state.getIn(['arr_pages', idx]).items;
+      //const im_items_org = im_state.getIn(['arr_pages', idx, 'pages']);
+      //const im_items_org = im_state.getIn(['arr_pages', idx, 'msg_cmd']);
+      console.log('test: ' + state.arr_pages[idx].test);
+      //console.log('test: ' + state.arr_pages[idx].test['are']);
+      //const im_items_org = im_state.getIn(['arr_pages', idx]);
+      const im_items_org = im_state.getIn(['arr_pages', idx]);
+      //const im_items_org = im_state.getIn(['arr_pages', idx, 'test']);
+      console.log('im_items_org: ' + im_items_org);
+
+      const im_items = im.List(im.List(im_state.get('arr_pages')).get(idx).items);
+      //const im_items = im.List(im_state.get('arr_pages').toList().get(idx).items);
+      //const im_items = im.fromJS(state.arr_pages[idx].items).toList();
+
+      //console.log('im_items.size: ' + im_items.size);
+      //console.log('im_items: ' + im_items);
+
+      //const im_hoge = im_state.get('arr_pages').toList().get(idx).items.toList();
+        //.get(idx).items.toList().filter(function(e){
+      //console.log('im_hoge; ' + im_hoge);
+      //const im_filtered = im_state.get('arr_pages').toList().get(idx).items.toList().filter(function(e){
+      const im_filtered = im_items.filter(function(e){
+        //return e;
+        //return (e.get('name').search(reg) > -1);
+        return (e.name.search(reg) > -1);
+      });
+      //console.log('filtered: ' + filtered);
+      const filtered = im_filtered.toJS();
+      console.log('-------------------------------------');
+      for(let e of filtered){
+        console.log('e.name: ' + e.name);
+      }
+      console.log('-------------------------------------');
+
+      //const im_state_new = 
+
+      const items = im_items.toJS();
+      //console.log('im_items: ' + im_items[0].name);
+      //for(let e of items){
+      //  console.log('e.name: ' + e.name);
+      //}
+
+      const state_new = im_state.toJS();
+      //const state_new = Object.assgn({}, im_state.toJS(), {})
+
+
+      //const rec = im.Record({id: 0, description: 'hoge'});
+
+
+
+      //for(let key in state_new.arr_pages[idx].items){
+      //  state_new.arr_pages[idx].items[key].name = 'hoge';
+      //}
+      //item_list.items = state.arr_pages[id].items;
+      //if(idx == 0){
+        //console.log('pane-item-list <> idx: ' + idx);
+        //console.log('pane-item-list <> msg_cmd: ' + msg_cmd);
+        //console.log('-------------------------------------');
+        //for(let e of state_new.arr_pages[idx].items){
+        //  console.log('e.name: ' + e.name);
+        //}
+        //console.log('-------------------------------------');
+      //}
+
+      return state_new;
 
     default:
       //console.log('reducer: default <> state.arr_item_list[0].id: ' + state.arr_item_list[0].id);

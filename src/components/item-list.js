@@ -80,7 +80,7 @@ class ItemListView extends React.Component {
 
     //console.log('------------------------------');
     //for(let e of item_list.items){
-    //  console.log(e.name);
+    //  console.log('e.name: ' + e.name);
     //}
     //console.log('------------------------------');
     if(item_list.items.length <= 0){

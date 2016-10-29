@@ -22,7 +22,22 @@ const mapStateToProps = (state, props) => {
   let id = props.id;
   let item_list = state.arr_pages[id].page_cur;
   //console.log('mapStateToProps <> item_list.dir_cur: ' + item_list.dir_cur);
+  //state.arr_pages[id].filterItems('');
+
+  //const msg_cmd = state.arr_pages[id].msg_cmd;
+  //const pattern = msg_cmd.slice(1, msg_cmd.length);
+  //state.arr_pages[id].filterItems(pattern);
   item_list.items = state.arr_pages[id].items;
+  //if(id == 0){
+  //  console.log('pane-item-list <> id: ' + id);
+  //  console.log('pane-item-list <> msg_cmd: ' + msg_cmd);
+  //  console.log('-------------------------------------');
+  //  for(let e of item_list.items){
+  //    console.log('e.name: ' + e.name);
+  //  }
+  //  console.log('-------------------------------------');
+  //}
+
   //console.log('map <> state.is_dir_changed: ' + state.is_dir_changed);
   return {item_list: item_list, 
           active_pane_id: state.active_pane_id,
