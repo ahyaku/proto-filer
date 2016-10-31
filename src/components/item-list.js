@@ -6,6 +6,15 @@ import util from 'util';
 //import ITEM_TYPE_KIND from '../core/item_type';
 import {ITEM_TYPE_KIND} from '../core/item_type';
 
+//import ItemIm from '../core/item_im';
+//import ItemListPaneIm from '../core/item_list';
+//import ItemListPages from '../core/item_list_pages';
+
+//const item_init = new ItemIm();
+//const item_update = item_init.setName('hoge');
+//console.log('item_init.getName(): ' + item_init.getName());
+//console.log('item_update.getName(): ' + item_update.getName());
+
 /* [NOTE]
  *     Not sure the reason why but without argument 'line_cur',
  *     this function is NOT called when keydown occurs.
@@ -13,12 +22,7 @@ import {ITEM_TYPE_KIND} from '../core/item_type';
  *     but some change in the array is NOT detected???
  * */
 const ItemList = ({item_list, active_pane_id, line_cur, action_type, onItemListClick, props}) => {
-//  arr_pos = [];
-//  for(let i=0; i<2; i++){
-//    arr_pos[i] = [];
-//  }
-//  arr_pos[0][0] = 'foo';
-//  arr_pos[1][0] = 'bar';
+
   return (
     <ItemListView item_list={item_list} active_pane_id={active_pane_id} action_type={action_type} id={props.id} />
   );
@@ -78,58 +82,158 @@ class ItemListView extends React.Component {
     let active_pane_id = this.props.active_pane_id;
     let id = this.props.id;
 
-    //console.log('------------------------------');
-    //for(let e of item_list.items){
-    //  console.log('e.name: ' + e.name);
+    //if(item_list.items.length <= 0){
+    //  return (
+    //    <div>
+    //    </div>
+    //  );
     //}
-    //console.log('------------------------------');
-    if(item_list.items.length <= 0){
-      return (
-        <div>
-        </div>
-      );
-    }
+    //
+    //let idx = item_list.line_cur;
+    //if(idx >= item_list.items.length){
+    //  console.log('ERROR!! <> idx >= item_list.items.length');
+    //  idx = item_list.items.length - 1;
+    //}
+    //let items_head = item_list.items.slice(0, idx);
+    //let item_cur = item_list.items[idx];
+    //let items_tail = item_list.items.slice(idx+1, item_list.length);
 
-    let idx = item_list.line_cur;
-    if(idx >= item_list.items.length){
-      console.log('ERROR!! <> idx >= item_list.items.length');
-      idx = item_list.items.length - 1;
-    }
-    let items_head = item_list.items.slice(0, idx);
-    let item_cur = item_list.items[idx];
-    let items_tail = item_list.items.slice(idx+1, item_list.length);
+    //this._style_item_cur = Object.assign({}, this._styles[item_cur.kind], {zIndex: '1'});
+    //if(id === active_pane_id){
+    //  this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
+    //}else{
+    //  this._style_item_cur['borderBottom'] = 'solid 1px #333333';
+    //}
 
-    this._style_item_cur = Object.assign({}, this._styles[item_cur.kind], {zIndex: '1'});
-    if(id === active_pane_id){
-      this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
-    }else{
-      this._style_item_cur['borderBottom'] = 'solid 1px #333333';
-    }
 
+    //const items_init = new ItemListPaneIm().set('dir_cur', 'C:\\Go');
+    //const items_up = items_init.set('dir_cur', 'C:\\msys64');
+    //console.log('items_init.getDirCur(): ' + items_init.get('dir_cur'));
+    //console.log('items_up.getDirCur(): ' + items_up.get('dir_cur'));
+    //const items_last = items_up.updateItems();
+    //return (
+    //  <div >
+    //    {items_last.map((e, i) => {
+    //      return (
+    //        <div key = {i}>
+    //          {e.get('name')}
+    //        </div>
+    //      );
+    //    })}
+    //  </div>
+    //);
+
+    //const pages = new ItemListPages().updatePageCur('C:\\msys64');
+    //console.log('len1: ' + pages.get('pages').size);
+    //return (
+    //  <div >
+    //    {pages.get('pages')
+    //          .get(pages .get('path_cur'))
+    //          .get('items')
+    //          .map((e, i) => {
+    //            return (
+    //              <div key = {i}>
+    //                {e.get('name')}
+    //              </div>
+    //            );
+    //    })}
+    //  </div>
+    //);
+
+    //const pages = new ItemListPages().updatePageCur('C:\\msys64');
+    //console.log('len1: ' + pages.get('pages').size);
+    //const pages_tmp = pages.updatePageCur('C:\\');
+    //console.log('len2: ' + pages_tmp.get('pages').size);
+    //const pages_new = pages_tmp.updatePageCur('C:\\msys64');
+    //console.log('len3: ' + pages_new.get('pages').size);
+    //return (
+    //  <div >
+    //    {pages_new.get('pages')
+    //          .get(pages_new .get('path_cur'))
+    //          .get('items')
+    //          .map((e, i) => {
+    //            return (
+    //              <div key = {i}>
+    //                {e.get('name')}
+    //              </div>
+    //            );
+    //    })}
+    //  </div>
+    //);
 
     return (
-      <div style={this._style} ref="item_list">
-        {items_head.map((e, i) => {
-          return (
-            <div key={i} style={this._styles[e.kind]}>
-              {e.name}
-            </div>
-          );
-        })}
-        <div style={this._style_item_cur} ref="item_cur">
-          {item_cur.name}
-        </div>
-        {items_tail.map((e, i) => {
-          return (
-            <div key={i} style={this._styles[e.kind]}>
-              {e.name}
-            </div>
-          );
+      <div >
+        {item_list
+           .get('items')
+           .map((e, i) => {
+             return (
+               <div key = {i}>
+                 {e.get('name')}
+               </div>
+             );
         })}
       </div>
     );
 
   }
+
+  //render(){
+  //  let item_list = this.props.item_list;
+  //  let active_pane_id = this.props.active_pane_id;
+  //  let id = this.props.id;
+
+  //  //console.log('------------------------------');
+  //  //for(let e of item_list.items){
+  //  //  console.log('e.name: ' + e.name);
+  //  //}
+  //  //console.log('------------------------------');
+  //  if(item_list.items.length <= 0){
+  //    return (
+  //      <div>
+  //      </div>
+  //    );
+  //  }
+
+  //  let idx = item_list.line_cur;
+  //  if(idx >= item_list.items.length){
+  //    console.log('ERROR!! <> idx >= item_list.items.length');
+  //    idx = item_list.items.length - 1;
+  //  }
+  //  let items_head = item_list.items.slice(0, idx);
+  //  let item_cur = item_list.items[idx];
+  //  let items_tail = item_list.items.slice(idx+1, item_list.length);
+
+  //  this._style_item_cur = Object.assign({}, this._styles[item_cur.kind], {zIndex: '1'});
+  //  if(id === active_pane_id){
+  //    this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
+  //  }else{
+  //    this._style_item_cur['borderBottom'] = 'solid 1px #333333';
+  //  }
+
+
+  //  return (
+  //    <div style={this._style} ref="item_list">
+  //      {items_head.map((e, i) => {
+  //        return (
+  //          <div key={i} style={this._styles[e.kind]}>
+  //            {e.name}
+  //          </div>
+  //        );
+  //      })}
+  //      <div style={this._style_item_cur} ref="item_cur">
+  //        {item_cur.name}
+  //      </div>
+  //      {items_tail.map((e, i) => {
+  //        return (
+  //          <div key={i} style={this._styles[e.kind]}>
+  //            {e.name}
+  //          </div>
+  //        );
+  //      })}
+  //    </div>
+  //  );
+
+  //}
 
   componentDidUpdate(){
     //console.log('Are you known???');

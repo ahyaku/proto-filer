@@ -8,6 +8,8 @@ import PaneItemList from '../containers/pane-item-list';
 import PanePathCur from '../containers/pane-path-cur';
 import PathCmd from '../containers/pane-cmd';
 
+//import ItemList from '../components/item-list';
+
 const Footer = () => {
   const style = {
     border: 'solid 1px #0000FF',
@@ -19,33 +21,6 @@ const Footer = () => {
       Footer
     </div>
   );
-
-  //const style1 = {
-  //  border: 'solid 10px #FF0000',
-  //  zIndex: '0',
-  //  //margin: '0px 0px -10px',
-  //  //margin: '-10px 0px 0px',
-  //  //flex: '0 0 auto'
-  //  //boxSizing: 'border-box'
-  //};
-  //const style2 = {
-  //  border: 'solid 10px #00FF00',
-  //  //zIndex: '1',
-  //  //margin: '0px 0px -10px',
-  //  //flex: '0 0 auto'
-  //  boxSizing: 'border-box'
-  //};
-  //return (
-  //  <div style={style}>
-  //    <div style={style1}>
-  //      Foo
-  //    </div>
-  //    <div style={style2}>
-  //      Bar
-  //    </div>
-  //  </div>
-  //);
-
 }
 
 const Body = () => {
@@ -67,54 +42,6 @@ const Body = () => {
       <CmdAndItemList id={1} />
     </div>
   );
-
-  //return (
-  //  <div style={style}>
-  //    <CmdAndItemList item_list={item_list_left} />
-  //  </div>
-  //);
-
-  //return (
-  //  <div style={style}>
-  //    <PaneItemList item_list={item_list_left} />
-  //  </div>
-  //);
-
-  //let arr = [];
-  //for(let i=0; i<20; i++){
-  //  arr.push("hoge");
-  //}
-  //console.log(arr);
-  //return (
-  //  <div style={style}>
-  //    {arr.map(function(e, i){
-  //      return(
-  //        <div key={i}>
-  //          {e}
-  //        </div>
-  //      );
-  //    })}
-  //  </div>
-  //);
-
-  //const style_sub = {
-  //  //flex: '1',
-  //  flex: '1 0 auto',
-  //  overflow: 'auto'
-  //};
-  //return (
-  //  <div style={style}>
-  //    <div style={style_sub}>
-  //      are
-  //      <br /><br />
-  //      you
-  //      <br /><br />
-  //      known?
-  //      <br /><br />
-  //      ???
-  //    </div>
-  //  </div>
-  //);
 }
 
 class CmdAndItemList extends React.Component {
@@ -140,12 +67,20 @@ class CmdAndItemList extends React.Component {
     };
 
     //console.log('CmdAndItemList render() <> id: ' + id);
+
     return (
       <div style={style}>
         <PathCmd id={id} />
         <PaneItemList id={id} />
       </div>
     );
+
+    //return (
+    //  <div style={style}>
+    //    <PathCmd id={id} />
+    //    <ItemList />
+    //  </div>
+    //);
   }
 
   componentDidUpdate(prevProps, prevState){

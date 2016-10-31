@@ -2,10 +2,7 @@
 
 import React from 'react';
 
-const PathCur = ({arr_path_cur, props}) => {
-  const id = props.id;
-  const path_cur = arr_path_cur[props.id];
-  //console.log('Pathcur <> ' + props);
+const PathCur = ({path_cur, props}) => {
   const style = {
     //border: '1px solid #FF0000'
     flex: '0 0 auto',

@@ -5,50 +5,30 @@ import { render } from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
+import im from 'immutable';
+
 import App from './components/app';
 import { checkKeyNormal, checkKeySearch } from './actions';
 
 import fs from 'fs';
-//import ItemListCore from './core/item_list';
 import ItemListPages from './core/item_list_pages';
 import reducer from './reducers';
 import {KEY_INPUT_MODE} from './core/item_type';
 
+//const pages_left = new ItemListPages();
+//pages_left.updatePageCur('C:\\');
+//const pages_right = new ItemListPages();
+//pages_right.updatePageCur('C:\\msys64');
+//let arr_pages = [];
+//arr_pages.push(pages_left);
+//arr_pages.push(pages_right);
 
-const pages_left = new ItemListPages();
-pages_left.updatePageCur('C:\\');
-const pages_right = new ItemListPages();
-pages_right.updatePageCur('C:\\msys64');
-let arr_pages = [];
-arr_pages.push(pages_left);
-arr_pages.push(pages_right);
-
-//const item_list = new ItemListCore();
-//item_list.dir_cur = fs.realpathSync('C:\\');
-//item_list.updateItems();
-//
-//const item_list_left = new ItemListCore();
-//item_list_left.dir_cur = fs.realpathSync('C:\\shortcut');
-//item_list_left.updateItems();
-//
-//const item_list_right = new ItemListCore();
-//item_list_right.dir_cur = fs.realpathSync('C:\\msys64');
-//item_list_right.updateItems();
-//
-//let arr_item_list = [];
-//arr_item_list.push(item_list_left);
-//arr_item_list.push(item_list_right);
+const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
+const pages_right = new ItemListPages().updatePageCur('C:\\Go');
+const arr_pages = im.List.of(pages_left, pages_right);
+//console.log('arr_pages: ' + arr_pages);
 
 const active_pane_id = 0;
-
-//for(let e of item_list.items){
-//  console.log(e.name);
-//}
-
-//const state_init = {
-//  arr_item_list: arr_item_list,
-//  active_pane_id: active_pane_id
-//}
 
 const state_init = {
   arr_pages: arr_pages,
@@ -57,13 +37,9 @@ const state_init = {
   input_mode: KEY_INPUT_MODE.NORMAL,
   msg_cmd: ''
 }
+//console.log('state_init.arr_pages: ' + state_init.arr_pages);
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
-//console.log(store.getState());
-
-//let unsubscribe = store.subscribe(() => {
-//  console.log(store.getState());
-//});
 
 function ListenKeydown(mapEventToAction){
 

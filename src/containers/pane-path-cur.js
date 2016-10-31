@@ -6,14 +6,15 @@ import PathCur from '../components/path-cur';
 
 const mapStateToProps = (state, props) => {
 
-  let arr_path_cur = [];
-  //for(let e of state.arr_item_list){
+  //let arr_path_cur = [];
+  //for(let e of state.arr_pages){
   //  arr_path_cur.push(e.dir_cur);
   //}
-  for(let e of state.arr_pages){
-    arr_path_cur.push(e.dir_cur);
-  }
-  return {arr_path_cur, props};
+  //return {arr_path_cur, props};
+
+  const id = props.id;
+  const path_cur = state.arr_pages.get(id).get('path_cur');
+  return {path_cur, props};
 }
 
 const PanePathCur = connect(
