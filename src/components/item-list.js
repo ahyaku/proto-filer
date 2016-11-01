@@ -3,7 +3,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import util from 'util';
-//import ITEM_TYPE_KIND from '../core/item_type';
 import {ITEM_TYPE_KIND} from '../core/item_type';
 
 //import ItemIm from '../core/item_im';
@@ -167,7 +166,7 @@ class ItemListView extends React.Component {
            .get('items')
            .map((e, i) => {
              return (
-               <div key = {i}>
+               <div key={i} style={this._styles[e.get('kind')]}>
                  {e.get('name')}
                </div>
              );

@@ -62,9 +62,7 @@ class ItemListPane extends ItemListPaneRecord{
     const items = im.Range(0, es.length)
                     .map((i) => {
                       let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
-                      return new Item()
-                                   .set('name', es[i])
-                                   .set('is_dir', is_dir);
+                      return new Item({name: es[i], is_dir: is_dir});
                     });
     
     //let item_list_js = items.toJS();

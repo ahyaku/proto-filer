@@ -2,7 +2,6 @@
 
 import im from 'immutable';
 
-//import ITEM_TYPE_KIND from './item_type';
 import {ITEM_TYPE_KIND} from './item_type';
 
 //let ATTR = {
@@ -12,51 +11,12 @@ import {ITEM_TYPE_KIND} from './item_type';
 
 const ItemRecord = im.Record({
   name: null,
-  kind: null,
   ext : null,
+  kind: null,
   selected: false,
   is_dir: false,
   color: null
 });
-
-function getItemTypeKind(ext){
-  //switch(ext){
-  //  case 'exe'
-  //    return ITEM_TYPE_KIND.EXE;
-  //  default:
-  //    return ITEM_TYPE_KIND.OTHER;
-  //}
-
-  const opt = {sensitivity: 'base'};
-
-  if(ext.localeCompare('txt', 'en', opt) == 0){
-    return ITEM_TYPE_KIND.TEXT;
-  }else if(ext.localeCompare('exe', 'en', opt) == 0){
-    return ITEM_TYPE_KIND.EXE;
-  }else if( (ext.localeCompare('lib', 'en', opt) == 0) ||
-            (ext.localeCompare('dll', 'en', opt) == 0) ||
-            (ext.localeCompare('a',   'en', opt) == 0) ||
-            (ext.localeCompare('so',  'en', opt) == 0) ){
-    return ITEM_TYPE_KIND.BIN;
-  }else if( (ext.localeCompare('jpg',  'en', opt) == 0) ||
-            (ext.localeCompare('jpeg', 'en', opt) == 0) ||
-            (ext.localeCompare('png',  'en', opt) == 0) ||
-            (ext.localeCompare('gif',  'en', opt) == 0) ||
-            (ext.localeCompare('bmp',  'en', opt) == 0) ){
-    return ITEM_TYPE_KIND.IMAGE;
-  }else if( (ext.localeCompare('mp4',  'en', opt) == 0) ||
-            (ext.localeCompare('avi',  'en', opt) == 0) ||
-            (ext.localeCompare('mpeg', 'en', opt) == 0) ){
-    return ITEM_TYPE_KIND.MOVIE;
-  }else if(ext.localeCompare('mp3', 'en', opt) == 0){
-    return ITEM_TYPE_KIND.SOUND;
-  }else if( (ext.localeCompare('zip', 'en', opt) == 0) ||
-            (ext.localeCompare('rar', 'en', opt) == 0) ){
-    return ITEM_TYPE_KIND.ARCHIVE;
-  }else{
-    return ITEM_TYPE_KIND.OTHER;
-  }
-}
 
 class Item extends ItemRecord{
   //constructor(){
@@ -103,6 +63,12 @@ class Item extends ItemRecord{
 
   constructor(props){
     super(props);
+    const ext = props.name.slice(((props.name.lastIndexOf(".")-1)>>>0)+2);
+    const kind = getItemTypeKind(ext, props.is_dir);
+    //console.log('props.name: ' + props.name + ', ext: ' + ext + ', kind: ' + kind);
+
+    return this.set('ext', ext)
+               .set('kind', kind);
   }
 
   //setName(name){
@@ -118,5 +84,42 @@ class Item extends ItemRecord{
   //  return this.get('is_dir');
   //}
 }
+
+function getItemTypeKind(ext, is_dir){
+  if(is_dir){
+    return ITEM_TYPE_KIND.DIR;
+  }
+
+  const opt = {sensitivity: 'base'};
+
+  if(ext.localeCompare('txt', 'en', opt) == 0){
+    return ITEM_TYPE_KIND.TEXT;
+  }else if(ext.localeCompare('exe', 'en', opt) == 0){
+    return ITEM_TYPE_KIND.EXE;
+  }else if( (ext.localeCompare('lib', 'en', opt) == 0) ||
+            (ext.localeCompare('dll', 'en', opt) == 0) ||
+            (ext.localeCompare('a',   'en', opt) == 0) ||
+            (ext.localeCompare('so',  'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.BIN;
+  }else if( (ext.localeCompare('jpg',  'en', opt) == 0) ||
+            (ext.localeCompare('jpeg', 'en', opt) == 0) ||
+            (ext.localeCompare('png',  'en', opt) == 0) ||
+            (ext.localeCompare('gif',  'en', opt) == 0) ||
+            (ext.localeCompare('bmp',  'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.IMAGE;
+  }else if( (ext.localeCompare('mp4',  'en', opt) == 0) ||
+            (ext.localeCompare('avi',  'en', opt) == 0) ||
+            (ext.localeCompare('mpeg', 'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.MOVIE;
+  }else if(ext.localeCompare('mp3', 'en', opt) == 0){
+    return ITEM_TYPE_KIND.SOUND;
+  }else if( (ext.localeCompare('zip', 'en', opt) == 0) ||
+            (ext.localeCompare('rar', 'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.ARCHIVE;
+  }else{
+    return ITEM_TYPE_KIND.OTHER;
+  }
+}
+
 
 module.exports = Item;
