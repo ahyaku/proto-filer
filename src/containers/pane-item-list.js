@@ -34,16 +34,13 @@ const mapStateToProps = (state, props) => {
 
   //console.log('state.arr_pages: ' + state.arr_pages);
   const id = props.id;
-  const arr_pages = state.arr_pages
-  const item_list = arr_pages
-                      .get(id)
-                      .get('pages')
-                      .get(arr_pages.get(id).get('path_cur'));
+  const path_cur = state.getIn(['arr_pages', id, 'path_cur']);
+  const item_list = state.getIn(['arr_pages', id, 'pages', path_cur]);
 
   return {item_list: item_list, 
-          active_pane_id: state.active_pane_id,
+          active_pane_id: state.get('active_pane_id'),
           line_cur: 0,
-          action_type: state.action_type};
+          action_type: state.get('action_type')};
 
 }
 

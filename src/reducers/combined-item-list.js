@@ -6,7 +6,7 @@ import ItemListCore from '../core/item_list';
 import { KEY_INPUT_MODE } from '../core/item_type';
 
 function CombinedItemList(state, action){
-  //switch(action.type){
+  switch(action.type){
   //  case 'MOVE_CURSOR_UP':
   //    {
   //      let arr_pages = state.arr_pages;
@@ -19,19 +19,54 @@ function CombinedItemList(state, action){
   //                           {arr_pages: arr_pages},
   //                           {action_type: action.type});
   //    }
+    case 'MOVE_CURSOR_DOWN':
+      {
+        const idx = state.get('active_pane_id');
+        const path_cur = state.getIn(['arr_pages', idx, 'path_cur']);
+        const line_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'line_cur']);
+        const len = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items']).size;
 
-  //  case 'MOVE_CURSOR_DOWN':
-  //    {
-  //      let arr_pages = state.arr_pages;
-  //      for(let i=0; i<arr_pages.length; i++){
-  //        arr_pages[i].page_cur.items = state.arr_pages[i].page_cur.items;
-  //      }
-  //      const idx = state.active_pane_id;
-  //      arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur + 1;
-  //      return Object.assign({}, state,
-  //                           {arr_pages: arr_pages},
-  //                           {action_type: action.type});
-  //    }
+        const item_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items', line_cur]);
+
+        //console.log('path_cur: ' + path_cur);
+        //console.log('line_cur: ' + line_cur);
+
+        //console.log(line_cur + '/' + len + ', item_cur: ' + item_cur);
+
+        //const line_cur_new = line_cur + 1;
+        //const item_cur_new = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items', line_cur_new]);
+        //console.log(line_cur_new + '/' + len + ', item_cur: ' + item_cur_new);
+
+        return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
+                              (v) => {
+                                const vv = v + 1;
+                                if(vv < 0){
+                                  return len - 1;
+                                }else if(vv >= len){
+                                  return 0;
+                                }else{
+                                  return vv;
+                                }
+                              });
+
+        //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
+        //                      (v) => {
+        //                        return 1;
+        //                      });
+
+        //return state.setIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'], 2);
+      }
+      //{
+      //  let arr_pages = state.arr_pages;
+      //  for(let i=0; i<arr_pages.length; i++){
+      //    arr_pages[i].page_cur.items = state.arr_pages[i].page_cur.items;
+      //  }
+      //  const idx = state.active_pane_id;
+      //  arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur + 1;
+      //  return Object.assign({}, state,
+      //                       {arr_pages: arr_pages},
+      //                       {action_type: action.type});
+      //}
 
   //  case 'CHANGE_DIR_UPPER':
   //    {
@@ -108,11 +143,10 @@ function CombinedItemList(state, action){
 
   //    return state_new;
 
-  //  default:
-  //    return state;
-  //}
+    default:
+      return state;
+  }
 
-  return state;
 }
 
 export default CombinedItemList;

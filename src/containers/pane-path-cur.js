@@ -2,7 +2,9 @@
 
 import { connect } from 'react-redux';
 import Redux from 'redux';
+import im from 'immutable';
 import PathCur from '../components/path-cur';
+
 
 const mapStateToProps = (state, props) => {
 
@@ -13,7 +15,9 @@ const mapStateToProps = (state, props) => {
   //return {arr_path_cur, props};
 
   const id = props.id;
-  const path_cur = state.arr_pages.get(id).get('path_cur');
+  //const path_cur = state.arr_pages.get(id).get('path_cur');
+  //console.log('state: ' + state);
+  const path_cur = state.getIn(['arr_pages', id, 'path_cur']);
   return {path_cur, props};
 }
 

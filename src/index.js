@@ -24,19 +24,41 @@ import {KEY_INPUT_MODE} from './core/item_type';
 //arr_pages.push(pages_right);
 
 const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
+//const pages_left = new ItemListPages().updatePageCur('C:\\shortcut');
 const pages_right = new ItemListPages().updatePageCur('C:\\Go');
 const arr_pages = im.List.of(pages_left, pages_right);
 //console.log('arr_pages: ' + arr_pages);
 
 const active_pane_id = 0;
 
-const state_init = {
+//const state_init = {
+//  arr_pages: arr_pages,
+//  active_pane_id: active_pane_id,
+//  action_type: 'NONE',
+//  input_mode: KEY_INPUT_MODE.NORMAL,
+//  msg_cmd: ''
+//}
+
+const state_init = im.Map({
   arr_pages: arr_pages,
-  active_pane_id: active_pane_id,
+  active_pane_id: 0,
   action_type: 'NONE',
   input_mode: KEY_INPUT_MODE.NORMAL,
   msg_cmd: ''
-}
+});
+
+//const hoge = im.Map({
+//  arr_pages: arr_pages,
+//  active_pane_id: active_pane_id,
+//  action_type: 'NONE',
+//  input_mode: KEY_INPUT_MODE.NORMAL,
+//  msg_cmd: ''
+//});
+//
+//console.log('hoge: ' + hoge.getIn(['action_type']));
+//const path_cur = hoge.getIn(['arr_pages', 1, 'path_cur']);
+//console.log('path_cur = ' + path_cur);
+
 //console.log('state_init.arr_pages: ' + state_init.arr_pages);
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
@@ -64,7 +86,8 @@ function ListenKeydown(mapEventToAction){
 
 function mapKeydownToAction(e, getState){
   //console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
-  switch(getState().input_mode){
+  //switch(getState().input_mode){
+  switch(getState().get('input_mode')){
     case KEY_INPUT_MODE.NORMAL:
       return checkKeyNormal(e);
     case KEY_INPUT_MODE.SEARCH:

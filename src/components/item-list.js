@@ -160,10 +160,53 @@ class ItemListView extends React.Component {
     //  </div>
     //);
 
+    //return (
+    //  <div >
+    //    {item_list
+    //       .get('items')
+    //       .map((e, i) => {
+    //         return (
+    //           <div key={i} style={this._styles[e.get('kind')]}>
+    //             {e.get('name')}
+    //           </div>
+    //         );
+    //    })}
+    //  </div>
+    //);
+
+    const idx = item_list.get('line_cur');
+    //console.log('idx: ' + idx);
+    const items = item_list.get('items');
+    const items_head = items.slice(0, idx);
+    const item_cur = items.get(idx);
+    const items_tail = (idx+1 < items.size)
+                       ? items.slice(idx+1, items.size)
+                       : []; 
+
+    //console.log('items_head.size: ' + items_head.size);
+    //console.log('item_cur.get(name): ' + item_cur.get('name'));
+
+    this._style_item_cur = Object.assign({}, this._styles[item_cur.get('kind')], {zIndex: '1'});
+    if(id === active_pane_id){
+      this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
+    }else{
+      this._style_item_cur['borderBottom'] = 'solid 1px #333333';
+    }
+
     return (
-      <div >
-        {item_list
-           .get('items')
+      <div ref="item_list">
+        {items_head
+           .map((e, i) => {
+             return (
+               <div key={i} style={this._styles[e.get('kind')]}>
+                 {e.get('name')}
+               </div>
+             );
+        })}
+        <div style={this._style_item_cur} ref="item_cur">
+          {item_cur.get('name')}
+        </div>
+        {items_tail
            .map((e, i) => {
              return (
                <div key={i} style={this._styles[e.get('kind')]}>
