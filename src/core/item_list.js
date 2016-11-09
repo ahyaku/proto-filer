@@ -33,6 +33,7 @@ class ItemListPane extends ItemListPaneRecord{
 
 
   updateItems(){
+    console.log('call updateItems()!!');
     let dir_cur = this.get('dir_cur')
     let es = ipc_renderer.sendSync('fs.readdirSync', dir_cur);
     /* If file access of fs.readdirSync is denied, es == null */
@@ -59,27 +60,41 @@ class ItemListPane extends ItemListPaneRecord{
     //const items = im.Range(0, es.length)
     //                    .map(i => new Item().setName(es[i]));
     
-    const items = im.Range(0, es.length)
+    //let c = 0;
+    //const items = im.Range(0, es.length)
+    //                .map((i) => {
+    //                  //console.log('c: ' + c + ', dir_cur: ' + dir_cur + ', es[' + i + ']: ' + es[i]);
+    //                  let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
+    //                  c++;
+    //                  return new Item({name: es[i], is_dir: is_dir}).init();
+    //                });
+    //const ret = this.set('items', items);
+    //return ret;
+
+    let c = 0;
+    const items = im.Seq(im.Range(0, es.length))
                     .map((i) => {
+                      //console.log('c: ' + c + ', dir_cur: ' + dir_cur + ', es[' + i + ']: ' + es[i]);
                       let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
-                      return new Item({name: es[i], is_dir: is_dir});
+                      c++;
+                      return new Item({name: es[i], is_dir: is_dir}).init();
                     });
-    
-    //let item_list_js = items.toJS();
-    //item_list_js.map((e, i) => {
-    //  console.log(i + ' name(' + e.is_dir + '): ' + e.name);
-    //});
+    const ret = this.set('items', items);
+    return ret;
 
-    //items.forEach((e) => {
-    //  console.log('name: ' + e.get('name'));
-    //  return e;
-    //});
-
-    //console.log('hoge: ' + items);
-
-    //return items;
-
-    return this.set('items', items);
+    //let c = 0;
+    //const items = im.Range(0, es.length)
+    //                .map((i) => {
+    //                  console.log('c: ' + c + ', dir_cur: ' + dir_cur + ', es[' + i + ']: ' + es[i]);
+    //                  let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
+    //                  c++;
+    //                  return new Item({name: es[i], is_dir: is_dir});
+    //                });
+    //const items_new = items.map((e) => {
+    //                             return e.init();
+    //                           });
+    //const ret = this.set('items', items_new);
+    //return ret;
   }
   
 }

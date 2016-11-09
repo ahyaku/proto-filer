@@ -25,7 +25,9 @@ import {KEY_INPUT_MODE} from './core/item_type';
 
 const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
 //const pages_left = new ItemListPages().updatePageCur('C:\\shortcut');
+//const pages_left = new ItemListPages().updatePageCur('C:\\test');
 const pages_right = new ItemListPages().updatePageCur('C:\\Go');
+//const pages_right = new ItemListPages().updatePageCur('C:\\test');
 const arr_pages = im.List.of(pages_left, pages_right);
 //console.log('arr_pages: ' + arr_pages);
 
@@ -39,7 +41,16 @@ const active_pane_id = 0;
 //  msg_cmd: ''
 //}
 
+//const state_init = im.Record({
 const state_init = im.Map({
+  arr_pages: arr_pages,
+  active_pane_id: 0,
+  action_type: 'NONE',
+  input_mode: KEY_INPUT_MODE.NORMAL,
+  msg_cmd: ''
+});
+
+const hoge = im.Record({
   arr_pages: arr_pages,
   active_pane_id: 0,
   action_type: 'NONE',

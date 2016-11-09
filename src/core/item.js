@@ -62,13 +62,25 @@ class Item extends ItemRecord{
   //}
 
   constructor(props){
+    //console.log('call item.constructor()!! name: ' + props.name);
     super(props);
-    const ext = props.name.slice(((props.name.lastIndexOf(".")-1)>>>0)+2);
-    const kind = getItemTypeKind(ext, props.is_dir);
+
+    //const ext = props.name.slice(((props.name.lastIndexOf(".")-1)>>>0)+2);
+    //const kind = getItemTypeKind(ext, props.is_dir);
+    ////console.log('props.name: ' + props.name + ', ext: ' + ext + ', kind: ' + kind);
+
+    //return this.set('ext', ext)
+    //           .set('kind', kind);
+  }
+
+  init(){
+    console.log('call item.init()!! name: ' + this.get('name'));
+    const ext = this.get('name').slice(((this.get('name').lastIndexOf(".")-1)>>>0)+2);
+    const kind = getItemTypeKind(ext, this.get('is_dir'));
     //console.log('props.name: ' + props.name + ', ext: ' + ext + ', kind: ' + kind);
 
-    return this.set('ext', ext)
-               .set('kind', kind);
+    return this.set('ext', ext).set('kind', kind);
+
   }
 
   //setName(name){
@@ -86,6 +98,7 @@ class Item extends ItemRecord{
 }
 
 function getItemTypeKind(ext, is_dir){
+  //console.log('call getItemTypeKind()!!');
   if(is_dir){
     return ITEM_TYPE_KIND.DIR;
   }

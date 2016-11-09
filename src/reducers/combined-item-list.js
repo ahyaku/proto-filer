@@ -21,21 +21,17 @@ function CombinedItemList(state, action){
   //    }
     case 'MOVE_CURSOR_DOWN':
       {
+        console.log('1-------------------------');
         const idx = state.get('active_pane_id');
+        console.log('2-------------------------');
         const path_cur = state.getIn(['arr_pages', idx, 'path_cur']);
+        console.log('3-------------------------');
         const line_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'line_cur']);
+        console.log('4-------------------------');
         const len = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items']).size;
+        console.log('5-------------------------');
 
-        const item_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items', line_cur]);
-
-        //console.log('path_cur: ' + path_cur);
-        //console.log('line_cur: ' + line_cur);
-
-        //console.log(line_cur + '/' + len + ', item_cur: ' + item_cur);
-
-        //const line_cur_new = line_cur + 1;
-        //const item_cur_new = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items', line_cur_new]);
-        //console.log(line_cur_new + '/' + len + ', item_cur: ' + item_cur_new);
+        //return state;
 
         return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
                               (v) => {
@@ -48,6 +44,11 @@ function CombinedItemList(state, action){
                                   return vv;
                                 }
                               });
+
+        //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
+        //                      (v) => {
+        //                        return 2;
+        //                      });
 
         //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
         //                      (v) => {

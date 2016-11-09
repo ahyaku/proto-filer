@@ -32,6 +32,7 @@ class ItemListPages extends ItemListPagesRecord{
   }
 
   updatePageCur(path){
+    console.log('call updatePageCur()!!');
     //if(!ipc_renderer.sendSync('fs.isDirectory', init_path)){
     //  console.log('updatePageCur() <> NOT Directory!!');
     //  this._items = this._page_cur.items;
@@ -89,6 +90,9 @@ class ItemListPages extends ItemListPagesRecord{
 
     return this.set('pages', this.pages.set(path, items))
                .set('path_cur', path);
+
+    //return this.set('pages', im.map({path, items}))
+    //           .set('path_cur', path);
   }
 
 }

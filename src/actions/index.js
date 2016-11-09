@@ -15,7 +15,7 @@ export const checkKeyNormal = (e) => {
   //                        pane_left.is_focused,
   //                        pane_right.is_focused));
 
-  //console.log('checkKeyNormal <> e.key: ' + e.key);
+  console.log('checkKeyNormal <> e.key: ' + e.key);
   switch(e.key){
     case 'j': /* 'j' */
       //this.cursorDown();

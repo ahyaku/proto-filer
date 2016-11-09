@@ -3,6 +3,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import util from 'util';
+import im from 'immutable';
 import {ITEM_TYPE_KIND} from '../core/item_type';
 
 //import ItemIm from '../core/item_im';
@@ -276,6 +277,35 @@ class ItemListView extends React.Component {
   //  );
 
   //}
+
+  shouldComponentUpdate(nextProps, nextState){
+    const same_il = im.is(this.props.item_list, nextProps.item_list);
+    const same_pid = im.is(this.props.active_pane_id, nextProps.active_pane_id);
+    const same_at = im.is(this.props.action_type, nextProps.action_type);
+    //if(same_il){
+    //  console.log('same_il: true');
+    //}else{
+    //  console.log('same_il: false');
+    //}
+    //if(same_pid){
+    //  console.log('same_pid: true');
+    //}else{
+    //  console.log('same_pid: false');
+    //}
+    //if(same_at){
+    //  console.log('same_at: true');
+    //}else{
+    //  console.log('same_at: false');
+    //}
+    if( !im.is(this.props.item_list, nextProps.item_list) ||
+        !im.is(this.props.active_pane_id, nextProps.active_pane_id) ||
+        !im.is(this.props.action_type, nextProps.action_type) ){
+      //console.log('true!!');
+      return true;
+    }
+    //console.log('false!!');
+    return false;
+  }
 
   componentDidUpdate(){
     //console.log('Are you known???');
