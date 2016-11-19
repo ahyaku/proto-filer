@@ -23,6 +23,47 @@ import {KEY_INPUT_MODE} from './core/item_type';
 //arr_pages.push(pages_left);
 //arr_pages.push(pages_right);
 
+
+//const TestItemRecord = im.Record({
+//  name: null,
+//  id: null,
+//  stat: 0
+//});
+//
+//class TestItem extends TestItemRecord{
+//  constructor(props){
+//    super(props);
+//    console.log("Test <> id: " + this.id);
+//  }
+//
+//  init(){
+//    console.log("Test <> init()");
+//    return this.set('stat', 1);
+//    //return this;
+//  }
+//}
+//
+//const test = im.Seq(im.Range(0, 10))
+//               .map((i) => {
+//                 return new TestItem({name: "hoge", id: i}).init('set', 1);
+//               });
+//
+//console.log('test: ' + test);
+//const ret = test.map((e, i) => {
+//                  console.log('id: ' + e.get('id'));
+//                  //e.set('id', e.get('id') + 10);
+//                  //e.id + 10;
+//                  e.set('stat', 2);
+//                  //return ret;
+//                });
+//
+//console.log('ret: ' + ret);
+
+
+//for(let i=0; i<10; i++){
+//  console.log(ret.get(i).get('id'));
+//}
+
 const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
 //const pages_left = new ItemListPages().updatePageCur('C:\\shortcut');
 //const pages_left = new ItemListPages().updatePageCur('C:\\test');

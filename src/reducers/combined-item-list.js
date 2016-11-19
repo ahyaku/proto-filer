@@ -21,29 +21,48 @@ function CombinedItemList(state, action){
   //    }
     case 'MOVE_CURSOR_DOWN':
       {
-        console.log('1-------------------------');
+        //console.log('1-------------------------');
         const idx = state.get('active_pane_id');
-        console.log('2-------------------------');
+        //console.log('2-------------------------');
         const path_cur = state.getIn(['arr_pages', idx, 'path_cur']);
-        console.log('3-------------------------');
+        //console.log('3-------------------------');
         const line_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'line_cur']);
-        console.log('4-------------------------');
+        //console.log('4-------------------------');
         const len = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items']).size;
-        console.log('5-------------------------');
+        //console.log('5-------------------------');
 
         //return state;
 
-        return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
+        const state_ret = state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
                               (v) => {
                                 const vv = v + 1;
                                 if(vv < 0){
+                                  //console.log('are');
                                   return len - 1;
                                 }else if(vv >= len){
+                                  //console.log('you');
                                   return 0;
                                 }else{
+                                  //console.log('known?');
                                   return vv;
                                 }
                               });
+
+        //console.log('6-------------------------');
+
+        return state_ret;
+
+        //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
+        //                      (v) => {
+        //                        const vv = v + 1;
+        //                        if(vv < 0){
+        //                          return len - 1;
+        //                        }else if(vv >= len){
+        //                          return 0;
+        //                        }else{
+        //                          return vv;
+        //                        }
+        //                      });
 
         //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
         //                      (v) => {

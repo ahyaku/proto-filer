@@ -33,10 +33,11 @@ const mapStateToProps = (state, props) => {
   //console.log('pane-item-list <> arr_pages: ' + arr_pages);
 
   //console.log('state.arr_pages: ' + state.arr_pages);
+  //console.log('7-------------------------');
   const id = props.id;
   const path_cur = state.getIn(['arr_pages', id, 'path_cur']);
   const item_list = state.getIn(['arr_pages', id, 'pages', path_cur]);
-
+  //console.log('8-------------------------');
   return {item_list: item_list, 
           active_pane_id: state.get('active_pane_id'),
           line_cur: 0,

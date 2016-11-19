@@ -75,6 +75,12 @@ class ItemListView extends React.Component {
     for(let i=0; i<2; i++){
       this._arr_pos[i] = [];
     }
+
+    this.count = 0;
+    //this.items_head = 0;
+    this.names = null;
+    this.items = null;
+    this.im_items = null;
   }
 
   render(){
@@ -82,110 +88,39 @@ class ItemListView extends React.Component {
     let active_pane_id = this.props.active_pane_id;
     let id = this.props.id;
 
-    //if(item_list.items.length <= 0){
-    //  return (
-    //    <div>
-    //    </div>
-    //  );
-    //}
-    //
-    //let idx = item_list.line_cur;
-    //if(idx >= item_list.items.length){
-    //  console.log('ERROR!! <> idx >= item_list.items.length');
-    //  idx = item_list.items.length - 1;
-    //}
-    //let items_head = item_list.items.slice(0, idx);
-    //let item_cur = item_list.items[idx];
-    //let items_tail = item_list.items.slice(idx+1, item_list.length);
+    if(this.im_items !== item_list.get('items')){
+      //console.log('foo');
+      this.im_items = item_list.get('items');
+      this.items = this.im_items.toArray();
+    }else{
+      //console.log('bar');
+    }
 
-    //this._style_item_cur = Object.assign({}, this._styles[item_cur.kind], {zIndex: '1'});
-    //if(id === active_pane_id){
-    //  this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
+    //if(this.items === null){
+    //  console.log('names === null');
+    //  this.items = item_list.get('items').toArray();
+    //  //for(let e of this.names){
+    //  //  console.log('name: ' + e);
+    //  //}
+    //  //console.log('this.items.length: ' + this.items.length);
     //}else{
-    //  this._style_item_cur['borderBottom'] = 'solid 1px #333333';
+    //  console.log('names !== null');
     //}
-
-
-    //const items_init = new ItemListPaneIm().set('dir_cur', 'C:\\Go');
-    //const items_up = items_init.set('dir_cur', 'C:\\msys64');
-    //console.log('items_init.getDirCur(): ' + items_init.get('dir_cur'));
-    //console.log('items_up.getDirCur(): ' + items_up.get('dir_cur'));
-    //const items_last = items_up.updateItems();
-    //return (
-    //  <div >
-    //    {items_last.map((e, i) => {
-    //      return (
-    //        <div key = {i}>
-    //          {e.get('name')}
-    //        </div>
-    //      );
-    //    })}
-    //  </div>
-    //);
-
-    //const pages = new ItemListPages().updatePageCur('C:\\msys64');
-    //console.log('len1: ' + pages.get('pages').size);
-    //return (
-    //  <div >
-    //    {pages.get('pages')
-    //          .get(pages .get('path_cur'))
-    //          .get('items')
-    //          .map((e, i) => {
-    //            return (
-    //              <div key = {i}>
-    //                {e.get('name')}
-    //              </div>
-    //            );
-    //    })}
-    //  </div>
-    //);
-
-    //const pages = new ItemListPages().updatePageCur('C:\\msys64');
-    //console.log('len1: ' + pages.get('pages').size);
-    //const pages_tmp = pages.updatePageCur('C:\\');
-    //console.log('len2: ' + pages_tmp.get('pages').size);
-    //const pages_new = pages_tmp.updatePageCur('C:\\msys64');
-    //console.log('len3: ' + pages_new.get('pages').size);
-    //return (
-    //  <div >
-    //    {pages_new.get('pages')
-    //          .get(pages_new .get('path_cur'))
-    //          .get('items')
-    //          .map((e, i) => {
-    //            return (
-    //              <div key = {i}>
-    //                {e.get('name')}
-    //              </div>
-    //            );
-    //    })}
-    //  </div>
-    //);
-
-    //return (
-    //  <div >
-    //    {item_list
-    //       .get('items')
-    //       .map((e, i) => {
-    //         return (
-    //           <div key={i} style={this._styles[e.get('kind')]}>
-    //             {e.get('name')}
-    //           </div>
-    //         );
-    //    })}
-    //  </div>
-    //);
 
     const idx = item_list.get('line_cur');
-    //console.log('idx: ' + idx);
-    const items = item_list.get('items');
-    const items_head = items.slice(0, idx);
-    const item_cur = items.get(idx);
-    const items_tail = (idx+1 < items.size)
-                       ? items.slice(idx+1, items.size)
-                       : []; 
 
-    //console.log('items_head.size: ' + items_head.size);
-    //console.log('item_cur.get(name): ' + item_cur.get('name'));
+    //const items = item_list.get('items');
+    //const items_head = items.slice(0, idx);
+    //const item_cur = items.get(idx);
+    //const items_tail = (idx+1 < items.size)
+    //                   ? items.slice(idx+1, items.size)
+    //                   : []; 
+
+    const items_head = this.items.slice(0, idx);
+    const item_cur = this.items[idx];
+    const items_tail = (idx+1 < this.items.length)
+                       ? this.items.slice(idx+1, this.items.length)
+                       : [];
 
     this._style_item_cur = Object.assign({}, this._styles[item_cur.get('kind')], {zIndex: '1'});
     if(id === active_pane_id){
@@ -198,87 +133,59 @@ class ItemListView extends React.Component {
       <div ref="item_list">
         {items_head
            .map((e, i) => {
+             //console.log('16-------------------------');
              return (
-               <div key={i} style={this._styles[e.get('kind')]}>
-                 {e.get('name')}
+               <div key={i} style={this._styles[e['kind']]}>
+                 {e['name']}
                </div>
              );
         })}
         <div style={this._style_item_cur} ref="item_cur">
-          {item_cur.get('name')}
+          {item_cur['name']}
         </div>
         {items_tail
            .map((e, i) => {
+             //console.log('17-------------------------');
              return (
-               <div key={i} style={this._styles[e.get('kind')]}>
-                 {e.get('name')}
+               <div key={i} style={this._styles[e['kind']]}>
+                 {e['name']}
                </div>
              );
         })}
       </div>
     );
 
+    //console.log('15-------------------------');
+    //return (
+    //  <div ref="item_list">
+    //    {items_head
+    //       .map((e, i) => {
+    //         //console.log('16-------------------------');
+    //         return (
+    //           <div key={i} style={this._styles[e.get('kind')]}>
+    //             {e.get('name')}
+    //           </div>
+    //         );
+    //    })}
+    //    <div style={this._style_item_cur} ref="item_cur">
+    //      {item_cur.get('name')}
+    //    </div>
+    //    {items_tail
+    //       .map((e, i) => {
+    //         //console.log('17-------------------------');
+    //         return (
+    //           <div key={i} style={this._styles[e.get('kind')]}>
+    //             {e.get('name')}
+    //           </div>
+    //         );
+    //    })}
+    //  </div>
+    //);
+
   }
 
-  //render(){
-  //  let item_list = this.props.item_list;
-  //  let active_pane_id = this.props.active_pane_id;
-  //  let id = this.props.id;
-
-  //  //console.log('------------------------------');
-  //  //for(let e of item_list.items){
-  //  //  console.log('e.name: ' + e.name);
-  //  //}
-  //  //console.log('------------------------------');
-  //  if(item_list.items.length <= 0){
-  //    return (
-  //      <div>
-  //      </div>
-  //    );
-  //  }
-
-  //  let idx = item_list.line_cur;
-  //  if(idx >= item_list.items.length){
-  //    console.log('ERROR!! <> idx >= item_list.items.length');
-  //    idx = item_list.items.length - 1;
-  //  }
-  //  let items_head = item_list.items.slice(0, idx);
-  //  let item_cur = item_list.items[idx];
-  //  let items_tail = item_list.items.slice(idx+1, item_list.length);
-
-  //  this._style_item_cur = Object.assign({}, this._styles[item_cur.kind], {zIndex: '1'});
-  //  if(id === active_pane_id){
-  //    this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
-  //  }else{
-  //    this._style_item_cur['borderBottom'] = 'solid 1px #333333';
-  //  }
-
-
-  //  return (
-  //    <div style={this._style} ref="item_list">
-  //      {items_head.map((e, i) => {
-  //        return (
-  //          <div key={i} style={this._styles[e.kind]}>
-  //            {e.name}
-  //          </div>
-  //        );
-  //      })}
-  //      <div style={this._style_item_cur} ref="item_cur">
-  //        {item_cur.name}
-  //      </div>
-  //      {items_tail.map((e, i) => {
-  //        return (
-  //          <div key={i} style={this._styles[e.kind]}>
-  //            {e.name}
-  //          </div>
-  //        );
-  //      })}
-  //    </div>
-  //  );
-
-  //}
-
   shouldComponentUpdate(nextProps, nextState){
+    //console.log('16-------------------------');
     const same_il = im.is(this.props.item_list, nextProps.item_list);
     const same_pid = im.is(this.props.active_pane_id, nextProps.active_pane_id);
     const same_at = im.is(this.props.action_type, nextProps.action_type);
@@ -311,6 +218,7 @@ class ItemListView extends React.Component {
     //console.log('Are you known???');
     //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
 
+    //console.log('17-------------------------');
     let scrollTop;
 
     let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);

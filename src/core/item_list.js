@@ -9,7 +9,7 @@ let util = require('util')
 
 import im from 'immutable';
 import Item from './item';
-
+import {ITEM_TYPE_KIND} from './item_type';
 
 const ItemListPaneRecord = im.Record({
   dir_cur: null,
@@ -78,6 +78,11 @@ class ItemListPane extends ItemListPaneRecord{
                       let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
                       c++;
                       return new Item({name: es[i], is_dir: is_dir}).init();
+
+                      //const ext = es[i].slice(((es[i].lastIndexOf(".")-1)>>>0)+2);
+                      //const kind = getItemTypeKind(ext, is_dir);
+                      //return new Item({name: es[i], is_dir: is_dir, ext: ext, kind: kind});
+
                     });
     const ret = this.set('items', items);
     return ret;
@@ -253,5 +258,42 @@ class ItemListPane extends ItemListPaneRecord{
 //  }
 //
 //}
+
+function getItemTypeKind(ext, is_dir){
+  //console.log('call getItemTypeKind()!!');
+  if(is_dir){
+    return ITEM_TYPE_KIND.DIR;
+  }
+
+  const opt = {sensitivity: 'base'};
+
+  if(ext.localeCompare('txt', 'en', opt) == 0){
+    return ITEM_TYPE_KIND.TEXT;
+  }else if(ext.localeCompare('exe', 'en', opt) == 0){
+    return ITEM_TYPE_KIND.EXE;
+  }else if( (ext.localeCompare('lib', 'en', opt) == 0) ||
+            (ext.localeCompare('dll', 'en', opt) == 0) ||
+            (ext.localeCompare('a',   'en', opt) == 0) ||
+            (ext.localeCompare('so',  'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.BIN;
+  }else if( (ext.localeCompare('jpg',  'en', opt) == 0) ||
+            (ext.localeCompare('jpeg', 'en', opt) == 0) ||
+            (ext.localeCompare('png',  'en', opt) == 0) ||
+            (ext.localeCompare('gif',  'en', opt) == 0) ||
+            (ext.localeCompare('bmp',  'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.IMAGE;
+  }else if( (ext.localeCompare('mp4',  'en', opt) == 0) ||
+            (ext.localeCompare('avi',  'en', opt) == 0) ||
+            (ext.localeCompare('mpeg', 'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.MOVIE;
+  }else if(ext.localeCompare('mp3', 'en', opt) == 0){
+    return ITEM_TYPE_KIND.SOUND;
+  }else if( (ext.localeCompare('zip', 'en', opt) == 0) ||
+            (ext.localeCompare('rar', 'en', opt) == 0) ){
+    return ITEM_TYPE_KIND.ARCHIVE;
+  }else{
+    return ITEM_TYPE_KIND.OTHER;
+  }
+}
 
 module.exports = ItemListPane;
