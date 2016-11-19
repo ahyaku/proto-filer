@@ -7,103 +7,28 @@ import { KEY_INPUT_MODE } from '../core/item_type';
 
 function CombinedItemList(state, action){
   switch(action.type){
-  //  case 'MOVE_CURSOR_UP':
-  //    {
-  //      let arr_pages = state.arr_pages;
-  //      for(let i=0; i<arr_pages.length; i++){
-  //        arr_pages[i].page_cur.items = state.arr_pages[i].page_cur.items;
-  //      }
-  //      const idx = state.active_pane_id;
-  //      arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur - 1;
-  //      return Object.assign({}, state,
-  //                           {arr_pages: arr_pages},
-  //                           {action_type: action.type});
-  //    }
+    case 'MOVE_CURSOR_UP':
+      {
+        return moveCursor(state, -1);
+      }
     case 'MOVE_CURSOR_DOWN':
       {
-        //console.log('1-------------------------');
-        const idx = state.get('active_pane_id');
-        //console.log('2-------------------------');
-        const path_cur = state.getIn(['arr_pages', idx, 'path_cur']);
-        //console.log('3-------------------------');
-        const line_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'line_cur']);
-        //console.log('4-------------------------');
-        const len = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items']).size;
-        //console.log('5-------------------------');
-
-        //return state;
-
-        const state_ret = state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
-                              (v) => {
-                                const vv = v + 1;
-                                if(vv < 0){
-                                  //console.log('are');
-                                  return len - 1;
-                                }else if(vv >= len){
-                                  //console.log('you');
-                                  return 0;
-                                }else{
-                                  //console.log('known?');
-                                  return vv;
-                                }
-                              });
-
-        //console.log('6-------------------------');
-
-        return state_ret;
-
-        //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
-        //                      (v) => {
-        //                        const vv = v + 1;
-        //                        if(vv < 0){
-        //                          return len - 1;
-        //                        }else if(vv >= len){
-        //                          return 0;
-        //                        }else{
-        //                          return vv;
-        //                        }
-        //                      });
-
-        //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
-        //                      (v) => {
-        //                        return 2;
-        //                      });
-
-        //return state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
-        //                      (v) => {
-        //                        return 1;
-        //                      });
-
-        //return state.setIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'], 2);
+        return moveCursor(state, 1);
       }
-      //{
-      //  let arr_pages = state.arr_pages;
-      //  for(let i=0; i<arr_pages.length; i++){
-      //    arr_pages[i].page_cur.items = state.arr_pages[i].page_cur.items;
-      //  }
-      //  const idx = state.active_pane_id;
-      //  arr_pages[idx].page_cur.line_cur = arr_pages[idx].page_cur.line_cur + 1;
-      //  return Object.assign({}, state,
-      //                       {arr_pages: arr_pages},
-      //                       {action_type: action.type});
-      //}
-
-  //  case 'CHANGE_DIR_UPPER':
-  //    {
-  //      const idx = state.active_pane_id;
-  //      let state_new = Object.assign({}, state);
-  //      state_new.arr_pages[idx].changeDirUpper();
-  //      state_new.action_type = action.type;
-  //      return state_new;
-  //    }
-  //  case 'CHANGE_DIR_LOWER':
-  //    {
-  //      const idx = state.active_pane_id;
-  //      let state_new = Object.assign({}, state);
-  //      state_new.arr_pages[idx].changeDirLower();
-  //      state_new.action_type = action.type;
-  //      return state_new;
-  //    }
+    case 'CHANGE_DIR_UPPER':
+      {
+        const idx = state.get('active_pane_id');
+        const arr_pages = state.getIn(['arr_pages', idx]).changeDirUpper();
+        const ret = state.setIn(['arr_pages', idx], arr_pages);
+        return ret;
+      }
+    case 'CHANGE_DIR_LOWER':
+      {
+        const idx = state.get('active_pane_id');
+        const arr_pages = state.getIn(['arr_pages', idx]).changeDirLower();
+        const ret = state.setIn(['arr_pages', idx], arr_pages);
+        return ret;
+      }
   //  case 'SWITCH_ACTIVE_PANE':
   //    let active_pane_id;
   //    switch(state.active_pane_id){
@@ -168,5 +93,42 @@ function CombinedItemList(state, action){
   }
 
 }
+
+function moveCursor(state, delta){
+  const idx = state.get('active_pane_id');
+  const path_cur = state.getIn(['arr_pages', idx, 'path_cur']);
+  const line_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'line_cur']);
+  const len = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items']).size;
+
+  //return state;
+
+  const ret = state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
+                      (v) => {
+                        const vv = v + delta;
+                        if(vv < 0){
+                          //console.log('are');
+                          return len - 1;
+                        }else if(vv >= len){
+                          //console.log('you');
+                          return 0;
+                        }else{
+                          //console.log('known?');
+                          return vv;
+                        }
+                      });
+
+  //console.log('6-------------------------');
+
+  return ret;
+}
+
+//function changeDir(path){
+//  const idx = state.get('active_pane_id');
+//  const arr_pages = state.getIn(['arr_pages', idx])
+//                         .updatePageCur(path);
+//
+//  const ret = state.updateIn(['arr_pages', idx], arr_pages);
+//  return ret;
+//}
 
 export default CombinedItemList;
