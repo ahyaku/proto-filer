@@ -6,21 +6,6 @@ import util from 'util';
 import im from 'immutable';
 import {ITEM_TYPE_KIND} from '../core/item_type';
 
-//import ItemIm from '../core/item_im';
-//import ItemListPaneIm from '../core/item_list';
-//import ItemListPages from '../core/item_list_pages';
-
-//const item_init = new ItemIm();
-//const item_update = item_init.setName('hoge');
-//console.log('item_init.getName(): ' + item_init.getName());
-//console.log('item_update.getName(): ' + item_update.getName());
-
-/* [NOTE]
- *     Not sure the reason why but without argument 'line_cur',
- *     this function is NOT called when keydown occurs.
- *     To call this function, some value or status change must be detected
- *     but some change in the array is NOT detected???
- * */
 const ItemList = ({item_list, active_pane_id, line_cur, action_type, onItemListClick, props}) => {
 
   return (
@@ -88,12 +73,37 @@ class ItemListView extends React.Component {
     let active_pane_id = this.props.active_pane_id;
     let id = this.props.id;
 
+    const idx = item_list.get('line_cur');
+
     if(this.im_items !== item_list.get('items')){
       //console.log('foo');
+      //console.log('items size: ' + item_list.get('items').size);
+      //item_list.get('items').map((e, i) => {
+      //  console.log('i: ' + i + ', e: ' + e);
+      //});
       this.im_items = item_list.get('items');
       this.items = this.im_items.toArray();
+      //for(let i=0; i<this.items.length; i++){
+      ////  this.items[i]['need_render'] = true;
+      //  console.log('i: ' + i + ', name: ' + this.items[i].name);
+      //}
     }else{
       //console.log('bar');
+      //for(let i=0; i<idx; i++){
+      //  this.items[i]['need_render'] = false;
+      //}
+      //this.items[idx]['need_render'] = false;
+      //for(let i=idx+1; i<this.items.length; i++){
+      //  this.items[i]['need_render'] = false;
+      //}
+    }
+
+    if(this.items.length <= 0){
+      //console.log('HERE!!');
+      return (
+        <div ref="item_list">
+        </div>
+      );
     }
 
     //if(this.items === null){
@@ -107,7 +117,6 @@ class ItemListView extends React.Component {
     //  console.log('names !== null');
     //}
 
-    const idx = item_list.get('line_cur');
 
     //const items = item_list.get('items');
     //const items_head = items.slice(0, idx);
@@ -116,12 +125,13 @@ class ItemListView extends React.Component {
     //                   ? items.slice(idx+1, items.size)
     //                   : []; 
 
-    const items_head = this.items.slice(0, idx);
-    const item_cur = this.items[idx];
-    const items_tail = (idx+1 < this.items.length)
-                       ? this.items.slice(idx+1, this.items.length)
-                       : [];
+    //const items_head = this.items.slice(0, idx);
+    //const item_cur = this.items[idx];
+    //const items_tail = (idx+1 < this.items.length)
+    //                   ? this.items.slice(idx+1, this.items.length)
+    //                   : [];
 
+    const item_cur = this.items[idx];
     this._style_item_cur = Object.assign({}, this._styles[item_cur.get('kind')], {zIndex: '1'});
     if(id === active_pane_id){
       this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
@@ -129,31 +139,96 @@ class ItemListView extends React.Component {
       this._style_item_cur['borderBottom'] = 'solid 1px #333333';
     }
 
+    //return (
+    //  <div ref="item_list">
+    //    {items_head
+    //       .map((e, i) => {
+    //         //console.log('16-------------------------');
+    //         return (
+    //           <div key={i} style={this._styles[e['kind']]}>
+    //             {e['name']}
+    //           </div>
+    //         );
+    //    })}
+    //    <div style={this._style_item_cur} ref="item_cur">
+    //      {item_cur['name']}
+    //    </div>
+    //    {items_tail
+    //       .map((e, i) => {
+    //         //console.log('17-------------------------');
+    //         return (
+    //           <div key={i} style={this._styles[e['kind']]}>
+    //             {e['name']}
+    //           </div>
+    //         );
+    //    })}
+    //  </div>
+    //);
+
+               //<div key={i} style={this._styles[e['kind']]}>
+               //  {e['name']}
+               //</div>
+               //<ItemView key={i}, name={e['name']}, style={this._styles[e['kind']]} />
+
+    //console.log('idx: ' + idx);
+
     return (
       <div ref="item_list">
-        {items_head
+        {this.items
            .map((e, i) => {
+             //console.log('items_head <> i: ' + i);
              //console.log('16-------------------------');
+             const style = i === idx 
+                             ? this._style_item_cur
+                             : this._styles[e['kind']];
              return (
-               <div key={i} style={this._styles[e['kind']]}>
-                 {e['name']}
-               </div>
-             );
-        })}
-        <div style={this._style_item_cur} ref="item_cur">
-          {item_cur['name']}
-        </div>
-        {items_tail
-           .map((e, i) => {
-             //console.log('17-------------------------');
-             return (
-               <div key={i} style={this._styles[e['kind']]}>
-                 {e['name']}
-               </div>
+               <ItemView key={i}
+                         im_items={this.im_items}
+                         c={i}
+                         line_cur={idx}
+                         name={e['name']}
+                         style={style} />
              );
         })}
       </div>
     );
+
+    //return (
+    //  <div ref="item_list">
+    //    {items_head
+    //       .map((e, i) => {
+    //         //console.log('items_head <> i: ' + i);
+    //         //console.log('16-------------------------');
+    //         return (
+    //           <ItemView key={i}
+    //                     c={i}
+    //                     need_render={e['need_render']}
+    //                     line_cur={idx}
+    //                     name={e['name']}
+    //                     style={this._styles[e['kind']]} />
+    //         );
+    //    })}
+    //    <ItemView line_cur={idx}
+    //              c={44444444}
+    //              need_render={item_cur['need_render']}
+    //              name={item_cur['name']}
+    //              style={this._style_item_cur}
+    //              ref={"item_cur"} />
+    //    {items_tail
+    //       .map((e, i) => {
+    //         //console.log('items_tai, <> i: ' + i);
+    //         //console.log('17-------------------------');
+    //         return (
+    //           <ItemView key={i}
+    //                     c={-i}
+    //                     need_render={e['need_render']}
+    //                     line_cur={idx}
+    //                     name={e['name']}
+    //                     style={this._styles[e['kind']]} />
+    //         );
+    //    })}
+    //  </div>
+    //);
 
     //console.log('15-------------------------');
     //return (
@@ -184,88 +259,121 @@ class ItemListView extends React.Component {
 
   }
 
-  shouldComponentUpdate(nextProps, nextState){
-    //console.log('16-------------------------');
-    const same_il = im.is(this.props.item_list, nextProps.item_list);
-    const same_pid = im.is(this.props.active_pane_id, nextProps.active_pane_id);
-    const same_at = im.is(this.props.action_type, nextProps.action_type);
-    //if(same_il){
-    //  console.log('same_il: true');
-    //}else{
-    //  console.log('same_il: false');
-    //}
-    //if(same_pid){
-    //  console.log('same_pid: true');
-    //}else{
-    //  console.log('same_pid: false');
-    //}
-    //if(same_at){
-    //  console.log('same_at: true');
-    //}else{
-    //  console.log('same_at: false');
-    //}
-    if( !im.is(this.props.item_list, nextProps.item_list) ||
-        !im.is(this.props.active_pane_id, nextProps.active_pane_id) ||
-        !im.is(this.props.action_type, nextProps.action_type) ){
-      //console.log('true!!');
-      return true;
-    }
-    //console.log('false!!');
-    return false;
-  }
+  //shouldComponentUpdate(nextProps, nextState){
+  //  //console.log('16-------------------------');
+  //  const same_il = im.is(this.props.item_list, nextProps.item_list);
+  //  const same_pid = im.is(this.props.active_pane_id, nextProps.active_pane_id);
+  //  const same_at = im.is(this.props.action_type, nextProps.action_type);
+  //  //if(same_il){
+  //  //  console.log('same_il: true');
+  //  //}else{
+  //  //  console.log('same_il: false');
+  //  //}
+  //  //if(same_pid){
+  //  //  console.log('same_pid: true');
+  //  //}else{
+  //  //  console.log('same_pid: false');
+  //  //}
+  //  //if(same_at){
+  //  //  console.log('same_at: true');
+  //  //}else{
+  //  //  console.log('same_at: false');
+  //  //}
+  //  if( !im.is(this.props.item_list, nextProps.item_list) ||
+  //      !im.is(this.props.active_pane_id, nextProps.active_pane_id) ||
+  //      !im.is(this.props.action_type, nextProps.action_type) ){
+  //    //console.log('true!!');
+  //    return true;
+  //  }
+  //  //console.log('false!!');
+  //  return false;
+  //}
 
-  componentDidUpdate(){
-    //console.log('Are you known???');
-    //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
+  //componentDidUpdate(){
+  //  //console.log('Are you known???');
+  //  //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
 
-    //console.log('17-------------------------');
-    let scrollTop;
+  //  //console.log('17-------------------------');
+  //  let scrollTop;
 
-    let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);
-    let ref_item_cur = ReactDOM.findDOMNode(this.refs.item_cur);
+  //  let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);
+  //  let ref_item_cur = ReactDOM.findDOMNode(this.refs.item_cur);
 
-    if(ref_item_cur == null){
-      return;
-    }
+  //  if(ref_item_cur == null){
+  //    return;
+  //  }
 
-    let id = this.props.id;
-    let dir_cur = this.props.item_list.dir_cur;
+  //  let id = this.props.id;
+  //  let dir_cur = this.props.item_list.dir_cur;
 
-    //console.log('this.props.item_list.dir_cur: ' + this.props.item_list.dir_cur);
-    //console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
-    //console.log('this.props.action_type: ' + this.props.action_type);
+  //  //console.log('this.props.item_list.dir_cur: ' + this.props.item_list.dir_cur);
+  //  //console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
+  //  //console.log('this.props.action_type: ' + this.props.action_type);
 
-    switch(this.props.action_type){
-      case 'CHANGE_DIR_UPPER':
-      case 'CHANGE_DIR_LOWER':
-        ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
-        return;
-      default:
-        {
-          let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
-          let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
-          let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
-          let delta = 5;
+  //  switch(this.props.action_type){
+  //    case 'CHANGE_DIR_UPPER':
+  //    case 'CHANGE_DIR_LOWER':
+  //      ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
+  //      return;
+  //    default:
+  //      {
+  //        let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+  //        let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
+  //        let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
+  //        let delta = 5;
 
-          if(ref_item_cur.offsetTop < scrollTop_abs){
-            scrollTop_abs = ref_item_cur.offsetTop;
-            scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-            ref_item_list.scrollTop = scrollTop;
-          }else if(line_pos > scrollBottom_abs){
-            scrollTop_abs = line_pos - ref_item_list.clientHeight;
-            scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-            ref_item_list.scrollTop = scrollTop;
-          }else{
-            scrollTop = ref_item_list.scrollTop;
-          }
-          this._arr_pos[id][dir_cur] = scrollTop;
-        }
-        return;
-    }
-  }
+  //        if(ref_item_cur.offsetTop < scrollTop_abs){
+  //          scrollTop_abs = ref_item_cur.offsetTop;
+  //          scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+  //          ref_item_list.scrollTop = scrollTop;
+  //        }else if(line_pos > scrollBottom_abs){
+  //          scrollTop_abs = line_pos - ref_item_list.clientHeight;
+  //          scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+  //          ref_item_list.scrollTop = scrollTop;
+  //        }else{
+  //          scrollTop = ref_item_list.scrollTop;
+  //        }
+  //        this._arr_pos[id][dir_cur] = scrollTop;
+  //      }
+  //      return;
+  //  }
+  //}
 
 }
 
+class ItemView extends React.Component {
+  constructor(props){
+    super(props);
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    /* Directory is changed. */
+    if(this.props.im_items !== nextProps.im_items){
+      console.log('HERE!!');
+      return true
+    }
+    /* Render only current line and previous line items. */
+    if( this.props.c === this.props.line_cur ||
+        this.props.c === nextProps.line_cur  ){
+      //console.log('true this <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
+      //console.log('true next <> name: ' + nextProps.name + ', line_cur: ' + nextProps.line_cur + ', c: ' + nextProps.c);
+      return true;
+    }else{
+      //console.log('false this <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
+      //console.log('false next <> name: ' + nextProps.name + ', line_cur: ' + nextProps.line_cur + ', c: ' + nextProps.c);
+      return false;
+    }
+  }
+
+  render(){
+    //console.log('render() is called!! <> name: ' + this.props.name + ', style: ' + this.props.style['borderBottom'] + ', line_cur: ' + this.props.line_cur);
+    return (
+      <div style={this.props.style}>
+        {this.props.name}
+      </div>
+    );
+  }
+}
 
 //ItemList.propTypes = {
 //  //arr_item_list: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,

@@ -74,7 +74,7 @@ class Item extends ItemRecord{
   }
 
   init(){
-    console.log('call item.init()!! name: ' + this.get('name'));
+    //console.log('call item.init()!! name: ' + this.get('name'));
     const ext = this.get('name').slice(((this.get('name').lastIndexOf(".")-1)>>>0)+2);
     const kind = getItemTypeKind(ext, this.get('is_dir'));
     //const ext = 'hoge';
