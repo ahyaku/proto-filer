@@ -29,23 +29,17 @@ function CombinedItemList(state, action){
         const ret = state.setIn(['arr_pages', idx], arr_pages);
         return ret;
       }
-  //  case 'SWITCH_ACTIVE_PANE':
-  //    let active_pane_id;
-  //    switch(state.active_pane_id){
-  //      case 0:
-  //        return Object.assign({}, state,
-  //                             {active_pane_id: 1},
-  //                             {action_type: action.type});
-  //      case 1:
-  //        return Object.assign({}, state,
-  //                             {active_pane_id: 0},
-  //                             {action_type: action.type});
-  //      default:
-  //        /* Do Nothing.. */
-  //        console.log('ERROR!! Incorrect Value \'active_pane_id\'!!');
-  //        return Object.assign({}, state,
-  //                             {action_type: action.type});
-  //    }
+    case 'SWITCH_ACTIVE_PANE':
+      switch(state.get('active_pane_id')){
+        case 0:
+          return state.set('active_pane_id', 1);
+        case 1:
+          return state.set('active_pane_id', 0);
+        default:
+          /* Do Nothing.. */
+          console.log('ERROR!! Incorrect Value \'active_pane_id\'!!');
+          return state;
+      }
 
   //  case 'SWITCH_INPUT_MODE_NORMAL':
   //    return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.NORMAL});
