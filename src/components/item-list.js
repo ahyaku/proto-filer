@@ -25,6 +25,9 @@ class ItemListView extends React.Component {
       justifyContent: 'flex-start',
       width: '100%',
       height: '100%',
+      //textOverflowX: 'ellipsis',
+      //overflowX: 'ellipsis',
+      overflowX: 'hidden',
       overflowY: 'scroll'
     }
 
@@ -38,6 +41,9 @@ class ItemListView extends React.Component {
       //textOverflowX: 'ellipsis'
       //textOverflowX: 'hidden'
       //boxSizing: 'border-box'
+      //textOverflowX: 'hidden'
+      //textOverflowX: 'ellipsis'
+      //overflowX: 'ellipsis'
     }
 
     this._styles = [];
