@@ -26,14 +26,17 @@ const Footer = () => {
 const Body = () => {
   const style = {
     display: 'flex',
+    flex: 'auto',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    alignContent: 'stretch',
-    flex: '1',
+    //alignItems: 'stretch',
+    //alignContent: 'stretch',
     border: '1px solid #00FF00',
-    overflow: 'auto',
-    textOverflowX: 'ellipsis'
+    //overflow: 'auto',
+    //overflow: 'hidden',
+    //textOverflowX: 'ellipsis'
+    width: '100%',
+    height: '100%'
   };
 
   return (
@@ -54,16 +57,18 @@ class CmdAndItemList extends React.Component {
     const id = this.props.id;
     const style = {
       display: 'flex',
-      flex: '1',
+      flex: 'auto',
       flexDirection: 'column',
       justifyContent: 'flex-start',
-      alignItems: 'stretch',
-      alignContent: 'stretch',
+      //alignItems: 'stretch',
+      //alignContent: 'stretch',
       width: '50%',
       height: '100%',
-      //overflowX: 'hidden',
-      textOverflowX: 'ellipsis',
-      overflowY: 'auto'
+      ////overflowX: 'hidden',
+      //textOverflowX: 'ellipsis',
+      ////overflowY: 'auto'
+      //overflowY: 'hidden'
+      border: '1px solid #0000FF'
     };
 
     //console.log('CmdAndItemList render() <> id: ' + id);
@@ -132,11 +137,11 @@ class CmdAndItemList extends React.Component {
 const App = () => {
   const style = {
     display: 'flex',
+    flex: 'auto',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    alignContent: 'stretch',
-    flex: '1',
+    //alignItems: 'stretch',
+    //alignContent: 'stretch',
     background: '#333333',
     color: '#FFFFFF',
     width: '100%',

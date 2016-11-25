@@ -16,32 +16,26 @@ const ItemList = ({item_list, active_pane_id, line_cur, action_type, onItemListC
 class ItemListView extends React.Component {
   constructor(props){
     super(props);
-    this._style = {
-      //display: 'flex',
-      flex: '1',
-      //flexDirection: 'column',
-      //justifyContent: 'flex-start',
-      //alignItems: 'flex-start',
-      //alignContent: 'flex-start',
-      //border: '1px solid #FFFFFF',
-      ////minHeight: '0px',
-      //minHeight: '0vh',
-      ////height: '50vh',
-      ////height: '50%',
-      //height: '100%',
-      overflowX: 'hidden',
-      overflowY: 'scroll',
-      //position: 'absolute'
-    };
+    this._style_list = {
+      background: '#333333',
+      color: '#FFFFFF',
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      width: '100%',
+      height: '100%',
+      overflowY: 'scroll'
+    }
 
     this._style_base = {
       zIndex: '0',
       borderBottom: 'solid 1px #333333',
       margin: '-3px 0px 0px',
       padding: '0px 0px',
-      overflowX: 'hidden',
-      whiteSpace: 'nowrap',
-      textOverflowX: 'ellipsis'
+      //overflowX: 'hidden',
+      //whiteSpace: 'nowrap',
+      //textOverflowX: 'ellipsis'
       //textOverflowX: 'hidden'
       //boxSizing: 'border-box'
     }
@@ -66,12 +60,28 @@ class ItemListView extends React.Component {
     this.names = null;
     this.items = null;
     this.im_items = null;
+    this.dir_cur = null;
+
+    //this.im_item_list = null;
+    //this.active_pane_id = null;
+    //this.sction_type = null;
+    //this.id = null;
+
+    this.didupdate = true;
   }
 
   render(){
     let item_list = this.props.item_list;
     let active_pane_id = this.props.active_pane_id;
     let id = this.props.id;
+
+
+    //this.im_item_list = item_list
+    //this.active_pane_id = active
+    //this.action_type = action_type;
+    //this.id = id;
+
+    this.didupdate = true;
 
     const idx = item_list.get('line_cur');
 
@@ -83,6 +93,8 @@ class ItemListView extends React.Component {
       //});
       this.im_items = item_list.get('items');
       this.items = this.im_items.toArray();
+      //this.dir_cur = item_list.get('dir_cur').toObject();
+      this.dir_cur = item_list.get('dir_cur');
       //for(let i=0; i<this.items.length; i++){
       ////  this.items[i]['need_render'] = true;
       //  console.log('i: ' + i + ', name: ' + this.items[i].name);
@@ -173,7 +185,7 @@ class ItemListView extends React.Component {
     //console.log('idx: ' + idx);
 
     return (
-      <div ref="item_list">
+      <div ref="item_list" style={this._style_list}>
         {this.items
            .map((e, i) => {
              //console.log('items_head <> i: ' + i);
@@ -181,13 +193,18 @@ class ItemListView extends React.Component {
              const style = i === idx 
                              ? this._style_item_cur
                              : this._styles[e['kind']];
+             const ref_item = i === idx 
+                                ? "item_cur"
+                                : "";
+             //const ref_item = "item_cur"
              return (
                <ItemView key={i}
                          im_items={this.im_items}
                          c={i}
                          line_cur={idx}
                          name={e['name']}
-                         style={style} />
+                         style={style}
+                         ref={ref_item} />
              );
         })}
       </div>
@@ -260,6 +277,13 @@ class ItemListView extends React.Component {
   }
 
   //shouldComponentUpdate(nextProps, nextState){
+  //  if(nextProps.active_pane_id === nextProps.id){
+  //    return true;
+  //  }
+  //  return false;
+  //}
+
+  //shouldComponentUpdate(nextProps, nextState){
   //  //console.log('16-------------------------');
   //  const same_il = im.is(this.props.item_list, nextProps.item_list);
   //  const same_pid = im.is(this.props.active_pane_id, nextProps.active_pane_id);
@@ -289,61 +313,98 @@ class ItemListView extends React.Component {
   //  return false;
   //}
 
-  //componentDidUpdate(){
-  //  //console.log('Are you known???');
-  //  //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
+  componentDidUpdate(prevProps, prevState){
+    //console.log('[width, height] = [' + this.state.width + ', ' + this.state.height + ']');
+    //console.log('win [width, height] = [' + window.innerWidth + ', ' + window.innerHeight + ']');
+    //console.log('doc [width, height] = [' + this.document.width + ', ' + this.document.height + ']');
 
-  //  //console.log('17-------------------------');
-  //  let scrollTop;
+    //console.log('dir_cur: ' + this.dir_cur);
 
-  //  let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);
-  //  let ref_item_cur = ReactDOM.findDOMNode(this.refs.item_cur);
+    //console.log('Are you known???');
+    //ReactDOM.findDOMNode(this.refs.target).scrollIntoView();
 
-  //  if(ref_item_cur == null){
-  //    return;
-  //  }
+    //console.log('active_pane_id: ' + this.props.active_pane_id);
+    //console.log('didupdate: ' + this.didupdate);
 
-  //  let id = this.props.id;
-  //  let dir_cur = this.props.item_list.dir_cur;
+    let scrollTop;
 
-  //  //console.log('this.props.item_list.dir_cur: ' + this.props.item_list.dir_cur);
-  //  //console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
-  //  //console.log('this.props.action_type: ' + this.props.action_type);
+    let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);
+    let ref_item_cur = ReactDOM.findDOMNode(this.refs.item_cur);
 
-  //  switch(this.props.action_type){
-  //    case 'CHANGE_DIR_UPPER':
-  //    case 'CHANGE_DIR_LOWER':
-  //      ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
-  //      return;
-  //    default:
-  //      {
-  //        let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
-  //        let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
-  //        let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
-  //        let delta = 5;
+    if(ref_item_cur == null){
+      return;
+    }
 
-  //        if(ref_item_cur.offsetTop < scrollTop_abs){
-  //          scrollTop_abs = ref_item_cur.offsetTop;
-  //          scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-  //          ref_item_list.scrollTop = scrollTop;
-  //        }else if(line_pos > scrollBottom_abs){
-  //          scrollTop_abs = line_pos - ref_item_list.clientHeight;
-  //          scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-  //          ref_item_list.scrollTop = scrollTop;
-  //        }else{
-  //          scrollTop = ref_item_list.scrollTop;
-  //        }
-  //        this._arr_pos[id][dir_cur] = scrollTop;
-  //      }
-  //      return;
-  //  }
-  //}
+    let id = this.props.id;
+    //let dir_cur = this.props.item_list.dir_cur;
+    let dir_cur = this.dir_cur;
+
+    //console.log('this.props.item_list.dir_cur: ' + this.props.item_list.dir_cur);
+    //console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
+    //console.log('this.props.action_type: ' + this.props.action_type);
+
+    switch(this.props.action_type){
+      case 'CHANGE_DIR_UPPER':
+      case 'CHANGE_DIR_LOWER':
+        ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
+        return;
+      default:
+        {
+          let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+          let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
+          let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
+          let delta = 5;
+
+          //console.log('list <> offsetTop: ' + ref_item_list.offsetTop + ', clientHeight: ' + ref_item_list.clientHeight + ', scrollHeight: ' + ref_item_list.scrollHeight);
+          //console.log('line <> offsetTop: ' + ref_item_cur.offsetTop + ', clientHeight: ' + ref_item_cur.clientHeight + ', scrollHeight: ' + ref_item_cur.scrollHeight);
+          //console.log('scrollTop_abs: ' + scrollTop_abs + ', scrollBottom_abs: ' + scrollBottom_abs + ', line_pos: ' + line_pos);
+
+          if(ref_item_cur.offsetTop < scrollTop_abs){
+            //console.log('scroll: under');
+            scrollTop_abs = ref_item_cur.offsetTop;
+            scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+            ref_item_list.scrollTop = scrollTop;
+          }else if(line_pos > scrollBottom_abs){
+            //console.log('scroll: over');
+            scrollTop_abs = line_pos - ref_item_list.clientHeight;
+            scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+            ref_item_list.scrollTop = scrollTop;
+          }else{
+            //console.log('scroll: between');
+            scrollTop = ref_item_list.scrollTop;
+          }
+          this._arr_pos[id][dir_cur] = scrollTop;
+        }
+        return;
+    }
+
+    if(this.didupdate === true){
+      //console.log('DIDUPDATE!!');
+      this.didupdate = false;
+      this.setState(this.props);
+      //this.setState({
+      //  item_list: this.props.item_list,
+      //  active_pane_id: this.props.active_pane_id,
+      //  action_type: this.props.action_type,
+      //  id: this.props.id
+      //});
+    }
+  }
 
 }
 
 class ItemView extends React.Component {
   constructor(props){
     super(props);
+  }
+
+  render(){
+    //console.log('render() is called!! <> name: ' + this.props.name + ', style: ' + this.props.style['borderBottom'] + ', line_cur: ' + this.props.line_cur);
+    return (
+      <div style={this.props.style}>
+        {this.props.name}
+      </div>
+    );
   }
 
   shouldComponentUpdate(nextProps, nextState){
@@ -365,14 +426,12 @@ class ItemView extends React.Component {
     }
   }
 
-  render(){
-    //console.log('render() is called!! <> name: ' + this.props.name + ', style: ' + this.props.style['borderBottom'] + ', line_cur: ' + this.props.line_cur);
-    return (
-      <div style={this.props.style}>
-        {this.props.name}
-      </div>
-    );
-  }
+  //componentDidMount(){
+  //  this.props.scrollIntoView(ReactDOM.findDOMNode(this));
+  //}
+  //componentDidUpdate(){
+  //  this.props.scrollIntoView(ReactDOM.findDOMNode(this));
+  //}
 }
 
 //ItemList.propTypes = {
