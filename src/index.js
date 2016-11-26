@@ -15,6 +15,9 @@ import ItemListPages from './core/item_list_pages';
 import reducer from './reducers';
 import {KEY_INPUT_MODE} from './core/item_type';
 
+process.env.NODE_ENV = 'production';
+
+
 //const pages_left = new ItemListPages();
 //pages_left.updatePageCur('C:\\');
 //const pages_right = new ItemListPages();
