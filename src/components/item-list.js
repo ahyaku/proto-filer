@@ -28,7 +28,10 @@ class ItemListView extends React.Component {
       //textOverflowX: 'ellipsis',
       //overflowX: 'ellipsis',
       overflowX: 'hidden',
-      overflowY: 'scroll'
+      overflowY: 'scroll',
+      borderLeft: 'solid 1px #FFFFFF',
+      borderRight: 'solid 1px #FFFFFF',
+      borderBottom: 'solid 1px #FFFFFF',
     }
 
     this._style_base = {
@@ -55,6 +58,7 @@ class ItemListView extends React.Component {
 
     this._styles[ITEM_TYPE_KIND.DIR]['color']  = '#FF80FF';
     this._styles[ITEM_TYPE_KIND.TEXT]['color'] = '#FFFFFF';
+    this._styles[ITEM_TYPE_KIND.EXE]['color'] = '#FFA500';
 
     this._arr_pos = [];
     for(let i=0; i<2; i++){
@@ -119,7 +123,7 @@ class ItemListView extends React.Component {
     if(this.items.length <= 0){
       //console.log('HERE!!');
       return (
-        <div ref="item_list">
+        <div ref="item_list" style={this._style_list}>
         </div>
       );
     }

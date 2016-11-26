@@ -12,7 +12,9 @@ import PathCmd from '../containers/pane-cmd';
 
 const Footer = () => {
   const style = {
-    border: 'solid 1px #0000FF',
+    borderLeft: 'solid 1px #FFFFFF',
+    borderRight: 'solid 1px #FFFFFF',
+    borderBottom: 'solid 1px #FFFFFF'
     //flex: '0 0 auto'
     //boxSizing: 'border-box'
   };
@@ -31,7 +33,7 @@ const Body = () => {
     justifyContent: 'flex-start',
     //alignItems: 'stretch',
     //alignContent: 'stretch',
-    border: '1px solid #00FF00',
+    //border: '1px solid #FFFFFF',
     //overflow: 'auto',
     //overflow: 'hidden',
     //textOverflowX: 'ellipsis'
@@ -68,7 +70,7 @@ class CmdAndItemList extends React.Component {
       //textOverflowX: 'ellipsis',
       ////overflowY: 'auto'
       //overflowY: 'hidden'
-      border: '1px solid #0000FF'
+      //border: '1px solid #0000FF'
     };
 
     //console.log('CmdAndItemList render() <> id: ' + id);
@@ -148,10 +150,18 @@ const App = () => {
     height: '100%',
   };
 
+  const style_path = {
+    borderTop: 'solid 1px #FFFFFF',
+    borderLeft: 'solid 1px #FFFFFF',
+    borderRight: 'solid 1px #FFFFFF'
+  };
+
   return (
     <div style={style}>
-      <PanePathCur id={0} />
-      <PanePathCur id={1} />
+      <div style={style_path}>
+        <PanePathCur id={0} />
+        <PanePathCur id={1} />
+      </div>
       <Body />
       <Footer />
     </div>
