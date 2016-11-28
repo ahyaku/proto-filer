@@ -39,6 +39,10 @@ class ItemListView extends React.Component {
       borderBottom: 'solid 1px #333333',
       margin: '-3px 0px 0px',
       padding: '0px 0px',
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-start'
       //overflowX: 'hidden',
       //whiteSpace: 'nowrap',
       //textOverflowX: 'ellipsis'
@@ -96,28 +100,9 @@ class ItemListView extends React.Component {
     const idx = item_list.get('line_cur');
 
     if(this.im_items !== item_list.get('items')){
-      //console.log('foo');
-      //console.log('items size: ' + item_list.get('items').size);
-      //item_list.get('items').map((e, i) => {
-      //  console.log('i: ' + i + ', e: ' + e);
-      //});
       this.im_items = item_list.get('items');
       this.items = this.im_items.toArray();
-      //this.dir_cur = item_list.get('dir_cur').toObject();
       this.dir_cur = item_list.get('dir_cur');
-      //for(let i=0; i<this.items.length; i++){
-      ////  this.items[i]['need_render'] = true;
-      //  console.log('i: ' + i + ', name: ' + this.items[i].name);
-      //}
-    }else{
-      //console.log('bar');
-      //for(let i=0; i<idx; i++){
-      //  this.items[i]['need_render'] = false;
-      //}
-      //this.items[idx]['need_render'] = false;
-      //for(let i=idx+1; i<this.items.length; i++){
-      //  this.items[i]['need_render'] = false;
-      //}
     }
 
     if(this.items.length <= 0){
@@ -194,13 +179,20 @@ class ItemListView extends React.Component {
 
     //console.log('idx: ' + idx);
 
+    const style_item_line = {
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-start'
+    };
+
     return (
       <div ref="item_list" style={this._style_list}>
         {this.items
            .map((e, i) => {
              //console.log('items_head <> i: ' + i);
              //console.log('16-------------------------');
-             const style = i === idx 
+             const style_each_item = i === idx 
                              ? this._style_item_cur
                              : this._styles[e['kind']];
              const ref_item = i === idx 
@@ -208,81 +200,22 @@ class ItemListView extends React.Component {
                                 : "";
              //const ref_item = "item_cur"
              return (
-               <ItemView key={i}
+               <ItemView style={style_item_line}
+                         key={i}
                          im_items={this.im_items}
                          c={i}
                          line_cur={idx}
+                         style_each_item={style_each_item}
+                         ref={ref_item}
                          name={e['name']}
-                         style={style}
-                         ref={ref_item} />
+                         ext={'.ext'}
+                         size={'size'}
+                         date={'date'}
+                         time={'time'} />
              );
         })}
       </div>
     );
-
-    //return (
-    //  <div ref="item_list">
-    //    {items_head
-    //       .map((e, i) => {
-    //         //console.log('items_head <> i: ' + i);
-    //         //console.log('16-------------------------');
-    //         return (
-    //           <ItemView key={i}
-    //                     c={i}
-    //                     need_render={e['need_render']}
-    //                     line_cur={idx}
-    //                     name={e['name']}
-    //                     style={this._styles[e['kind']]} />
-    //         );
-    //    })}
-    //    <ItemView line_cur={idx}
-    //              c={44444444}
-    //              need_render={item_cur['need_render']}
-    //              name={item_cur['name']}
-    //              style={this._style_item_cur}
-    //              ref={"item_cur"} />
-    //    {items_tail
-    //       .map((e, i) => {
-    //         //console.log('items_tai, <> i: ' + i);
-    //         //console.log('17-------------------------');
-    //         return (
-    //           <ItemView key={i}
-    //                     c={-i}
-    //                     need_render={e['need_render']}
-    //                     line_cur={idx}
-    //                     name={e['name']}
-    //                     style={this._styles[e['kind']]} />
-    //         );
-    //    })}
-    //  </div>
-    //);
-
-    //console.log('15-------------------------');
-    //return (
-    //  <div ref="item_list">
-    //    {items_head
-    //       .map((e, i) => {
-    //         //console.log('16-------------------------');
-    //         return (
-    //           <div key={i} style={this._styles[e.get('kind')]}>
-    //             {e.get('name')}
-    //           </div>
-    //         );
-    //    })}
-    //    <div style={this._style_item_cur} ref="item_cur">
-    //      {item_cur.get('name')}
-    //    </div>
-    //    {items_tail
-    //       .map((e, i) => {
-    //         //console.log('17-------------------------');
-    //         return (
-    //           <div key={i} style={this._styles[e.get('kind')]}>
-    //             {e.get('name')}
-    //           </div>
-    //         );
-    //    })}
-    //  </div>
-    //);
 
   }
 
@@ -409,10 +342,15 @@ class ItemView extends React.Component {
   }
 
   render(){
-    //console.log('render() is called!! <> name: ' + this.props.name + ', style: ' + this.props.style['borderBottom'] + ', line_cur: ' + this.props.line_cur);
     return (
-      <div style={this.props.style}>
-        {this.props.name}
+      <div>
+        <div style={this.props.style_each_item}>
+          <Name name={this.props.name} />
+          <Props ext={this.props.ext}
+                 size={this.props.size}
+                 date={this.props.date}
+                 time={this.props.time} />
+        </div>
       </div>
     );
   }
@@ -443,6 +381,75 @@ class ItemView extends React.Component {
   //  this.props.scrollIntoView(ReactDOM.findDOMNode(this));
   //}
 }
+
+class Name extends React.Component{
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+    const style = {
+      marginRight: 'auto',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      overflowX: 'hidden'
+    };
+
+    return (
+      <div style={style}>
+        {this.props.name}
+      </div>
+    );
+  }
+}
+
+class Props extends React.Component{
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+    const style = {
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    };
+
+    const margin_left_ext = '0px';
+    const margin_left_size = '15px';
+    const margin_left_date = '5px';
+    const margin_left_time = '5px';
+
+    return (
+      <div style={style}>
+        <PropElem elem={this.props.ext} margin_left={margin_left_ext}/>
+        <PropElem elem={this.props.size} margin_left={margin_left_size}/>
+        <PropElem elem={this.props.date} margin_left={margin_left_date}/>
+        <PropElem elem={this.props.time} margin_left={margin_left_time}/>
+      </div>
+    );
+  }
+}
+
+class PropElem extends React.Component{
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+    const style={
+      marginLeft: this.props.margin_left
+    }
+
+    return (
+      <div style={style}>
+        {this.props.elem}
+      </div>
+    );
+  }
+}
+
 
 //ItemList.propTypes = {
 //  //arr_item_list: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
