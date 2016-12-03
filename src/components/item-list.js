@@ -138,7 +138,11 @@ class ItemListView extends React.Component {
     //                   ? this.items.slice(idx+1, this.items.length)
     //                   : [];
 
+    //console.log('this.items.length: ' + this.items.length + ', idx: ' + idx);
+    //console.log('this.items[idx]: ' + this.items[idx]);
+    //console.log('this.items[idx].get(kind): ' + this.items[idx].get('kind'));
     const item_cur = this.items[idx];
+    //console.log('item_cur.get(kind): ' + item_cur.get('kind'));
     this._style_item_cur = Object.assign({}, this._styles[item_cur.get('kind')], {zIndex: '1'});
     if(id === active_pane_id){
       this._style_item_cur['borderBottom'] = 'solid 1px #00FF00';
@@ -199,6 +203,7 @@ class ItemListView extends React.Component {
                                 ? "item_cur"
                                 : "";
              //const ref_item = "item_cur"
+             //console.log('name: ' + e['name'] + ', basename: ' + e['basename']);
              return (
                <ItemView style={style_item_line}
                          key={i}
@@ -207,11 +212,11 @@ class ItemListView extends React.Component {
                          line_cur={idx}
                          style_each_item={style_each_item}
                          ref={ref_item}
-                         name={e['name']}
-                         ext={'.ext'}
-                         size={'size'}
-                         date={'date'}
-                         time={'time'} />
+                         name={e['basename']}
+                         ext={e['ext']}
+                         size={e['fsize']}
+                         date={e['date']}
+                         time={e['time']} />
              );
         })}
       </div>
@@ -416,19 +421,47 @@ class Props extends React.Component{
       justifyContent: 'flex-end',
     };
 
-    const margin_left_ext = '0px';
-    const margin_left_size = '15px';
-    const margin_left_date = '5px';
-    const margin_left_time = '5px';
+    //const margin_left_ext = '0px';
+    //const margin_left_size = '15px';
+    //const margin_left_date = '5px';
+    //const margin_left_time = '5px';
+
+    //return (
+    //  <div style={style}>
+    //    <PropElem elem={this.props.ext} margin_left={margin_left_ext}/>
+    //    <PropElem elem={this.props.size} margin_left={margin_left_size}/>
+    //    <PropElem elem={this.props.date} margin_left={margin_left_date}/>
+    //    <PropElem elem={this.props.time} margin_left={margin_left_time}/>
+    //  </div>
+    //);
+
+
+    const style_ext = {
+      marginLeft: '0px',
+      width: '30px',
+      textAlign: 'left'
+    };
+    const style_size = {
+      marginLeft: '15px',
+      width: '80px',
+      textAlign: 'right'
+    };
+    const style_date = {
+      marginLeft: '5px'
+    };
+    const style_time = {
+      marginLeft: '5px'
+    };
 
     return (
       <div style={style}>
-        <PropElem elem={this.props.ext} margin_left={margin_left_ext}/>
-        <PropElem elem={this.props.size} margin_left={margin_left_size}/>
-        <PropElem elem={this.props.date} margin_left={margin_left_date}/>
-        <PropElem elem={this.props.time} margin_left={margin_left_time}/>
+        <PropElem elem={this.props.ext}  style_elem={style_ext}/>
+        <PropElem elem={this.props.size} style_elem={style_size}/>
+        <PropElem elem={this.props.date} style_elem={style_date}/>
+        <PropElem elem={this.props.time} style_elem={style_time}/>
       </div>
     );
+
   }
 }
 
@@ -438,12 +471,18 @@ class PropElem extends React.Component{
   }
 
   render(){
-    const style={
-      marginLeft: this.props.margin_left
-    }
+    //const style={
+    //  marginLeft: this.props.margin_left
+    //}
+
+    //return (
+    //  <div style={style}>
+    //    {this.props.elem}
+    //  </div>
+    //);
 
     return (
-      <div style={style}>
+      <div style={this.props.style_elem}>
         {this.props.elem}
       </div>
     );

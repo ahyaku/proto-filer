@@ -42,64 +42,40 @@ class ItemListPane extends ItemListPaneRecord{
       return null;
     }
 
-    //console.log('es.length: ' + es.length);
-    //es.map((e, i) => {
-    //  console.log(i + ' name: ' + e);
-    //});
-
-    //let items = new Array();
-    //es.map(function(e){
-    //  const item = new Item();
-    //  item.name = e;
-    //  item.is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, e));
-    //  items.push(item);
-    //});
-    //this._items = items;
-    //this._inum_filterd = this._items.length;
-
-    //const items = im.Range(0, es.length)
-    //                    .map(i => new Item().setName(es[i]));
-    
-    //let c = 0;
-    //const items = im.Range(0, es.length)
-    //                .map((i) => {
+    let c = 0;
+    //const items = im.Seq(im.Range(0, es.length))
+    //                .map((e, i) => {
     //                  //console.log('c: ' + c + ', dir_cur: ' + dir_cur + ', es[' + i + ']: ' + es[i]);
     //                  let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
+    //                  //fs.stat();
+    //                  console.log('i: ' + i + ', e: ' + e);
     //                  c++;
     //                  return new Item({name: es[i], is_dir: is_dir}).init();
     //                });
-    //const ret = this.set('items', items);
-    //return ret;
 
-    let c = 0;
     const items = im.Seq(im.Range(0, es.length))
-                    .map((i) => {
+                    .map((e, i) => {
                       //console.log('c: ' + c + ', dir_cur: ' + dir_cur + ', es[' + i + ']: ' + es[i]);
-                      let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
+                      const fpath = path.join(dir_cur, es[i]);
+                      const ret = ipc_renderer.sendSync('fs.isDirectory', fpath);
+                      if(ret['err'] === 0){
+                        const fsize = ret['is_dir'] === true
+                                        ? 'DIR'
+                                        : ret['fsize'];
+                        //const basename = path.win32.basename(fpath);
+                        //console.log('basename: ' + basename);
+                        return new Item({name: es[i],
+                                         is_dir: ret['is_dir'],
+                                         fsize: fsize}).init();
+                      }else{
+                        return new Item({name: es[i]}).init();
+                      }
+                      //fs.stat();
+                      //console.log('i: ' + i + ', e: ' + e);
                       c++;
-                      return new Item({name: es[i], is_dir: is_dir}).init();
-
-                      //const ext = es[i].slice(((es[i].lastIndexOf(".")-1)>>>0)+2);
-                      //const kind = getItemTypeKind(ext, is_dir);
-                      //return new Item({name: es[i], is_dir: is_dir, ext: ext, kind: kind});
-
                     });
     const ret = this.set('items', items);
     return ret;
-
-    //let c = 0;
-    //const items = im.Range(0, es.length)
-    //                .map((i) => {
-    //                  console.log('c: ' + c + ', dir_cur: ' + dir_cur + ', es[' + i + ']: ' + es[i]);
-    //                  let is_dir = ipc_renderer.sendSync('fs.isDirectory', path.join(dir_cur, es[i]));
-    //                  c++;
-    //                  return new Item({name: es[i], is_dir: is_dir});
-    //                });
-    //const items_new = items.map((e) => {
-    //                             return e.init();
-    //                           });
-    //const ret = this.set('items', items_new);
-    //return ret;
   }
   
 }

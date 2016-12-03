@@ -17,6 +17,48 @@ import {KEY_INPUT_MODE} from './core/item_type';
 
 process.env.NODE_ENV = 'production';
 
+const arr = im.Range(10, 20);
+//console.log('arr: ' + arr);
+
+const arr1 = arr.map((e, i) => {
+                            return (e + 100);
+                        });
+arr1.forEach((e, i) => {console.log(e);});
+
+const arr2 = arr.flatMap((e, i) => {
+  return ["one"];
+  //if(e == 10){
+  //  return im.Seq(["one"]);
+  //}else{
+  //  return im.Seq([]);
+  //}
+});
+console.log('arr2: ' + arr2.get(0));
+
+const arr3 = arr.flatMap((e, i) => {
+  return ["one"];
+  //if(e == 10){
+  //  return ["one"];
+  //}else{
+  //  return [];
+  //}
+});
+console.log('arr3: ' + arr3.get(0));
+
+const arr4 = arr.map((e, i) => {
+    return ["one"];
+});
+console.log('arr4: ' + arr4.get(0));
+
+//const rec = im.Record({a: 0, b: 1, c: 2});
+//const rec2 = rec.map((e, i) => {
+//  return im.Seq([]);
+//});
+//const rec2 = rec.flatMap((e, i) => {
+//  return im.Seq([]);
+//});
+//console.log(rec2);
+
 
 //const pages_left = new ItemListPages();
 //pages_left.updatePageCur('C:\\');

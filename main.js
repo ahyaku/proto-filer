@@ -109,18 +109,31 @@ electron.ipcMain.on('fs.readdirSync', (event, arg) => {
   try{
     event.returnValue = fs.readdirSync(arg);
   }catch(e){
-    console.log('catch: ' + e);
+    console.log('readdir catch: ' + e);
     event.returnValue = null;
   }
 });
 
 electron.ipcMain.on('fs.isDirectory', (event, arg) => {
   //console.log(arg);
+  //try{
+  //  event.returnValue = fs.statSync(arg).isDirectory();
+  //}catch(e){
+  //  console.log('stat catch: ' + e);
+  //  event.returnValue = false;
+  //}
   try{
-    event.returnValue = fs.statSync(arg).isDirectory();
+    const stat = fs.statSync(arg);
+    event.returnValue = {is_dir: stat.isDirectory(),
+                         fsize: stat['size'],
+                         mtime: stat['mtime'],
+                         err: 0};
   }catch(e){
-    console.log('catch: ' + e);
-    event.returnValue = false;
+    console.log('stat catch: ' + e);
+    event.returnValue = {is_dir: null,
+                         fsize: null,
+                         mtime: null,
+                         err: -1};
   }
 });
 
