@@ -62,11 +62,16 @@ class ItemListPane extends ItemListPaneRecord{
                         const fsize = ret['is_dir'] === true
                                         ? 'DIR'
                                         : ret['fsize'];
-                        //const basename = path.win32.basename(fpath);
-                        //console.log('basename: ' + basename);
+                        //console.log('mtime: ' + ret['mtime']);
+                        const date = ret['mtime'].slice(2, 10);
+                        const time = ret['mtime'].slice(11, 19);
+                        //console.log('date: ' + ret['mtime'].slice(2, 10));
+                        //console.log('time: ' + ret['mtime'].slice(11, 19));
                         return new Item({name: es[i],
                                          is_dir: ret['is_dir'],
-                                         fsize: fsize}).init();
+                                         fsize: fsize,
+                                         date: date,
+                                         time: time}).init();
                       }else{
                         return new Item({name: es[i]}).init();
                       }

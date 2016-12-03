@@ -286,7 +286,6 @@ class ItemListView extends React.Component {
     let id = this.props.id;
     //let dir_cur = this.props.item_list.dir_cur;
     let dir_cur = this.dir_cur;
-
     //console.log('this.props.item_list.dir_cur: ' + this.props.item_list.dir_cur);
     //console.log('this.props.item_list.line_cur: ' + this.props.item_list.line_cur);
     //console.log('this.props.action_type: ' + this.props.action_type);
@@ -395,6 +394,7 @@ class Name extends React.Component{
   render(){
     const style = {
       marginRight: 'auto',
+      minWidth: '120px',
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       overflowX: 'hidden'
@@ -447,10 +447,14 @@ class Props extends React.Component{
       textAlign: 'right'
     };
     const style_date = {
-      marginLeft: '5px'
+      marginLeft: '5px',
+      width: '60px',
+      textAlign: 'right'
     };
     const style_time = {
-      marginLeft: '5px'
+      marginLeft: '5px',
+      width: '60px',
+      textAlign: 'right'
     };
 
     return (
