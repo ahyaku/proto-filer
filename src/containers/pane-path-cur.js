@@ -15,11 +15,11 @@ const mapStateToProps = (state, props) => {
   //return {arr_path_cur, props};
 
   const id = props.id;
-  //const path_cur = state.arr_pages.get(id).get('path_cur');
+  //const dir_cur = state.arr_pages.get(id).get('dir_cur');
   //console.log('state: ' + state);
-  const path_cur = state.getIn(['arr_pages', id, 'path_cur']);
+  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
   const active_pane_id = state.get('active_pane_id');
-  return {path_cur, active_pane_id, props};
+  return {dir_cur, active_pane_id, props};
 }
 
 const PanePathCur = connect(

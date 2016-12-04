@@ -23,7 +23,7 @@ const ItemListPagesRecord = im.Record({
   //pages: im.List.of(),
   pages: im.Map(),
   msg_cmd: '',
-  path_cur: null
+  dir_cur: null
 });
 
 class ItemListPages extends ItemListPagesRecord{
@@ -31,8 +31,8 @@ class ItemListPages extends ItemListPagesRecord{
     super(props);
   }
 
-  updatePageCur(_path_cur){
-    const path_cur = fs.realpathSync(_path_cur);
+  updatePageCur(_dir_cur){
+    const dir_cur = fs.realpathSync(_dir_cur);
     console.log('call updatePageCur()!!');
     //if(!ipc_renderer.sendSync('fs.isDirectory', init_path)){
     //  console.log('updatePageCur() <> NOT Directory!!');
@@ -73,7 +73,7 @@ class ItemListPages extends ItemListPagesRecord{
                     .findKey((item_list)=>{
                       //console.log('item_list.get(dir_cur): ' + item_list.get('dir_cur'));
                       //console.log('path: ' + path);
-                      return (item_list.get('dir_cur') === path_cur);
+                      return (item_list.get('dir_cur') === dir_cur);
                     },
                     null);
 
@@ -82,18 +82,18 @@ class ItemListPages extends ItemListPagesRecord{
 
     if(typeof ret !== "undefined"){
       console.log('HERE!!');
-      return this.set('path_cur', path_cur);
+      return this.set('dir_cur', dir_cur);
     }
 
     const items = new ItemList()
-                      .set('dir_cur', path_cur)
+                      .set('dir_cur', dir_cur)
                       .updateItems();
 
-    return this.set('pages', this.pages.set(path_cur, items))
-               .set('path_cur', path_cur);
+    return this.set('pages', this.pages.set(dir_cur, items))
+               .set('dir_cur', dir_cur);
 
     //return this.set('pages', im.map({path, items}))
-    //           .set('path_cur', path_cur);
+    //           .set('dir_cur', dir_cur);
   }
 
   //updatePageCur(init_path){
@@ -120,9 +120,9 @@ class ItemListPages extends ItemListPagesRecord{
   //}
 
   changeDirUpper(){
-    const path_cur = path.parse(this.get('path_cur')).dir; 
-    //console.log('pb: ' + this.get('path_cur') + ' pa: ' + path_cur);
-    return this.updatePageCur(path_cur);
+    const dir_cur = path.parse(this.get('dir_cur')).dir; 
+    //console.log('pb: ' + this.get('dir_cur') + ' pa: ' + dir_cur);
+    return this.updatePageCur(dir_cur);
   }
 
   changeDirLower(){
@@ -142,17 +142,18 @@ class ItemListPages extends ItemListPagesRecord{
       return this;
     }
 
-    const path_cur = this.get('path_cur');
-    const items = this.getIn(['pages', path_cur]);
+    const dir_cur = this.get('dir_cur');
+    const items = this.getIn(['pages', dir_cur]);
     //console.log('items: ' + items);
     //const items_items = items.get('items');
     //console.log('items_items: ' + items_items);
     const line_cur = items.get('line_cur');
     const item_name = items.getIn(['items', line_cur, 'name']);
-    console.log('path_cur: ' + path_cur + ', item: ' + item_name);
-    const path_new = path.join(path_cur, item_name);
+    console.log('dir_cur: ' + dir_cur + ', item: ' + item_name);
+    const path_new = path.join(dir_cur, item_name);
     console.log('path_new: ' + path_new);
-    if(ipc_renderer.sendSync('fs.isDirectory', path_new)){
+    const ret = ipc_renderer.sendSync('fs.isDirectory', path_new)
+    if(ret['is_dir']){
       return this.updatePageCur(path_new);
     }else{
       return this;

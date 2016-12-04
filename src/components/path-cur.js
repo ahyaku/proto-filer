@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const PathCur = ({path_cur, active_pane_id, props}) => {
+const PathCur = ({dir_cur, active_pane_id, props}) => {
   let style = {};
   //const style = {
   //  color: '#AAAAAA'
@@ -21,7 +21,7 @@ const PathCur = ({path_cur, active_pane_id, props}) => {
 
   return (
     <div style={style}>
-      {path_cur}
+      {dir_cur}
     </div>
   );
 }

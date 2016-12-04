@@ -40,6 +40,12 @@ function CombinedItemList(state, action){
           console.log('ERROR!! Incorrect Value \'active_pane_id\'!!');
           return state;
       }
+    case 'SYNC_DIR_CUR_TO_OTHER':
+      const idx_other = !state.get('active_pane_id');
+      //const dir_other = state.getIn('arr_pages', idx_other, 'dir_cur');
+      const dir_other = state.getIn(['arr_pages', idx_other, 'dir_cur']);
+      console.log('dir_other: ' + dir_other);
+      return state;
 
   //  case 'SWITCH_INPUT_MODE_NORMAL':
   //    return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.NORMAL});
@@ -90,13 +96,13 @@ function CombinedItemList(state, action){
 
 function moveCursor(state, delta){
   const idx = state.get('active_pane_id');
-  const path_cur = state.getIn(['arr_pages', idx, 'path_cur']);
-  const line_cur = state.getIn(['arr_pages', idx, 'pages', path_cur, 'line_cur']);
-  const len = state.getIn(['arr_pages', idx, 'pages', path_cur, 'items']).size;
+  const dir_cur = state.getIn(['arr_pages', idx, 'dir_cur']);
+  const line_cur = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur']);
+  const len = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items']).size;
 
   //return state;
 
-  const ret = state.updateIn(['arr_pages', idx, 'pages', path_cur, 'line_cur'],
+  const ret = state.updateIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur'],
                       (v) => {
                         const vv = v + delta;
                         if(vv < 0){

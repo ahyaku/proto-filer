@@ -58,13 +58,19 @@ export const checkKeyNormal = (e) => {
     //  //  this.toggleDown();
     //  //}
     //  //break;
-    //case 'o': /* 'o' */
-    //  //if(event.shiftKey == true){
-    //  //  this.syncPaneOther2Cur();
-    //  //}else{
-    //  //  this.syncPaneCur2Other();
-    //  //}
-    //  //break;           
+    case 'o': /* 'o' */
+    if(event.shiftKey == true){
+      //this.syncPaneOther2Cur();
+      return {
+        type: 'SYNC_DIR_OTHER_TO_CUR'
+      };
+    }else{
+      //this.syncPaneCur2Other();
+      return {
+        type: 'SYNC_DIR_CUR_TO_OTHER'
+      };
+    }
+    break;           
     //case 'c': /* 'c' */
     //  //this.copyItems();
     //  //break;           

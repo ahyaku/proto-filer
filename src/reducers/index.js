@@ -29,7 +29,7 @@ function itemList(state, action){
 
   //let state_ret = CombinedItemList(state, action);
 
-  //console.log('path_cur = ' + state.getIn(['arr_pages', 1, 'path_cur']));
+  //console.log('dir_cur = ' + state.getIn(['arr_pages', 1, 'dir_cur']));
   //console.log('input_mode = ' + state.get('input_mode'));
 
   let state_ret;
@@ -40,7 +40,7 @@ function itemList(state, action){
       //console.log('reducer <> itemList <> action.c: ' + action.c);
       //console.log('reducer <> state_ret.msg_cmd: ' + state_ret.msg_cmd);
 
-      //console.log('path_cur 2 = ' + state_ret.getIn(['arr_pages', 1, 'path_cur']));
+      //console.log('dir_cur 2 = ' + state_ret.getIn(['arr_pages', 1, 'dir_cur']));
       //console.log('input_mode 2 = ' + state_ret.get('input_mode'));
       state_ret = CombinedCmd(state_ret, action);
       break;

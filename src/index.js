@@ -153,8 +153,8 @@ const hoge = im.Record({
 //});
 //
 //console.log('hoge: ' + hoge.getIn(['action_type']));
-//const path_cur = hoge.getIn(['arr_pages', 1, 'path_cur']);
-//console.log('path_cur = ' + path_cur);
+//const dir_cur = hoge.getIn(['arr_pages', 1, 'dir_cur']);
+//console.log('dir_cur = ' + dir_cur);
 
 //console.log('state_init.arr_pages: ' + state_init.arr_pages);
 

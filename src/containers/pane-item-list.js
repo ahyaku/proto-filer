@@ -20,7 +20,7 @@ const mapStateToProps = (state, props) => {
   //console.log('len1: ' + pages.get('pages').size);
   //const item_list2 = pages
   //                    .get('pages')
-  //                    .get(pages .get('path_cur'));
+  //                    .get(pages .get('dir_cur'));
   //return {item_list: item_list2, 
   //        active_pane_id: state.active_pane_id,
   //        line_cur: item_list.line_cur,
@@ -35,8 +35,8 @@ const mapStateToProps = (state, props) => {
   //console.log('state.arr_pages: ' + state.arr_pages);
   //console.log('7-------------------------');
   const id = props.id;
-  const path_cur = state.getIn(['arr_pages', id, 'path_cur']);
-  const item_list = state.getIn(['arr_pages', id, 'pages', path_cur]);
+  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+  const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
   //console.log('8-------------------------');
   return {item_list: item_list, 
           active_pane_id: state.get('active_pane_id'),
