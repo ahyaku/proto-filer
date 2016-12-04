@@ -59,18 +59,13 @@ export const checkKeyNormal = (e) => {
     //  //}
     //  //break;
     case 'o': /* 'o' */
-    if(event.shiftKey == true){
-      //this.syncPaneOther2Cur();
-      return {
-        type: 'SYNC_DIR_OTHER_TO_CUR'
-      };
-    }else{
-      //this.syncPaneCur2Other();
       return {
         type: 'SYNC_DIR_CUR_TO_OTHER'
       };
-    }
-    break;           
+    case 'O': /* 'O' */
+      return {
+        type: 'SYNC_DIR_OTHER_TO_CUR'
+      };
     //case 'c': /* 'c' */
     //  //this.copyItems();
     //  //break;           

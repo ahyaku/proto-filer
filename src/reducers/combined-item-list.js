@@ -41,11 +41,24 @@ function CombinedItemList(state, action){
           return state;
       }
     case 'SYNC_DIR_CUR_TO_OTHER':
-      const idx_other = !state.get('active_pane_id');
-      //const dir_other = state.getIn('arr_pages', idx_other, 'dir_cur');
-      const dir_other = state.getIn(['arr_pages', idx_other, 'dir_cur']);
-      console.log('dir_other: ' + dir_other);
-      return state;
+      {
+        console.log('SYNC_DIR_CUR_TO_OTHER');
+        const idx_cur = state.get('active_pane_id');
+        const idx_other = idx_cur === 1
+                          ? 0
+                          : 1;
+        return syncDir(state, idx_other, idx_cur);
+      }
+
+    case 'SYNC_DIR_OTHER_TO_CUR':
+      {
+        console.log('SYNC_DIR_OTHER_TO_CUR');
+        const idx_cur = state.get('active_pane_id');
+        const idx_other = idx_cur === 1
+                          ? 0
+                          : 1;
+        return syncDir(state, idx_cur, idx_other);
+      }
 
   //  case 'SWITCH_INPUT_MODE_NORMAL':
   //    return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.NORMAL});
@@ -119,6 +132,15 @@ function moveCursor(state, delta){
 
   //console.log('6-------------------------');
 
+  return ret;
+}
+
+function syncDir(state, idx_dst, idx_src){
+  const dir_dst = state.getIn(['arr_pages', idx_dst, 'dir_cur']);
+  //console.log('idx_other: ' + idx_other);
+  //console.log('dir_other: ' + dir_other);
+  const arr_pages = state.getIn(['arr_pages', idx_src]).updatePageCur(dir_dst);
+  const ret = state.setIn(['arr_pages', idx_src], arr_pages);
   return ret;
 }
 
