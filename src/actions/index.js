@@ -113,12 +113,35 @@ export const checkKeySearch = (e) => {
 
 const _checkKeySearchWithCtrl = (e) => {
   switch(e.key){
+    case 'Control':
+      return {
+        type: 'RECEIVE_INPUT',
+        c: ''
+      };
+    case 'm':
+      event.preventDefault();
+      return {
+        type: 'SWITCH_INPUT_MODE_NORMAL_WITH_MSG',
+        c: ''
+      };
     case '[':
       return {
-        type: 'SWITCH_INPUT_MODE_NORMAL',
-        is_clear_cmd: true
+        type: 'SWITCH_INPUT_MODE_NORMAL_WITH_CLEAR',
+        c: ''
+        //is_clear_cmd: true
+      };
+    case 'h':
+      return {
+        type: 'RECEIVE_INPUT_BS',
+        c: ''
+      };
+    case 'u':
+      return {
+        type: 'CLEAR_INPUT',
+        c: ''
       };
     default:
+      /* Add input character to msg_cmd. */
       return {
         type: 'RECEIVE_INPUT',
         c: e.key,
@@ -128,6 +151,7 @@ const _checkKeySearchWithCtrl = (e) => {
 }
 
 const _checkKeySearch = (e) => {
+  //console.log('e.key: ' + e.key);
   switch(e.key){
     case 'Escape':
       return {
@@ -136,8 +160,9 @@ const _checkKeySearch = (e) => {
       };
     case 'Enter':
       return {
-        type: 'SWITCH_INPUT_MODE_NORMAL',
-        is_clear_cmd: false
+        type: 'SWITCH_INPUT_MODE_NORMAL_WITH_MSG',
+        c: ''
+        //is_clear_cmd: false
       };
     case '[':
       return {
@@ -145,8 +170,23 @@ const _checkKeySearch = (e) => {
         c: e.key
       };
     case 'Tab':
-    default:
+    case 'Shift':
+    case 'Control':
+    case 'Alt':
       /* Do Nothing.. */
+      return {
+        type: 'RECEIVE_INPUT',
+        c: '',
+        event: event
+      };
+    case 'Backspace':
+      return {
+        type: 'RECEIVE_INPUT_BS',
+        c: ''
+      };
+    default:
+      event.preventDefault();
+      /* Add input character to msg_cmd. */
       return {
         type: 'RECEIVE_INPUT',
         c: e.key,

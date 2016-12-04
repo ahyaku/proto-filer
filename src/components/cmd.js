@@ -10,7 +10,8 @@ const Cmd = ({msg_cmd, input_mode}) => {
     //height: '20px',
     border: '1px solid #FFFFFF',
     margin: '0px, 0px 0px',
-    padding: '0px, 0px 0px'
+    padding: '0px, 0px 0px',
+    minHeight: '20px'
     //overflowX: 'hidden',
     //overflowY: 'hidden'
   };

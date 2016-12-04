@@ -60,6 +60,11 @@ function CombinedItemList(state, action){
         return syncDir(state, idx_cur, idx_other);
       }
 
+    case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
+      {
+        return state.set('input_mode', KEY_INPUT_MODE.SEARCH);
+      }
+
   //  case 'SWITCH_INPUT_MODE_NORMAL':
   //    return Object.assign({}, state, {input_mode: KEY_INPUT_MODE.NORMAL});
   //  case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':

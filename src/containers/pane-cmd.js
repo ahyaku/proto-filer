@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import Cmd from '../components/cmd';
 
 const mapStateToProps = (state, props) => {
-  //const msg_cmd = state.arr_pages[props.id].msg_cmd;
-  //return {msg_cmd: msg_cmd, input_mode: state.input_mode};
-
-  /* Dummy */
-  return {msg_cmd: 'hoge', input_mode: 'fuga'};
+  const id = props.id;
+  const msg_cmd = state.getIn(['arr_pages', id, 'msg_cmd']);
+  const input_mode = state.getIn(['arr_pages', id, 'input_mode']);
+  //console.log('msg_cmd: ' + msg_cmd);
+  return {msg_cmd: msg_cmd, input_mode: input_mode};
 }
 
 const PaneCmd = connect(
