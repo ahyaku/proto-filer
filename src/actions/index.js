@@ -156,7 +156,7 @@ const _checkKeySearch = (e) => {
     case 'Escape':
       return {
         type: 'SWITCH_INPUT_MODE_NORMAL',
-        is_clear_cmd: true
+        //is_clear_cmd: true
       };
     case 'Enter':
       return {

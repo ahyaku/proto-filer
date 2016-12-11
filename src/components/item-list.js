@@ -99,11 +99,17 @@ class ItemListView extends React.Component {
 
     const idx = item_list.get('line_cur');
 
-    if(this.im_items !== item_list.get('items')){
-      this.im_items = item_list.get('items');
+    if(this.im_items !== item_list.get('items_match')){
+      this.im_items = item_list.get('items_match');
       this.items = this.im_items.toArray();
       this.dir_cur = item_list.get('dir_cur');
     }
+
+    //if(this.im_items !== item_list.get('items')){
+    //  this.im_items = item_list.get('items');
+    //  this.items = this.im_items.toArray();
+    //  this.dir_cur = item_list.get('dir_cur');
+    //}
 
     if(this.items.length <= 0){
       //console.log('HERE!!');
@@ -362,7 +368,7 @@ class ItemView extends React.Component {
   shouldComponentUpdate(nextProps, nextState){
     /* Directory is changed. */
     if(this.props.im_items !== nextProps.im_items){
-      console.log('HERE!!');
+      //console.log('HERE!!');
       return true
     }
     /* Render only current line and previous line items. */

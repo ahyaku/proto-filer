@@ -17,14 +17,23 @@ function CombinedCmd(state, action){
         if(msg.length > 0){
           return state;
         }else{
-          return state.setIn(['arr_pages', id, 'msg_cmd'], msg + action.c);
+          //return state.setIn(['arr_pages', id, 'msg_cmd'], msg + action.c);
+          //return NarrowDownItems(state, id, action.c);
+
+          const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + action.c;
+          return NarrowDownItems(state, id, msg);
         }
       }
     case 'RECEIVE_INPUT':
       {
         const id = state.get('active_pane_id');
+
+        //const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + action.c;
+        //return state.setIn(['arr_pages', id, 'msg_cmd'], msg);
+
+        //const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
         const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + action.c;
-        return state.setIn(['arr_pages', id, 'msg_cmd'], msg);
+        return NarrowDownItems(state, id, msg);
       }
 
   //  case 'SWITCH_INPUT_MODE_NORMAL':
@@ -57,13 +66,16 @@ function CombinedCmd(state, action){
         //console.log('action.msg_cmd: ' + action.c);
         const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
         //console.log('msg_cmd: ' + msg);
-        return state.setIn(['arr_pages', id, 'msg_cmd'], msg.slice(0, msg.length - 1));
+        //return state.setIn(['arr_pages', id, 'msg_cmd'], msg.slice(0, msg.length - 1));
+        return NarrowDownItems(state, id, msg.slice(0, msg.length - 1));
+
       }
     case 'CLEAR_INPUT':
       {
         const id = state.get('active_pane_id');
         const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
-        return state.setIn(['arr_pages', id, 'msg_cmd'], msg.slice(0, 1));
+        //return state.setIn(['arr_pages', id, 'msg_cmd'], msg.slice(0, 1));
+        return NarrowDownItems(state, id, msg.slice(0, 1));
       }
     case 'SWITCH_INPUT_MODE_NORMAL_WITH_MSG':
       {
@@ -72,10 +84,20 @@ function CombinedCmd(state, action){
       }
     case 'SWITCH_INPUT_MODE_NORMAL_WITH_CLEAR':
       {
+        console.log('CLEAR!!');
         const id = state.get('active_pane_id');
+        const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+        const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
         return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
+                                         .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
                                          .set('input_mode', KEY_INPUT_MODE.NORMAL)
                                   );
+      }
+    case 'CHANGE_DIR_UPPER':
+    case 'CHANGE_DIR_LOWER':
+      {
+        const id = state.get('active_pane_id');
+        return state.setIn(['arr_pages', id, 'msg_cmd'], '');
       }
     default:
       return state;
@@ -83,6 +105,40 @@ function CombinedCmd(state, action){
   }
 
   return state;
+}
+
+function NarrowDownItems(state, id, msg){
+  //return state.setIn(['arr_pages', id, 'msg_cmd'], msg + c);
+
+
+  if(msg.length <= 0){
+    return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
+                                     .set('input_mode', KEY_INPUT_MODE.NORMAL));
+  }
+
+  const pattern = msg.slice(1, msg.length);
+  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+  let items;
+
+  if(pattern.length > 0){
+    //console.log('pattern.length > 0');
+    const reg = new RegExp(pattern);
+
+    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+                       .filter((e, i) => {
+                         if(reg.test(e.name)){
+                           return e;
+                         }
+                       });
+
+  }else{
+    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+  }
+
+  return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
+
 }
 
 const getNewMsgCmd = (msg_cmd, c) => {

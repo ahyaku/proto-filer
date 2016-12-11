@@ -70,10 +70,14 @@ class ItemListPages extends ItemListPagesRecord{
     //                });
 
     const ret = this.get('pages')
-                    .findKey((item_list)=>{
-                      //console.log('item_list.get(dir_cur): ' + item_list.get('dir_cur'));
-                      //console.log('path: ' + path);
-                      return (item_list.get('dir_cur') === dir_cur);
+                    .findKey((page)=>{
+                      //console.log('page.get(dir_cur): ' + page.get('dir_cur'));
+                      //if(page.get('dir_cur') === dir_cur){
+                      //  console.log('dir_cur: STORED!!');
+                      //}else{
+                      //  console.log('dir_cur: NOT STORED!!');
+                      //}
+                      return (page.get('dir_cur') === dir_cur);
                     },
                     null);
 
@@ -81,19 +85,19 @@ class ItemListPages extends ItemListPagesRecord{
     //console.log('--------------------------------------------------');
 
     if(typeof ret !== "undefined"){
-      console.log('HERE!!');
-      return this.set('dir_cur', dir_cur);
+      //console.log('NOT undefined!!');
+      const items = this.getIn(['pages', dir_cur, 'items']);
+      return this.withMutations(s => s.setIn(['pages', dir_cur, 'items_match'], items)
+                                      .set('dir_cur', dir_cur));
     }
 
     const items = new ItemList()
                       .set('dir_cur', dir_cur)
                       .updateItems();
 
-    return this.set('pages', this.pages.set(dir_cur, items))
-               .set('dir_cur', dir_cur);
+    return this.withMutations(s => s.set('dir_cur', dir_cur)
+                                    .setIn(['pages', dir_cur], items));
 
-    //return this.set('pages', im.map({path, items}))
-    //           .set('dir_cur', dir_cur);
   }
 
   //updatePageCur(init_path){
@@ -143,15 +147,15 @@ class ItemListPages extends ItemListPagesRecord{
     }
 
     const dir_cur = this.get('dir_cur');
+    //console.log('dir_cur: ' + dir_cur);
     const items = this.getIn(['pages', dir_cur]);
     //console.log('items: ' + items);
-    //const items_items = items.get('items');
     //console.log('items_items: ' + items_items);
     const line_cur = items.get('line_cur');
-    const item_name = items.getIn(['items', line_cur, 'name']);
-    console.log('dir_cur: ' + dir_cur + ', item: ' + item_name);
+    const item_name = items.getIn(['items_match', line_cur, 'name']);
+    //console.log('dir_cur: ' + dir_cur + ', item: ' + item_name);
     const path_new = path.join(dir_cur, item_name);
-    console.log('path_new: ' + path_new);
+    //console.log('path_new: ' + path_new);
     const ret = ipc_renderer.sendSync('fs.isDirectory', path_new)
     if(ret['is_dir']){
       return this.updatePageCur(path_new);

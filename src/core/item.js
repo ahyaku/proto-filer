@@ -11,6 +11,7 @@ import {ITEM_TYPE_KIND} from './item_type';
 //};
 
 const ItemRecord = im.Record({
+  id: null,
   name: null,
   basename: null,
   ext : null,

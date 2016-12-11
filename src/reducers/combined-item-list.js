@@ -116,7 +116,14 @@ function moveCursor(state, delta){
   const idx = state.get('active_pane_id');
   const dir_cur = state.getIn(['arr_pages', idx, 'dir_cur']);
   const line_cur = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur']);
-  const len = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items']).size;
+  //const len_items = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items']).count();
+  //console.log('len_items : ' + len_items);
+  const len = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items_match']).count();
+  //console.log('len: ' + len);
+  //const items = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items']);
+  //console.log('items: ' + items);
+  //const items_match = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items_match']);
+  //console.log('items_match: ' + items_match);
 
   //return state;
 

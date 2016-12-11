@@ -16,7 +16,8 @@ const ItemListPaneRecord = im.Record({
   items_selected: {},
   reg_pat: '',
   line_cur: 0,
-  items: null
+  items: null,
+  items_match: null
 });
 
 class ItemListPane extends ItemListPaneRecord{
@@ -67,7 +68,8 @@ class ItemListPane extends ItemListPaneRecord{
                         const time = ret['mtime'].slice(11, 19);
                         //console.log('date: ' + ret['mtime'].slice(2, 10));
                         //console.log('time: ' + ret['mtime'].slice(11, 19));
-                        return new Item({name: es[i],
+                        return new Item({id: i,
+                                         name: es[i],
                                          is_dir: ret['is_dir'],
                                          fsize: fsize,
                                          date: date,
@@ -79,7 +81,12 @@ class ItemListPane extends ItemListPaneRecord{
                       //console.log('i: ' + i + ', e: ' + e);
                       c++;
                     });
-    const ret = this.set('items', items);
+
+    //const ret = this.set('items', items);
+
+    const ret = this.withMutations(s => s.set('items', items)
+                                         .set('items_match', items));
+
     return ret;
   }
   
