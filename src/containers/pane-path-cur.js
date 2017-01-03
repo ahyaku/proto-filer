@@ -14,6 +14,8 @@ const mapStateToProps = (state, props) => {
   //}
   //return {arr_path_cur, props};
 
+  //console.log('PanePathCur() <> props.id = ' + props.id);
+
   const id = props.id;
   //const dir_cur = state.arr_pages.get(id).get('dir_cur');
   //console.log('state: ' + state);

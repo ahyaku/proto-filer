@@ -9,6 +9,7 @@ const mapStateToProps = (state, props) => {
   const msg_cmd = state.getIn(['arr_pages', id, 'msg_cmd']);
   const input_mode = state.getIn(['arr_pages', id, 'input_mode']);
   //console.log('msg_cmd: ' + msg_cmd);
+  //console.log('pane-cmd.js <> props.id = ' + props.id);
   return {msg_cmd: msg_cmd, input_mode: input_mode};
 }
 

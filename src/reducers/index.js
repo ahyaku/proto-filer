@@ -18,6 +18,7 @@ import { KEY_INPUT_MODE } from '../core/item_type';
 //});
 
 function itemList(state, action){
+  //console.log('root reducer!! <> action.type: ' + action.type);
 
   //return {
   //  CombinedItemList : CombinedItemList(state, action)

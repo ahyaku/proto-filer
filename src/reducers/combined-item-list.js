@@ -62,7 +62,9 @@ function CombinedItemList(state, action){
 
     case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
       {
-        return state.set('input_mode', KEY_INPUT_MODE.SEARCH);
+        //console.log('CHANGE!!');
+        //return state.set('input_mode', KEY_INPUT_MODE.SEARCH);
+        return state;
       }
 
   //  case 'SWITCH_INPUT_MODE_NORMAL':

@@ -3,6 +3,7 @@
 import React from 'react';
 
 const PathCur = ({dir_cur, active_pane_id, props}) => {
+  console.log('PathCur() <> props.id = ' + props.id);
   let style = {};
   //const style = {
   //  color: '#AAAAAA'
