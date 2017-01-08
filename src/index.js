@@ -15,6 +15,12 @@ import ItemListPages from './core/item_list_pages';
 import reducer from './reducers';
 import {KEY_INPUT_MODE} from './core/item_type';
 
+import { ipcRenderer } from 'electron';
+import cp from 'child_process';
+//import electron from electron;
+
+import { updateItemNameList } from './reducers/combined-item-list';
+
 process.env.NODE_ENV = 'production';
 
 const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
@@ -35,23 +41,79 @@ const active_pane_id = 0;
 //  msg_cmd: ''
 //}
 
-//const state_init = im.Record({
+
+//const name_list_left = [
+//  'dev',
+//  'etc',
+//  'home',
+//  'mingw32',
+//  'mingw64',
+//  'opt',
+//  'tmp',
+//  'usr',
+//  'var',
+//  'autorebase.bat',
+//  'autorebasebase1st.bat',
+//  'components.xml',
+//  'dir',
+//  'InstallationLog.txt',
+//  'maintenancetool.dat',
+//  'maintenancetool.exe',
+//  'maintenancetool.ini',
+//  'msys2.ico',
+//  'msys2_shell.cmd',
+//  'network.xml',
+//  'test'
+//]
+
+//const name_list_left = [
+//  'autorebase.bat',
+//  'autorebasebase1st.bat'
+//]
+
+
+
+
 const state_init = im.Map({
   arr_pages: arr_pages,
   active_pane_id: 0,
   action_type: 'NONE',
   input_mode: KEY_INPUT_MODE.NORMAL,
-  msg_cmd: ''
+  msg_cmd: '',
+  arr_item_name_lists: im.List.of()
 });
 
-let store = createStore(reducer, state_init, applyMiddleware(thunk));
+//const list_tmp = state_init.get('name_list_left');
+//console.log('list_tmp: ' + list_tmp);
+
+//const state_tmp00 = updateItemNameList(state_init, 0);
+//const state_tmp01 = updateItemNameList(state_tmp00, 1);
+//console.log('arr_item_name_lists[0]: ' + state_tmp01.getIn(['arr_item_name_lists', 0]));
+//console.log('arr_item_name_lists[1]: ' + state_tmp01.getIn(['arr_item_name_lists', 1]));
+
+const item_name_list_left = updateItemNameList(state_init, 0);
+const item_name_list_right = updateItemNameList(state_init, 1);
+const state_init2 = state_init.withMutations((s) => s.setIn(['arr_item_name_lists', 0], item_name_list_left)
+                                                     .setIn(['arr_item_name_lists', 1], item_name_list_right));
+
+//console.log('arr_item_name_lists[0]: ' + state_init2.getIn(['arr_item_name_lists', 0]));
+//console.log('arr_item_name_lists[1]: ' + state_init2.getIn(['arr_item_name_lists', 1]));
+
+//const state_init = im.Map({
+//  arr_pages: arr_pages,
+//  active_pane_id: 0,
+//  action_type: 'NONE',
+//  input_mode: KEY_INPUT_MODE.NORMAL,
+//  msg_cmd: ''
+//});
+
+let store = createStore(reducer, state_init2, applyMiddleware(thunk));
+//let store = createStore(reducer, state_init, applyMiddleware(thunk));
 
 function ListenKeydown(mapEventToAction){
-  console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-
   return function(dispatch, getState){
     function handleEvent(e){
-      console.log('handleEvent()!! <> e.key: ' + e.key);
+      //console.log('handleEvent()!! <> e.key: ' + e.key);
       //console.log('key: ' + e);
       //console.log('e.keyCode: ' + e.keyCode);
       //console.log('e.key: ' + e.key);
@@ -123,6 +185,11 @@ function mapKeydownToAction(getState, e){
 
 const unlistenKeydown = store.dispatch(ListenKeydown(mapKeydownToAction));
 
+//ipcRenderer.on('test_message_reply', (event, ret_msg) => {
+//  console.log('ret_msg: ' + ret_msg);
+//});
+//ipcRenderer.send('test_message', 'Here it!!');
+
 const style = {
   overflowY: 'hidden'
 };
@@ -133,3 +200,30 @@ render(
   </Provider>,
   document.getElementById('root')
 );
+
+//const c = cp.fork('proc-narrow-items.js');
+////const c = cp.fork('hogeeeee');
+//c.on('message', (m) => {
+//  console.log('narrow_down_items_cb!! <> m: ' + m);
+//});
+//
+//function test(){
+//  console.log('HERE??');
+//  //const ret = c.send({
+//  //  channel: 'message',
+//  //  arg: 'world'
+//  //});
+//  const ret = c.send({
+//    hello: 'world'
+//  });
+//  console.log('ret: ' + ret);
+//}
+//
+//test();
+
+////const worker = new Worker("./webworker.js");
+//const worker = new Worker("./src/webworker.js");
+//worker.onmessage = (e) => {
+//  console.log('worker.onmessage: ' + e.data);
+//}
+//worker.postMessage('Hello');

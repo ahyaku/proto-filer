@@ -33,7 +33,7 @@ class ItemListPages extends ItemListPagesRecord{
 
   updatePageCur(_dir_cur){
     const dir_cur = fs.realpathSync(_dir_cur);
-    console.log('call updatePageCur()!!');
+    //console.log('call updatePageCur()!!');
     //if(!ipc_renderer.sendSync('fs.isDirectory', init_path)){
     //  console.log('updatePageCur() <> NOT Directory!!');
     //  this._items = this._page_cur.items;

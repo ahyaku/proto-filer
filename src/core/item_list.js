@@ -34,7 +34,7 @@ class ItemListPane extends ItemListPaneRecord{
 
 
   updateItems(){
-    console.log('call updateItems()!!');
+    //console.log('call updateItems()!!');
     let dir_cur = this.get('dir_cur')
     let es = ipc_renderer.sendSync('fs.readdirSync', dir_cur);
     /* If file access of fs.readdirSync is denied, es == null */
@@ -54,6 +54,7 @@ class ItemListPane extends ItemListPaneRecord{
     //                  return new Item({name: es[i], is_dir: is_dir}).init();
     //                });
 
+    //const items = im.List(im.Range(0, es.length))
     const items = im.Seq(im.Range(0, es.length))
                     .map((e, i) => {
                       //console.log('c: ' + c + ', dir_cur: ' + dir_cur + ', es[' + i + ']: ' + es[i]);

@@ -111,6 +111,8 @@ class ItemListView extends React.Component {
     //  this.dir_cur = item_list.get('dir_cur');
     //}
 
+    //console.log('ItemListView <> items.length: ' + this.items.length);
+
     if(this.items.length <= 0){
       //console.log('HERE!!');
       return (

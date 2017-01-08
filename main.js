@@ -6,6 +6,13 @@ const path = require('path');
 const electron = require('electron');
 const shell = electron.shell;
 
+const im = require('immutable');
+
+//const KEY_INPUT_MODE = require('./src/core/item_type');
+//import { KEY_INPUT_MODE } from './src/core/item_type':
+
+//const cp = require('child_process');
+
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -42,7 +49,14 @@ function createWindow () {
   }
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  //mainWindow = new BrowserWindow({width: 800, height: 600}) /* ORG */
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      //nodeIntegration: false
+    }
+  })
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`)
@@ -237,3 +251,193 @@ electron.ipcMain.on('isearch_start', (event) => {
 
   event.returnValue = true;
 });
+
+//electron.ipcMain.on('test_message', (event, arg_msg, dispatch) => {
+//  const ret_msg = "Are you known??";
+//  console.log('test_message <> arg_msg: ' + arg_msg);
+//  console.log('test_message <> ret_msg: ' + ret_msg);
+//  event.sender.send('test_message_reply', ret_msg, dispatch);
+//});
+
+electron.ipcMain.on('test_message', (event, arg_msg) => {
+  const ret_msg = "Are you known??";
+  console.log('test_message <> arg_msg: ' + arg_msg);
+  console.log('test_message <> ret_msg: ' + ret_msg);
+  event.sender.send('test_message_reply', ret_msg);
+});
+
+electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
+  let ids = [];
+  let names = [];
+
+  if(msg.length <= 0){
+    for(let i=0; i<item_names.length; i++){
+      ids.push(i);
+    }
+    event.sender.send(
+      'narrow_down_items_cb',
+      ids,
+      '',
+      0 /* KEY_INPUT_MODE.NORMAL */
+    );
+  }
+
+  const pattern = msg.slice(1, msg.length);
+
+  if(pattern.length > 0){
+    //console.log('pattern.length > 0');
+    //console.log('pattern: ' + pattern);
+    const reg = new RegExp(pattern);
+
+    for(let i=0; i<item_names.length; i++){
+      if(reg.test(item_names[i])){
+        //console.log('match <> ' + e.name);
+        names.push(item_names[i]);
+        ids.push(i);
+      }
+    }
+  }else{
+    for(let i=0; i<item_names.length; i++){
+      ids.push(i);
+    }
+
+  }
+
+  //console.log('ids: ' + ids);
+  //if(pattern.length === 4){
+  //  console.log('ids.length: ' + ids.length + ', names: ' + names);
+  //}
+
+  event.sender.send(
+    'narrow_down_items_cb',
+    ids,
+    msg,
+    1 /* KEY_INPUT_MODE.SEARCH */
+  );
+
+  /* DEBUG: Check async action..  */
+  //setTimeout(
+  //  () => {
+  //    console.log('HERE!!!!!!!!!!!!');
+  //    event.sender.send(
+  //      'narrow_down_items_cb',
+  //      ids,
+  //      msg,
+  //      1 /* KEY_INPUT_MODE.SEARCH */
+  //    );
+  //  },
+  //  5000
+  //);
+
+});
+
+
+//electron.ipcMain.on('narrow_down_items', (event, state_str, id, msg) => {
+//  setTimeout(
+//    () => {
+//      event.sender.send(
+//        'narrow_down_items_cb',
+//        state_str
+//      );
+//    },
+//    0
+//  );
+//  //event.sender.send(
+//  //  'narrow_down_items_cb',
+//  //  state_str
+//  //);
+//});
+
+//electron.ipcMain.on('narrow_down_items', (event, state_str, id, msg) => {
+//  let state_ret;
+//  const state = im.fromJS(state_str);
+//  //console.log('state: ' + state);
+//
+//  if(msg.length <= 0){
+//    state_ret = state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
+//                                          .set('input_mode', KEY_INPUT_MODE.NORMAL));
+//    event.sender.send(
+//      'narrow_down_items_cb',
+//      state_ret.toJS()
+//    );
+//
+//    //event.sender.send(
+//    //  'narrow_down_items_cb',
+//    //  state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
+//    //                            .set('input_mode', KEY_INPUT_MODE.NORMAL))
+//    //);
+//  }
+//
+//  const pattern = msg.slice(1, msg.length);
+//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+//  console.log('dir_cur: ' + dir_cur);
+//  let items;
+//
+//  items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
+//  //console.log('items: ' + items);
+//
+//  if(pattern.length > 0){
+//    console.log('pattern.length > 0');
+//    console.log('pattern: ' + pattern);
+//    const reg = new RegExp(pattern);
+//
+//    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+//                       .filter((e, i) => {
+//                         //console.log('e: ' + e);
+//                         //console.log('e.name: ' + e.name); /* NG */
+//                         //console.log('e[name]: ' + e["name"]); /* NG */
+//                         console.log('e[name]: ' + e.get('name')); /* OK */
+//                         //const item = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items', i]);
+//                         //console.log('item.name: ' + item.name);
+//                         if(reg.test(e.name)){
+//                           console.log('match <> ' + e.name);
+//                           return e;
+//                         }
+//                       });
+//
+//  }else{
+//    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+//  }
+//
+//  //console.log('NarrowDownItemsCore() END!!');
+//
+//  state_ret = state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+//                                        .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+//                                        .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
+//  event.sender.send(
+//    'narrow_down_items_cb',
+//    state_ret.toJS()
+//  );
+//
+//  //event.sender.send(
+//  //  'narrow_down_items_cb',
+//  //  state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+//  //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+//  //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
+//  //);
+//
+//});
+
+//const c = cp.fork('./src/proc-narrow-items.js');
+//
+//c.on('message', (m) => {
+//  console.log('narrow_down_items_cb!! <> m: ' + m);
+//});
+//
+//function test(){
+//  console.log('HERE??');
+//  //const ret = c.send({
+//  //  channel: 'message',
+//  //  arg: 'world'
+//  //});
+//  const ret = c.send({
+//    hello: 'world'
+//  });
+//  console.log('ret: ' + ret);
+//}
+//
+//test();
+
+
+//const worker = new Worker("./src/webworker.js");
+

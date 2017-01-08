@@ -18,15 +18,33 @@ function CombinedItemList(state, action){
     case 'CHANGE_DIR_UPPER':
       {
         const idx = state.get('active_pane_id');
-        const arr_pages = state.getIn(['arr_pages', idx]).changeDirUpper();
-        const ret = state.setIn(['arr_pages', idx], arr_pages);
+        const pages = state.getIn(['arr_pages', idx]).changeDirUpper();
+
+        const dir_cur = pages.get('dir_cur');
+        const items = pages.getIn(['pages', dir_cur, 'items']);
+        //console.log('items: ' + items);
+        const item_name_list = updateItemNameListCore(dir_cur, items);
+        const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
+                                                .setIn(['arr_item_name_lists', idx], item_name_list));
+
+        //const ret = state.setIn(['arr_pages', idx], pages);
+
         return ret;
       }
     case 'CHANGE_DIR_LOWER':
       {
         const idx = state.get('active_pane_id');
-        const arr_pages = state.getIn(['arr_pages', idx]).changeDirLower();
-        const ret = state.setIn(['arr_pages', idx], arr_pages);
+        const pages = state.getIn(['arr_pages', idx]).changeDirLower();
+
+        const dir_cur = pages.get('dir_cur');
+        const items = pages.getIn(['pages', dir_cur, 'items']);
+        //console.log('items: ' + items);
+        const item_name_list = updateItemNameListCore(dir_cur, items);
+        const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
+                                                .setIn(['arr_item_name_lists', idx], item_name_list));
+
+        //const ret = state.setIn(['arr_pages', idx], pages);
+
         return ret;
       }
     case 'SWITCH_ACTIVE_PANE':
@@ -108,6 +126,12 @@ function CombinedItemList(state, action){
 
   //    return state_new;
 
+    case 'TEST_SEND_MSG':
+      console.log('TEST_SEND_MSG');
+      return state;
+    case 'TEST_RECEIVE_MSG':
+      console.log('TEST_RECEIVE_MSG <> ret_msg: ' + action.ret_msg);
+      return state;
     default:
       return state;
   }
@@ -153,10 +177,79 @@ function syncDir(state, idx_dst, idx_src){
   const dir_dst = state.getIn(['arr_pages', idx_dst, 'dir_cur']);
   //console.log('idx_other: ' + idx_other);
   //console.log('dir_other: ' + dir_other);
-  const arr_pages = state.getIn(['arr_pages', idx_src]).updatePageCur(dir_dst);
-  const ret = state.setIn(['arr_pages', idx_src], arr_pages);
+  const pages = state.getIn(['arr_pages', idx_src]).updatePageCur(dir_dst);
+  //const ret = state.setIn(['arr_pages', idx_src], arr_pages);
+
+  const items = pages.getIn(['pages', dir_dst, 'items']);
+  //console.log('items: ' + items);
+  const item_name_list = updateItemNameListCore(dir_dst, items);
+
+  const ret = state.withMutations((s) => s.setIn(['arr_pages', idx_src], pages)
+                                          .setIn(['arr_item_name_lists', idx_src], item_name_list));
+  //const ret = state.setIn(['arr_pages', idx_src], pages);
+
   return ret;
 }
+
+export const updateItemNameList = (state, id) => {
+  //console.log('updateItemNameList()!!');
+  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+  //console.log('dir_cur: ' + dir_cur);
+  const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
+  //console.log('items: ' + items);
+  //console.log('items.size: ' + items.size);
+
+  return updateItemNameListCore(dir_cur, items);
+
+  //let array = [];
+  //for(let i=0; i<items.size; i++){
+  //  array.push(items.getIn([i, 'name']));
+  //}
+  //return array;
+}
+
+const updateItemNameListCore = (dir_cur, items) => {
+  let array = [];
+  //console.log('items: ' + items.get(3));
+  for(let i=0; i<items.size; i++){
+    array.push(items.getIn([i, 'name']));
+    //console.log('array[' + i + ']: ' + array[i]);
+  }
+  return array;
+}
+
+
+//function syncDir(state, idx_dst, idx_src){
+//  const dir_dst = state.getIn(['arr_pages', idx_dst, 'dir_cur']);
+//  //console.log('idx_other: ' + idx_other);
+//  //console.log('dir_other: ' + dir_other);
+//  const arr_pages = state.getIn(['arr_pages', idx_src]).updatePageCur(dir_dst);
+//  const ret = state.setIn(['arr_pages', idx_src], arr_pages);
+//  return ret;
+//}
+
+
+//export const updateItemNameList = (state, id) => {
+//  //console.log('updateItemNameList()!!');
+//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+//  //console.log('dir_cur: ' + dir_cur);
+//  const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
+//  //console.log('items: ' + items);
+//  //console.log('items.size: ' + items.size);
+//  let array = [];
+//  //console.log('items: ' + items.get(3));
+//  for(let i=0; i<items.size; i++){
+//    array.push(items.getIn([i, 'name']));
+//    //console.log('array[' + i + ']: ' + array[i]);
+//  }
+//  if(id === 0){
+//    return state.set('name_list_left', array);
+//  }else if(id === 1){
+//    return state.set('name_list_right', array);
+//  }else{
+//    console.log('ERROR!!!');
+//  }
+//}
 
 //function changeDir(path){
 //  const idx = state.get('active_pane_id');
