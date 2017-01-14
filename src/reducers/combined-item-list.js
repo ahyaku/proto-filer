@@ -15,6 +15,19 @@ function CombinedItemList(state, action){
       {
         return moveCursor(state, 1);
       }
+    case 'CHANGE_DRIVE':
+      {
+        const idx = state.get('active_pane_id');
+        const pages = state.getIn(['arr_pages', idx]).changeDrive(action.dlist);
+        const dir_cur = pages.get('dir_cur');
+        const items = pages.getIn(['pages', dir_cur, 'items']);
+        //console.log('items: ' + items);
+        const item_name_list = updateItemNameListCore(dir_cur, items);
+        const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
+                                                .setIn(['arr_item_name_lists', idx], item_name_list));
+
+        return ret;
+      }
     case 'CHANGE_DIR_UPPER':
       {
         const idx = state.get('active_pane_id');

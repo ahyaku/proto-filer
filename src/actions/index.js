@@ -107,6 +107,16 @@ export const checkKeyNormal = (state, e) => {
       return {
         type: 'DEBUG_COUNT_END'
       };
+    case '\\':
+      //console.log('\\');
+      let ret = ipcRenderer.sendSync('get_disk_drive_list');
+      //console.log('!!!!!!!!!!!!');
+      //let drive_list = arr.slice(1, arr.length - 2);
+      //console.log(ret);
+      return {
+        type: 'CHANGE_DRIVE',
+        dlist: ret
+      };
     default:
       /* Do Nothing.. */
       //break;

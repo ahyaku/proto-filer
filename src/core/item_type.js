@@ -2,15 +2,23 @@
 
 export const ITEM_TYPE_KIND = {
   DIR      : 0,
-  TEXT     : 1,
-  EXE      : 2,
-  BIN      : 3,
-  IMAGE    : 4,
-  MOVIE    : 5,
-  SOUND    : 6,
-  ARCHIVE  : 7,
-  OTHER    : 8
+  DRIVE    : 1,
+  TEXT     : 2,
+  EXE      : 3,
+  BIN      : 4,
+  IMAGE    : 5,
+  MOVIE    : 6,
+  SOUND    : 7,
+  ARCHIVE  : 8,
+  OTHER    : 9
 };
+
+//export const ITEM_LIST_MODE = {
+//  ITEM     : 0,
+//  DRIVE    : 1,
+//  BOOKMARK : 2,
+//  HISTORY  : 3
+//}
 
 export const KEY_INPUT_MODE = {
   NORMAL : 0,

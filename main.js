@@ -6,7 +6,9 @@ const path = require('path');
 const electron = require('electron');
 const shell = electron.shell;
 
-const im = require('immutable');
+const spawn = require('child_process').spawn;
+const os = require('os');
+//const iconv = require('iconv-lite');
 
 //const KEY_INPUT_MODE = require('./src/core/item_type');
 //import { KEY_INPUT_MODE } from './src/core/item_type':
@@ -330,6 +332,63 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
   //);
 
 });
+
+
+
+//const cmd = spawn('cmd');
+//const cmd = spawn('wmic', ['logicaldisk', 'get', 'name\\n']);
+//const cmd = spawn('dir');
+
+//let ret = null;
+//console.log('------------------------');
+//console.log(ret);
+//console.log('------------------------');
+
+electron.ipcMain.on('get_disk_drive_list', (event, arg) => {
+  switch( os.platform() ){
+    case 'win32':
+      detectDiskDriveWin32(event);
+      break;
+    case 'aix':
+    case 'darwin':
+    case 'freebsd':
+    case 'linux':
+    case 'openbsd':
+    case 'sunos':
+    default:
+      console.log('ERROR!!');
+      event.returnValue = 'ERROR!!';
+      break;
+  }
+
+});
+
+const detectDiskDriveWin32 = (event) => {
+  let count = 0;
+  const cmd = spawn('cmd');
+
+  cmd.stdout.setEncoding('utf8');
+  cmd.stdout.on('data', function(data){
+    //console.log('count: ' + count);
+    //console.log('stdout??: ' + data);
+
+    if(count === 1){
+      //console.log('stdout!!: ' + data);
+      const arr = data.split('\n');
+      const drive_list = arr.slice(1, arr.length - 2).map((e) => {
+        return e.trim(' ');
+      });
+
+      event.returnValue = drive_list;
+    }
+
+    count++;
+
+  });
+  
+  cmd.stdin.write('wmic logicaldisk get name\n')
+  cmd.stdin.end();
+}
 
 
 //electron.ipcMain.on('narrow_down_items', (event, state_str, id, msg) => {

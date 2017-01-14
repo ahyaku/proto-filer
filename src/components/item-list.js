@@ -354,6 +354,7 @@ class ItemView extends React.Component {
   }
 
   render(){
+    //console.log('name: ' + this.props.name);
     return (
       <div>
         <div style={this.props.style_each_item}>
@@ -408,6 +409,7 @@ class Name extends React.Component{
       overflowX: 'hidden'
     };
 
+    //console.log('name: ' + this.props.name);
     return (
       <div style={style}>
         {this.props.name}
