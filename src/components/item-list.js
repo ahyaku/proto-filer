@@ -85,6 +85,8 @@ class ItemListView extends React.Component {
   }
 
   render(){
+    //console.time('time_whole');
+    //console.time('ItemListView');
     let item_list = this.props.item_list;
     let active_pane_id = this.props.active_pane_id;
     let id = this.props.id;
@@ -198,12 +200,31 @@ class ItemListView extends React.Component {
       justifyContent: 'flex-start'
     };
 
+    console.time('map_whole');
+    this.items
+      .map((e, i) => {
+        //console.log('items_head <> i: ' + i);
+        //console.log('16-------------------------');
+        const style_each_item = i === idx 
+                        ? this._style_item_cur
+                        : this._styles[e['kind']];
+        const ref_item = i === idx 
+                           ? "item_cur"
+                           : "";
+        //const ref_item = "item_cur"
+        //console.log('name: ' + e['name'] + ', basename: ' + e['basename']);
+      });
+    console.timeEnd('map_whole');
+
+
+    //console.timeEnd('ItemListView');
     return (
       <div ref="item_list" style={this._style_list}>
         {this.items
            .map((e, i) => {
              //console.log('items_head <> i: ' + i);
              //console.log('16-------------------------');
+             //console.time('map');
              const style_each_item = i === idx 
                              ? this._style_item_cur
                              : this._styles[e['kind']];
@@ -212,6 +233,7 @@ class ItemListView extends React.Component {
                                 : "";
              //const ref_item = "item_cur"
              //console.log('name: ' + e['name'] + ', basename: ' + e['basename']);
+             //console.timeEnd('map');
              return (
                <ItemView style={style_item_line}
                          key={i}
@@ -282,6 +304,7 @@ class ItemListView extends React.Component {
     //console.log('active_pane_id: ' + this.props.active_pane_id);
     //console.log('didupdate: ' + this.didupdate);
 
+    //console.time('timer');
     let scrollTop;
 
     let ref_item_list = ReactDOM.findDOMNode(this.refs.item_list);
@@ -302,6 +325,7 @@ class ItemListView extends React.Component {
       case 'CHANGE_DIR_UPPER':
       case 'CHANGE_DIR_LOWER':
         ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
+        //console.timeEnd('timer');
         return;
       default:
         {
@@ -330,6 +354,8 @@ class ItemListView extends React.Component {
           }
           this._arr_pos[id][dir_cur] = scrollTop;
         }
+
+        //console.timeEnd('timer');
         return;
     }
 
@@ -372,13 +398,15 @@ class ItemView extends React.Component {
     /* Directory is changed. */
     if(this.props.im_items !== nextProps.im_items){
       //console.log('HERE!!');
+      //console.log('!!true this <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
+      //console.log('!!true next <> name: ' + nextProps.name + ', line_cur: ' + nextProps.line_cur + ', c: ' + nextProps.c);
       return true
     }
     /* Render only current line and previous line items. */
     if( this.props.c === this.props.line_cur ||
         this.props.c === nextProps.line_cur  ){
-      //console.log('true this <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
-      //console.log('true next <> name: ' + nextProps.name + ', line_cur: ' + nextProps.line_cur + ', c: ' + nextProps.c);
+      //console.log('??true this <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
+      //console.log('??true next <> name: ' + nextProps.name + ', line_cur: ' + nextProps.line_cur + ', c: ' + nextProps.c);
       return true;
     }else{
       //console.log('false this <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
@@ -424,6 +452,7 @@ class Props extends React.Component{
   }
 
   render(){
+    //console.time('Props');
     const style = {
       display: 'flex',
       flex: 'auto',
@@ -467,6 +496,8 @@ class Props extends React.Component{
       textAlign: 'right'
     };
 
+    //console.timeEnd('Props');
+    //console.timeEnd('time_whole');
     return (
       <div style={style}>
         <PropElem elem={this.props.ext}  style_elem={style_ext}/>

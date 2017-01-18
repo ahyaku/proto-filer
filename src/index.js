@@ -23,10 +23,12 @@ import { updateItemNameList } from './reducers/combined-item-list';
 
 process.env.NODE_ENV = 'production';
 
-const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
+//const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
+const pages_left = new ItemListPages().updatePageCur('E:\\tmp');
 //const pages_left = new ItemListPages().updatePageCur('C:\\shortcut');
 //const pages_left = new ItemListPages().updatePageCur('C:\\test');
-const pages_right = new ItemListPages().updatePageCur('C:\\Go');
+//const pages_right = new ItemListPages().updatePageCur('C:\\Go');
+const pages_right = new ItemListPages().updatePageCur('C:\\msys64\\usr\\bin');
 //const pages_right = new ItemListPages().updatePageCur('C:\\test');
 const arr_pages = im.List.of(pages_left, pages_right);
 //console.log('arr_pages: ' + arr_pages);
