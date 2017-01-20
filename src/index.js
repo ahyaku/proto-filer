@@ -1,5 +1,13 @@
 'use strict';
 
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+
+//console.log('root: ' + );
+
+installExtension(REACT_DEVELOPER_TOOLS)
+  .then((name) => console.log(`Added Extension: ${name}`))
+  .catch((err) => console.log(`An error occurred: `, err));
+
 import React from 'react';
 import { render } from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
@@ -23,8 +31,9 @@ import { updateItemNameList } from './reducers/combined-item-list';
 
 process.env.NODE_ENV = 'production';
 
-//const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
-const pages_left = new ItemListPages().updatePageCur('E:\\tmp');
+
+const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
+//const pages_left = new ItemListPages().updatePageCur('E:\\tmp');
 //const pages_left = new ItemListPages().updatePageCur('C:\\shortcut');
 //const pages_left = new ItemListPages().updatePageCur('C:\\test');
 //const pages_right = new ItemListPages().updatePageCur('C:\\Go');

@@ -200,26 +200,44 @@ class ItemListView extends React.Component {
       justifyContent: 'flex-start'
     };
 
-    console.time('map_whole');
-    this.items
-      .map((e, i) => {
-        //console.log('items_head <> i: ' + i);
-        //console.log('16-------------------------');
-        const style_each_item = i === idx 
-                        ? this._style_item_cur
-                        : this._styles[e['kind']];
-        const ref_item = i === idx 
-                           ? "item_cur"
-                           : "";
-        //const ref_item = "item_cur"
-        //console.log('name: ' + e['name'] + ', basename: ' + e['basename']);
-      });
-    console.timeEnd('map_whole');
-
 
     //console.timeEnd('ItemListView');
-    return (
-      <div ref="item_list" style={this._style_list}>
+    //return (
+    //  <div ref="item_list" style={this._style_list}>
+    //    {this.items
+    //       .map((e, i) => {
+    //         //console.log('items_head <> i: ' + i);
+    //         //console.log('16-------------------------');
+    //         //console.time('map');
+    //         const style_each_item = i === idx 
+    //                         ? this._style_item_cur
+    //                         : this._styles[e['kind']];
+    //         const ref_item = i === idx 
+    //                            ? "item_cur"
+    //                            : "";
+    //         //const ref_item = "item_cur"
+    //         //console.log('name: ' + e['name'] + ', basename: ' + e['basename']);
+    //         //console.timeEnd('map');
+    //         return (
+    //           <ItemView style={style_item_line}
+    //                     key={i}
+    //                     im_items={this.im_items}
+    //                     c={i}
+    //                     line_cur={idx}
+    //                     style_each_item={style_each_item}
+    //                     ref={ref_item}
+    //                     name={e['basename']}
+    //                     ext={e['ext']}
+    //                     size={e['fsize']}
+    //                     date={e['date']}
+    //                     time={e['time']} />
+    //         );
+    //    })}
+    //  </div>
+    //);
+
+    console.time('ItemListView');
+    const ret = <div ref="item_list" style={this._style_list}>
         {this.items
            .map((e, i) => {
              //console.log('items_head <> i: ' + i);
@@ -250,6 +268,10 @@ class ItemListView extends React.Component {
              );
         })}
       </div>
+    console.timeEnd('ItemListView');
+
+    return (
+      ret
     );
 
   }

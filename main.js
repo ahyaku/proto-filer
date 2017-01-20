@@ -22,6 +22,8 @@ const BrowserWindow = electron.BrowserWindow
 
 const webContents = electron.webContents
 
+process.env.NODE_ENV = 'production';
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -49,6 +51,10 @@ function createWindow () {
     //  console.log('catch: ' + e);
     //}
   }
+
+  const path_react_devtool = app.getPath('userData') + '\\extensions\\fmkadmapgofadopljbjfkapdkoienihi';
+  console.log('path_react_devtool: ' + path_react_devtool);
+  BrowserWindow.addDevToolsExtension(path_react_devtool);
 
   // Create the browser window.
   //mainWindow = new BrowserWindow({width: 800, height: 600}) /* ORG */
@@ -90,6 +96,7 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
