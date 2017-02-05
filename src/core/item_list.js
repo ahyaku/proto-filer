@@ -37,7 +37,10 @@ class ItemListPane extends ItemListPaneRecord{
 
   updateItems(){
     let dir_cur = this.get('dir_cur')
-    let es = ipcRenderer.sendSync('fs.readdirSync', dir_cur);
+    //let es = ipcRenderer.sendSync('fs.readdirSync', dir_cur);
+    let es = ['..'];
+    let es_tail = ipcRenderer.sendSync('fs.readdirSync', dir_cur);
+    Array.prototype.push.apply(es, es_tail);
 
     /* If file access of fs.readdirSync is denied, es == null */
     if(es == null){

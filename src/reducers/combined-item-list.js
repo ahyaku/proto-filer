@@ -34,6 +34,7 @@ function CombinedItemList(state, action){
         const pages = state.getIn(['arr_pages', idx]).changeDirUpper();
 
         const dir_cur = pages.get('dir_cur');
+        //console.log('CHANGE_DIR_UPPER <> dir_cur: ' + dir_cur);
         const items = pages.getIn(['pages', dir_cur, 'items']);
         //console.log('items: ' + items);
         const item_name_list = updateItemNameListCore(dir_cur, items);
@@ -41,6 +42,12 @@ function CombinedItemList(state, action){
                                                 .setIn(['arr_item_name_lists', idx], item_name_list));
 
         //const ret = state.setIn(['arr_pages', idx], pages);
+
+        //if(state === ret){
+        //  console.log('CHANGE_DIR_UPPER <> state === ret');
+        //}else{
+        //  console.log('CHANGE_DIR_UPPER <> state !== ret');
+        //}
 
         return ret;
       }
@@ -50,6 +57,7 @@ function CombinedItemList(state, action){
         const pages = state.getIn(['arr_pages', idx]).changeDirLower();
 
         const dir_cur = pages.get('dir_cur');
+        //console.log('CHANGE_DIR_LOWER <> dir_cur: ' + dir_cur);
         const items = pages.getIn(['pages', dir_cur, 'items']);
         //console.log('items: ' + items);
         const item_name_list = updateItemNameListCore(dir_cur, items);
@@ -155,17 +163,7 @@ function moveCursor(state, delta){
   const idx = state.get('active_pane_id');
   const dir_cur = state.getIn(['arr_pages', idx, 'dir_cur']);
   const line_cur = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur']);
-  //const len_items = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items']).count();
-  //console.log('len_items : ' + len_items);
   const len = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items_match']).count();
-  //console.log('len: ' + len);
-  //const items = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items']);
-  //console.log('items: ' + items);
-  //const items_match = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items_match']);
-  //console.log('items_match: ' + items_match);
-
-  //return state;
-
   const ret = state.updateIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur'],
                       (v) => {
                         const vv = v + delta;
@@ -181,7 +179,14 @@ function moveCursor(state, delta){
                         }
                       });
 
-  //console.log('6-------------------------');
+  //{
+  //  const items_match = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items_match']);
+  //  items_match.forEach((e, i) => {
+  //    console.log(i + ', name: ' + e.get('name'));
+  //  });
+  //}
+
+  //console.log(line_cur + '/' + len);
 
   return ret;
 }

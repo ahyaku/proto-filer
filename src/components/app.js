@@ -4,11 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import fs from 'fs';
 
-import PaneItemList from '../containers/pane-item-list';
 import PanePathCur from '../containers/pane-path-cur';
-import PathCmd from '../containers/pane-cmd';
-
-//import ItemList from '../components/item-list';
+import PaneCmd from '../containers/pane-cmd';
+import ItemList from '../components/item-list';
 
 const Footer = () => {
   const style = {
@@ -25,7 +23,7 @@ const Footer = () => {
   );
 }
 
-const Body = () => {
+const Body = ({store}) => {
   const style = {
     display: 'flex',
     flex: 'auto',
@@ -43,8 +41,8 @@ const Body = () => {
 
   return (
     <div style={style}>
-      <CmdAndItemList id={0} />
-      <CmdAndItemList id={1} />
+      <CmdAndItemList id={0} store={store} />
+      <CmdAndItemList id={1} store={store} />
     </div>
   );
 }
@@ -52,7 +50,12 @@ const Body = () => {
 class CmdAndItemList extends React.Component {
   constructor(props){
     super(props);
+    //console.log('CmdAndItemList <> store: ' + this.props.store);
     //console.log('CmdAndItemList <> item_list.id: ' + this.props.item_list.id);
+
+    //ItemList.fForceUpdate();
+    //const ilist = new ItemList();
+    //ilist.fForceUpdate();
   }
 
   render(){
@@ -73,21 +76,23 @@ class CmdAndItemList extends React.Component {
       //border: '1px solid #0000FF'
     };
 
-    //console.log('CmdAndItemList render() <> id: ' + id);
-
-    return (
-      <div style={style}>
-        <PathCmd id={id} />
-        <PaneItemList id={id} />
-      </div>
-    );
+    const state = this.props.store.getState();
+    const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+    console.log('app <> dir_cur: ' + dir_cur);
 
     //return (
     //  <div style={style}>
-    //    <PathCmd id={id} />
-    //    <ItemList />
+    //    <PaneCmd id={id} />
+    //    <ItemList store={this.props.store} id={id} dir_cur={dir_cur} />
     //  </div>
     //);
+
+    return (
+      <div style={style}>
+        <PaneCmd id={id} />
+        <ItemList store={this.props.store} id={id}  />
+      </div>
+    );
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -136,7 +141,7 @@ class CmdAndItemList extends React.Component {
 //  );
 //}
 
-const App = () => {
+const App = ({store}) => {
   const style = {
     display: 'flex',
     flex: 'auto',
@@ -162,7 +167,7 @@ const App = () => {
         <PanePathCur id={0} />
         <PanePathCur id={1} />
       </div>
-      <Body />
+      <Body store={store} />
       <Footer />
     </div>
   );

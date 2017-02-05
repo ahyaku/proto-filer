@@ -30,6 +30,7 @@ class ItemListPages extends ItemListPagesRecord{
   }
 
   isDirRegistered(dir_cur){
+    //console.log('isDirRegistered() Start!!');
     const ret = this.get('pages')
                     .findKey((page)=>{
                       return (page.get('dir_cur') === dir_cur);
@@ -37,8 +38,10 @@ class ItemListPages extends ItemListPagesRecord{
                     null);
 
     if(typeof ret === "undefined"){
+      //console.log('isDirRegistered() false');
       return false;
     }else{
+      //console.log('isDirRegistered() true');
       return true;
     }
   }
@@ -56,11 +59,16 @@ class ItemListPages extends ItemListPagesRecord{
 
   updatePageCur(_dir_cur){
     const dir_cur = fs.realpathSync(_dir_cur);
+    //console.log('updatePageCur <> dir_cur: ' + dir_cur + ', _dir_cur: ' + _dir_cur);
 
     if( this.isDirRegistered(dir_cur) ){
       const items = this.getIn(['pages', dir_cur, 'items']);
+      //console.log('updatePageCur <> isDirRegistered()');
+      //console.log('updatePageCur() <> items[0].name: ' + items.getIn([0, 'name']));
       return this.withMutations(s => s.setIn(['pages', dir_cur, 'items_match'], items)
                                       .set('dir_cur', dir_cur));
+    //}else{
+    //  console.log('updatePageCur <> !isDirRegistered()');
     }
 
     const items = new ItemList()
@@ -86,6 +94,11 @@ class ItemListPages extends ItemListPagesRecord{
     const items = this.getIn(['pages', dir_cur]);
     const line_cur = items.get('line_cur');
     const item_name = items.getIn(['items_match', line_cur, 'name']);
+
+    //console.log('item_name: ' + item_name);
+    if(typeof item_name === 'undefined'){
+      return this;
+    }
 
     let path_new;
     switch(dir_cur){

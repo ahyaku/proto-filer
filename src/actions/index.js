@@ -15,9 +15,16 @@ export const updateItemList = (id) => ({
   type: 'UPDATE_ITEM_LIST',
   id
 });
+export const checkKeyNormal = (state, e) => {
+  //if(event.ctrlKey == true){
+  //  return _checkKeyNormalWithCtrl(state, e);
+  //}else{
+    return _checkKeyNormal(state, e);
+  //}
+}
 
 //export const checkKeyNormal = (dispatch, state, e) => {
-export const checkKeyNormal = (state, e) => {
+export const _checkKeyNormal = (state, e) => {
   //console.log(util.format('pane_left: %d, pane_right: %d',
   //                        pane_left.is_focused,
   //                        pane_right.is_focused));
@@ -125,6 +132,25 @@ export const checkKeyNormal = (state, e) => {
       };
   }
 }
+
+//export const _checkKeyNormalwithCtrl = (state, e) => {
+//  //console.log(util.format('pane_left: %d, pane_right: %d',
+//  //                        pane_left.is_focused,
+//  //                        pane_right.is_focused));
+//
+//  //console.log('checkKeyNormal <> e.key: ' + e.key);
+//  switch(e.key){
+//    case 'l': /* 'l' */
+//      return {
+//        type: 'MOVE_CURSOR_DOWN'
+//      };
+//    default:
+//      /* Do Nothing.. */
+//      return {
+//        type: 'DO_NOTHING'
+//      };
+//  }
+//}
 
 export const checkKeySearch = (state, e) => (dispatch) => {
   //console.log('e.keyCode: ' + e.keyCode);
