@@ -149,8 +149,16 @@ function NarrowDownItemsCore(state, id, msg){
     resolve(
       state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
+                                .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+                                .setIn(['arr_item_list', id], 0))
     );
+
+    //resolve(
+    //  state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+    //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+    //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
+    //);
+
   });
 
   //return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
@@ -190,7 +198,12 @@ function NarrowDownItems(state, id, msg){
 
   return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
                                    .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
+                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+                                   .setIn(['arr_line_cur', id], 0));
+
+  //return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+  //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+  //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
 
 }
 

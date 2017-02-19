@@ -4,14 +4,31 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {ITEM_TYPE_KIND} from '../core/item_type';
 
+//class ViewItem extends React.Component {
+//  constructor(props){
+//    super(props);
+//  }
+//
+//  render(){
+//    console.log('render');
+//    return (
+//      <div>
+//        hoge
+//      </div>
+//    );
+//  }
+//
+//}
+
 class ViewItem extends React.Component {
   constructor(props){
-    console.log('ViewItem constructor()');
+    //console.log('ViewItem constructor()');
     super(props);
     //console.log('ItemView <> getState(): ' + this.props.store);
     const id = this.props.id;
     const store = this.props.store;
     const state = this.props.store.getState();
+    //const state = this.props.state;
     const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
     const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
 
@@ -58,10 +75,12 @@ class ViewItem extends React.Component {
     const active_pane_id = this.props.active_pane_id;
 
     const state = this.props.store.getState();
+    //const state = this.props.state;
     const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
     const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
     const items = item_list.get('items_match');
     const item = items.get(this.props.c);
+    //console.log('view-item <> render() is_dir_changed: ' + this.props.is_dir_changed);
 
     if(items.size <= 0){
       return (
@@ -99,17 +118,26 @@ class ViewItem extends React.Component {
 
     if(this.props.c === 0){
       const state = this.props.store.getState();
+      //const state = this.props.state;
       const id = this.props.id;
       const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
 
       const state_next = nextProps.store.getState();
+      //const state_next = nextProps.state;
       const id_next = nextProps.id;
       const dir_cur_next = state_next.getIn(['arr_pages', id_next, 'dir_cur']);
 
       //console.log('view-item.js <> dir_cur: ' + dir_cur + ', dir_cur_next: ' + dir_cur_next);
     }
 
+    //{
+    //  const jret = (this.props.im_items !== nextProps.im_items);
+    //  //console.log('is_dir_changed: ' + this.props.is_dir_changed + ', im_items comp: ' + jret);
+    //  console.log('is_dir_changed(cur): ' + this.props.is_dir_changed + ', is_dir_changed(next): ' + nextProps.is_dir_changed + ', im_items comp: ' + jret);
+    //}
+
     /* Directory is changed. */
+    //if(this.props.is_dir_changed === true){
     if(this.props.im_items !== nextProps.im_items){
       //console.log('now <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
       //console.log('next <> name: ' + nextProps.name + ', line_cur: ' + nextProps.line_cur + ', c: ' + nextProps.c);
@@ -119,6 +147,7 @@ class ViewItem extends React.Component {
       //}
       return true;
     }
+
     /* Render only current line and previous line items. */
     if( this.props.c === this.props.line_cur ||
         this.props.c === nextProps.line_cur  ){

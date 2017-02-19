@@ -92,7 +92,7 @@ const state_init = im.Map({
   input_mode: KEY_INPUT_MODE.NORMAL,
   msg_cmd: '',
   arr_item_name_lists: im.List.of(),
-  //line_cur: 0
+  arr_line_cur: im.List.of()
 });
 
 //const list_tmp = state_init.get('name_list_left');
@@ -105,8 +105,14 @@ const state_init = im.Map({
 
 const item_name_list_left = updateItemNameList(state_init, 0);
 const item_name_list_right = updateItemNameList(state_init, 1);
+
 const state_init2 = state_init.withMutations((s) => s.setIn(['arr_item_name_lists', 0], item_name_list_left)
-                                                     .setIn(['arr_item_name_lists', 1], item_name_list_right));
+                                                     .setIn(['arr_item_name_lists', 1], item_name_list_right)
+                                                     .setIn(['arr_line_cur', 0], 0)
+                                                     .setIn(['arr_line_cur', 1], 0));
+
+//const state_init2 = state_init.withMutations((s) => s.setIn(['arr_item_name_lists', 0], item_name_list_left)
+//                                                     .setIn(['arr_item_name_lists', 1], item_name_list_right));
 
 //console.log('arr_item_name_lists[0]: ' + state_init2.getIn(['arr_item_name_lists', 0]));
 //console.log('arr_item_name_lists[1]: ' + state_init2.getIn(['arr_item_name_lists', 1]));

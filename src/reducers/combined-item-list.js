@@ -38,8 +38,16 @@ function CombinedItemList(state, action){
         const items = pages.getIn(['pages', dir_cur, 'items']);
         //console.log('items: ' + items);
         const item_name_list = updateItemNameListCore(dir_cur, items);
+
+        const line_cur = pages.getIn([dir_cur, 'line_cur']);
         const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
-                                                .setIn(['arr_item_name_lists', idx], item_name_list));
+                                                .setIn(['arr_item_name_lists', idx], item_name_list)
+                                                .setIn(['arr_line_cur', idx], line_cur));
+
+
+        //const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
+        //                                        .setIn(['arr_item_name_lists', idx], item_name_list));
+
 
         //const ret = state.setIn(['arr_pages', idx], pages);
 
@@ -61,8 +69,14 @@ function CombinedItemList(state, action){
         const items = pages.getIn(['pages', dir_cur, 'items']);
         //console.log('items: ' + items);
         const item_name_list = updateItemNameListCore(dir_cur, items);
+
+        const line_cur = pages.getIn([dir_cur, 'line_cur']);
         const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
-                                                .setIn(['arr_item_name_lists', idx], item_name_list));
+                                                .setIn(['arr_item_name_lists', idx], item_name_list)
+                                                .setIn(['arr_line_cur', idx], line_cur));
+
+        //const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
+        //                                        .setIn(['arr_item_name_lists', idx], item_name_list));
 
         //const ret = state.setIn(['arr_pages', idx], pages);
 
@@ -86,7 +100,8 @@ function CombinedItemList(state, action){
         const idx_other = idx_cur === 1
                           ? 0
                           : 1;
-        return syncDir(state, idx_other, idx_cur);
+        return syncDir(state, idx_cur, idx_other);
+        //return syncDir(state, idx_other, idx_cur);
       }
 
     case 'SYNC_DIR_OTHER_TO_CUR':
@@ -96,7 +111,8 @@ function CombinedItemList(state, action){
         const idx_other = idx_cur === 1
                           ? 0
                           : 1;
-        return syncDir(state, idx_cur, idx_other);
+        return syncDir(state, idx_other, idx_cur);
+        //return syncDir(state, idx_cur, idx_other);
       }
 
     case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
@@ -162,22 +178,34 @@ function CombinedItemList(state, action){
 function moveCursor(state, delta){
   const idx = state.get('active_pane_id');
   const dir_cur = state.getIn(['arr_pages', idx, 'dir_cur']);
-  const line_cur = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur']);
   const len = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items_match']).count();
-  const ret = state.updateIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur'],
-                      (v) => {
-                        const vv = v + delta;
-                        if(vv < 0){
-                          //console.log('are');
-                          return len - 1;
-                        }else if(vv >= len){
-                          //console.log('you');
-                          return 0;
-                        }else{
-                          //console.log('known?');
-                          return vv;
-                        }
-                      });
+
+  const line_cur = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur']);
+  let vv = line_cur + delta;
+  if(vv < 0){
+    //console.log('are');
+    vv = len - 1;
+  }else if(vv >= len){
+    //console.log('you');
+    vv =  0;
+  }
+  const ret = state.withMutations((s) => s.setIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur'], vv)
+                                          .setIn(['arr_line_cur', idx], vv));
+
+  //const ret = state.updateIn(['arr_pages', idx, 'pages', dir_cur, 'line_cur'],
+  //                    (v) => {
+  //                      const vv = v + delta;
+  //                      if(vv < 0){
+  //                        //console.log('are');
+  //                        return len - 1;
+  //                      }else if(vv >= len){
+  //                        //console.log('you');
+  //                        return 0;
+  //                      }else{
+  //                        //console.log('known?');
+  //                        return vv;
+  //                      }
+  //                    });
 
   //{
   //  const items_match = state.getIn(['arr_pages', idx, 'pages', dir_cur, 'items_match']);
@@ -191,23 +219,42 @@ function moveCursor(state, delta){
   return ret;
 }
 
-function syncDir(state, idx_dst, idx_src){
-  const dir_dst = state.getIn(['arr_pages', idx_dst, 'dir_cur']);
+function syncDir(state, idx_mdf, idx_ref){
+//function syncDir(state, idx_ref, idx_mdf){
+  const dir_ref = state.getIn(['arr_pages', idx_ref, 'dir_cur']);
   //console.log('idx_other: ' + idx_other);
   //console.log('dir_other: ' + dir_other);
-  const pages = state.getIn(['arr_pages', idx_src]).updatePageCur(dir_dst);
+  const pages = state.getIn(['arr_pages', idx_mdf]).updatePageCur(dir_ref);
   //const ret = state.setIn(['arr_pages', idx_src], arr_pages);
 
-  const items = pages.getIn(['pages', dir_dst, 'items']);
+  const items = pages.getIn(['pages', dir_ref, 'items']);
   //console.log('items: ' + items);
-  const item_name_list = updateItemNameListCore(dir_dst, items);
+  const item_name_list = updateItemNameListCore(dir_ref, items);
 
-  const ret = state.withMutations((s) => s.setIn(['arr_pages', idx_src], pages)
-                                          .setIn(['arr_item_name_lists', idx_src], item_name_list));
-  //const ret = state.setIn(['arr_pages', idx_src], pages);
+  const ret = state.withMutations((s) => s.setIn(['arr_pages', idx_mdf], pages)
+                                          .setIn(['arr_item_name_lists', idx_mdf], item_name_list));
+  //const ret = state.setIn(['arr_pages', idx_mdf], pages);
 
   return ret;
 }
+
+//function syncDir(state, idx_dst, idx_src){
+//  const dir_dst = state.getIn(['arr_pages', idx_dst, 'dir_cur']);
+//  //console.log('idx_other: ' + idx_other);
+//  //console.log('dir_other: ' + dir_other);
+//  const pages = state.getIn(['arr_pages', idx_src]).updatePageCur(dir_dst);
+//  //const ret = state.setIn(['arr_pages', idx_src], arr_pages);
+//
+//  const items = pages.getIn(['pages', dir_dst, 'items']);
+//  //console.log('items: ' + items);
+//  const item_name_list = updateItemNameListCore(dir_dst, items);
+//
+//  const ret = state.withMutations((s) => s.setIn(['arr_pages', idx_src], pages)
+//                                          .setIn(['arr_item_name_lists', idx_src], item_name_list));
+//  //const ret = state.setIn(['arr_pages', idx_src], pages);
+//
+//  return ret;
+//}
 
 export const updateItemNameList = (state, id) => {
   //console.log('updateItemNameList()!!');

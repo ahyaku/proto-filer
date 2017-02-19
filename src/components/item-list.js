@@ -41,7 +41,9 @@ class ItemList extends React.Component {
     this.im_items = null;
     this.dir_cur = null;
 
-    console.log('ItemList constructor()');
+    this.is_dir_changed = false;
+
+    //console.log('ItemList constructor()');
     const store = this.props.store;
 
     this.unsubscribe = store.subscribe(() => {
@@ -57,6 +59,8 @@ class ItemList extends React.Component {
        * */
       if(this.im_items !== item_list.get('items_match')){
         //console.log('subscribed function!!');
+        this.is_dir_changed = true;
+        console.log('subscribed function!! <> is_dir_changed: ' + this.is_dir_changed);
         this.setState();
         //this.forceUpdate();
       }
@@ -69,6 +73,7 @@ class ItemList extends React.Component {
   }
 
   render(){
+    console.log('ItemList <> render()');
     const state = this.props.store.getState();
     const id = this.props.id;
     const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
@@ -103,6 +108,7 @@ class ItemList extends React.Component {
     //console.log('item-list <> this.dir_cur: ' + this.dir_cur);
 
     //console.log('start map!!----------------------');
+    //console.log('item-list <> Before map <> id: ' + id + ', is_dir_changed: ' + this.is_dir_changed);
     const rref = 'item_list';
     const ret = <div ref={rref} style={this._style_list}>
         {this.items
@@ -116,17 +122,22 @@ class ItemList extends React.Component {
                                 : "";
              return (
                <PaneViewItem style={style_item_line}
-                         key={i}
-                         c={i}
-                         line_cur={idx}
-                         ref={ref_item}
-                         active_pane_id={active_pane_id}
-                         //cbForceUpdate={cbForceUpdate}
-                         store={this.props.store}
-                         id={id} />
+                             key={i}
+                             c={i}
+                             line_cur={idx}
+                             ref={ref_item}
+                             active_pane_id={active_pane_id}
+                             //cbForceUpdate={cbForceUpdate}
+                             store={this.props.store}
+                             id={id}
+                             is_dir_changed={this.is_dir_changed}
+                             />
              );
         })}
       </div>
+
+    this.is_dir_changed = false;
+    //console.log('item-list <> After map <> id: ' + id + ', is_dir_changed: ' + this.is_dir_changed);
 
     return (
       ret

@@ -452,10 +452,17 @@ function switchInputModeNarrowDownItems(state, c){
 
     const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
     const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
+
     return state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
                                      .setIn(['arr_pages', id, 'msg_cmd'], msg)
                                      .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
+                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+                                     .setIn(['arr_line_cur', id], 0));
+
+    //return state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
+    //                                 .setIn(['arr_pages', id, 'msg_cmd'], msg)
+    //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+    //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
   }
 }
 
@@ -761,9 +768,15 @@ const NarrowDownItemsCoreRet = (state, id, msg) => {
   }
 
   //console.log('NarrowDownItemsCore() END!!');
+
   return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
                                    .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
+                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+                                   .setIn(['arr_line_cur', id], 0))
+
+  //return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+  //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+  //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
 
 }
 
@@ -802,8 +815,15 @@ const NarrowDownItemsCore = (state, id, msg) => {
     resolve(
       state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
+                                .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+                                .setIn(['arr_line_cur', id], 0))
     );
+
+    //resolve(
+    //  state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+    //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+    //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
+    //);
 
   });
 }
