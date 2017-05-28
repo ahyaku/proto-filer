@@ -1,7 +1,8 @@
 'use strict';
 
 import React from 'react';
-import { KEY_INPUT_MODE } from '../core/item_type';
+//import { KEY_INPUT_MODE } from '../core/item_type';
+import { KEY_INPUT_MODE } from '../util/item_type';
 import { NarrowDownItems } from '../actions/index.js';
 
 //const Cmd = ({msg_cmd, input_mode}) => {
@@ -16,11 +17,17 @@ import { NarrowDownItems } from '../actions/index.js';
 //  );
 //}
 
-const Cmd = ({msg_cmd, input_mode, state, id, dispatch}) => {
+const Cmd = ({msg_cmd, input_mode, state_fcd, id, dispatch}) => {
   return (
-    <CmdView msg_cmd={msg_cmd} state={state} id={id} dispatch={dispatch}/>
+    <CmdView msg_cmd={msg_cmd} state_fcd={state_fcd} id={id} dispatch={dispatch}/>
   );
 }
+
+//const Cmd = ({msg_cmd, input_mode, state, id, dispatch}) => {
+//  return (
+//    <CmdView msg_cmd={msg_cmd} state={state} id={id} dispatch={dispatch}/>
+//  );
+//}
 
 class CmdView extends React.Component{
   constructor(props){
@@ -34,14 +41,19 @@ class CmdView extends React.Component{
       //minHeight: '20px',
       //height: '20px',
       border: '1px solid #FFFFFF',
-      margin: '0px, 0px 0px',
-      padding: '0px, 0px 0px',
-      minHeight: '20px'
+      //margin: '0px, 0px 0px',
+      //padding: '0px, 0px 0px',
+      minHeight: '20px',
+      maxHeight: '20px',
       //overflowX: 'hidden',
       //overflowY: 'hidden'
-    };
 
-    //console.log('msg_cmd: ' + msg_cmd);
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+
+    };
 
     return (
       <div style={style}>
@@ -54,37 +66,23 @@ class CmdView extends React.Component{
     //console.log('CmdView <> componentDidUpdate()');
 
     const { dispatch } = this.props;
-    const state = this.props.state;
+
+    const state_fcd = this.props.state_fcd;
+    const state = state_fcd.state_core;
+    //const state = this.props.state;
+
     const id = this.props.id;
-    //console.log('cmd.js <> id: ' + id);
     const msg_cmd = state.getIn(['arr_pages', id, 'msg_cmd']);
-    const msg_cmd_prev = prevProps.state.getIn(['arr_pages', id, 'msg_cmd']);
-    //console.log('msg_cmd: ' + msg_cmd + ', msg_cmd_prev: ' + msg_cmd_prev);
+    const msg_cmd_prev = prevProps.state_fcd.state_core.getIn(['arr_pages', id, 'msg_cmd']);
+    //const msg_cmd_prev = prevProps.state.getIn(['arr_pages', id, 'msg_cmd']);
 
     if( msg_cmd === msg_cmd_prev ){
       return;
     }
-    //console.log('id: ' + id + ', msg_cmd: ' + msg_cmd);
-    dispatch(NarrowDownItems(state, id, msg_cmd));
 
-    //if(msg_cmd !== msg_cmd_prev){
-    //  dispatch(NarrowDownItems(state, id, msg_cmd));
-    //}
+    dispatch(NarrowDownItems(state_fcd, id, msg_cmd));
+    //dispatch(NarrowDownItems(state, id, msg_cmd));
 
-
-    //this.props.dispatch(
-    //  {
-    //    type: 'END_NARROW_DOWN_ITEMS',
-    //    state: state
-    //  }
-    //);
-
-    //setTimeout(
-    //  () => {
-    //    console.log('count: ' + this.count++);
-    //  },
-    //  1000
-    //);
   }
 }
 

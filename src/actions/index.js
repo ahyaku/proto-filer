@@ -2,7 +2,8 @@
 
 import { ipcRenderer } from 'electron';
 import cp from 'child_process';
-import { KEY_INPUT_MODE } from '../core/item_type';
+//import { KEY_INPUT_MODE } from '../core/item_type';
+import { KEY_INPUT_MODE } from '../util/item_type';
 
 import im from 'immutable';
 
@@ -15,16 +16,17 @@ export const updateItemList = (id) => ({
   type: 'UPDATE_ITEM_LIST',
   id
 });
-export const checkKeyNormal = (state, e) => {
-  //if(event.ctrlKey == true){
-  //  return _checkKeyNormalWithCtrl(state, e);
-  //}else{
-    return _checkKeyNormal(state, e);
-  //}
+
+export const checkKeyNormal = (state_fcd, e) => {
+  return _checkKeyNormal(state_fcd, e);
 }
 
-//export const checkKeyNormal = (dispatch, state, e) => {
-export const _checkKeyNormal = (state, e) => {
+//export const checkKeyNormal = (state, e) => {
+//  return _checkKeyNormal(state, e);
+//}
+
+//export const _checkKeyNormal = (state, e) => {
+export const _checkKeyNormal = (state_fcd, e) => {
   //console.log(util.format('pane_left: %d, pane_right: %d',
   //                        pane_left.is_focused,
   //                        pane_right.is_focused));
@@ -102,8 +104,8 @@ export const _checkKeyNormal = (state, e) => {
     case '/': /* '/' */
       return {
         type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
-        //state: state
-        state: switchInputModeNarrowDownItems(state, e.key)
+        state: switchInputModeNarrowDownItems(state_fcd, e.key)
+        //state: switchInputModeNarrowDownItems(state, e.key)
       };
       //return {
       //  type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
@@ -152,55 +154,31 @@ export const _checkKeyNormal = (state, e) => {
 //  }
 //}
 
-export const checkKeySearch = (state, e) => (dispatch) => {
+export const checkKeySearch = (state_fcd, e) => (dispatch) => {
   //console.log('e.keyCode: ' + e.keyCode);
   if(event.ctrlKey == true){
-    //return _checkKeySearchWithCtrl(e, state);
-    return dispatch(_checkKeySearchWithCtrl(state, e));
+    return dispatch(_checkKeySearchWithCtrl(state_fcd, e));
   }else{
-    //return _checkKeySearch(e, state);
-    return dispatch(_checkKeySearch(state, e));
+    return dispatch(_checkKeySearch(state_fcd, e));
   }
-
 }
 
-const _checkKeySearchWithCtrl = (state, e) => (dispatch) => {
+//export const checkKeySearch = (state, e) => (dispatch) => {
+//  //console.log('e.keyCode: ' + e.keyCode);
+//  if(event.ctrlKey == true){
+//    return dispatch(_checkKeySearchWithCtrl(state, e));
+//  }else{
+//    return dispatch(_checkKeySearch(state, e));
+//  }
+//}
+
+//const _checkKeySearchWithCtrl = (state, e) => (dispatch) => {
+const _checkKeySearchWithCtrl = (state_fcd, e) => (dispatch) => {
+
   switch(e.key){
     case 'Control':
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  //state: receiveInput(state, '')
-      //  //state: dispatch(receiveInput(state, ''))
-      //  //state: receiveInput(dispatch, state, '')
-      //  state: dispatch(receiveInput(dispatch, state, ''))
-      //};
-
-      //console.log('HERE!!');
-      //dispatch({
-      //  type: 'RECEIVE_INPUT',
-      //  state: state
-      //});
-      //return dispatch(receiveInput(dispatch, state, e.key));
-      //return receiveInput(dispatch, state, e.key);
-
-      return dispatch(receiveInput(state, ''));
-      //return dispatch(receiveInput(state, '')).then((s) => {
-      //  dispatch({
-      //    type: 'END_NARROW_DOWN_ITEMS',
-      //    state: s
-      //  });
-      //});
-
-      //return receiveInput(dispatch, state, '');
-
-      //return dispatch(receiveInput(dispatch, state, e.key)).then(() => {
-      //  console.log('DONE!!');
-      //});
-
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  c: ''
-      //};
+      return dispatch(receiveInput(state_fcd, ''));
+      //return dispatch(receiveInput(state, ''));
     case 'm':
       event.preventDefault();
       return dispatch(
@@ -212,80 +190,24 @@ const _checkKeySearchWithCtrl = (state, e) => (dispatch) => {
     case '[':
       return dispatch(switchInputModeNormalWithClear());
     case 'h':
-      //return {
-      //  //type: 'RECEIVE_INPUT_BS',
-      //  type: 'RECEIVE_INPUT',
-      //  //state: receiveInputBS(state)
-      //  state: receiveInputBS(dispatch, state)
-      //};
-
-      return dispatch(receiveInputBS(state));
-      //return receiveInputBS(dispatch, state);
-
-      //return {
-      //  type: 'RECEIVE_INPUT_BS',
-      //  c: ''
-      //};
+      return dispatch(receiveInputBS(state_fcd));
+      //return dispatch(receiveInputBS(state));
     case 'u':
-      //return {
-      //  //type: 'CLEAR_INPUT',
-      //  type: 'RECEIVE_INPUT',
-      //  //state: clearInput(state)
-      //  state: clearInput(dispatch, state)
-      //};
-
-      return dispatch(clearInput(state));
-      //return clearInput(dispatch, state);
-
-      //return {
-      //  type: 'CLEAR_INPUT',
-      //  c: ''
-      //};
-
+      return dispatch(clearInput(state_fcd));
+      //return dispatch(clearInput(state));
     case 's':
       console.log('HERE!!');
       return dispatch(TestSendMsg());
 
     default:
-      /* Add input character to msg_cmd. */
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  //state: receiveInput(state, e.key)
-      //  //state: dispatch(receiveInput(dispatch, state, e.key))
-      //  //state: receiveInput(dispatch, state, e.key)
-      //  state: dispatch(receiveInput(dispatch, state, e.key))
-      //};
-
-
-      //console.log('HERE!!');
-      //dispatch({
-      //  type: 'RECEIVE_INPUT',
-      //  state: state
-      //});
-
-      return dispatch(receiveInput(state, e.key));
-      //return dispatch(receiveInput(state, e.key)).then((s) => {
-      //  dispatch({
-      //    type: 'END_NARROW_DOWN_ITEMS',
-      //    state: s
-      //  });
-      //});
-
-      //return receiveInput(dispatch, state, e.key);
-
-      //return dispatch(receiveInput(dispatch, state, e.key)).then(() => {
-      //  console.log('DONE!!');
-      //});
-
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  c: e.key,
-      //  event: event
-      //};
+      return dispatch(receiveInput(state_fcd, e.key));
+      //return dispatch(receiveInput(state, e.key));
   }
 }
 
-const _checkKeySearch = (state, e) => (dispatch) => {
+//const _checkKeySearch = (state, e) => (dispatch) => {
+const _checkKeySearch = (state_fcd, e) => (dispatch) => {
+
   //console.log('e.key: ' + e.key);
   switch(e.key){
     case 'Escape':
@@ -304,360 +226,164 @@ const _checkKeySearch = (state, e) => (dispatch) => {
         }
       );
     case '[':
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  //state: receiveInput(state, e.key)
-      //  //state: dispatch(receiveInput(state, e.key))
-      //  //state: receiveInput(dispatch, state, e.key)
-      //  state: dispatch(receiveInput(dispatch, state, e.key))
-      //};
+      return dispatch(receiveInput(state_fcd, e.key));
+      //return dispatch(receiveInput(state, e.key));
 
-      //console.log('HERE!!');
-      //dispatch({
-      //  type: 'RECEIVE_INPUT',
-      //  state: state
-      //});
-
-      return dispatch(receiveInput(state, e.key));
-      //return dispatch(receiveInput(state, e.key)).then((s) => {
-      //  dispatch({
-      //    type: 'END_NARROW_DOWN_ITEMS',
-      //    state: s
-      //  });
-      //});
-
-      //return receiveInput(dispatch, state, e.key);
-
-      //return dispatch(receiveInput(dispatch, state, e.key)).then(() => {
-      //  console.log('DONE!!');
-      //});
-
-
-
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  c: e.key
-      //};
     case 'Tab':
     case 'Shift':
     case 'Control':
     case 'Alt':
       /* Do Nothing.. */
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  //state: receiveInput(state, '')
-      //  //state: dispatch(receiveInput(state, ''))
-      //  //state: receiveInput(dispatch, state, '')
-      //  state: dispatch(receiveInput(dispatch, state, ''))
-      //};
+      return dispatch(receiveInput(state_fcd, ''));
+      //return dispatch(receiveInput(state, ''));
 
-      //console.log('HERE!!');
-      //dispatch({
-      //  type: 'RECEIVE_INPUT',
-      //  state: state
-      //});
-
-      return dispatch(receiveInput(state, ''));
-      //return dispatch(receiveInput(state, '')).then((s) => {
-      //  dispatch({
-      //    type: 'END_NARROW_DOWN_ITEMS',
-      //    state: s
-      //  });
-      //});
-
-      //return receiveInput(dispatch, state, '');
-
-      //return dispatch(receiveInput(dispatch, state, e.key)).then(() => {
-      //  console.log('DONE!!');
-      //});
-
-
-
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  c: '',
-      //  event: event
-      //};
     case 'Backspace':
-      //return {
-      //  //type: 'RECEIVE_INPUT_BS',
-      //  type: 'RECEIVE_INPUT',
-      //  //state: receiveInputBS(state)
-      //  state: receiveInputBS(dispatch, state)
-      //};
+      return dispatch(receiveInputBS(state_fcd));
+      //return dispatch(receiveInputBS(state));
 
-      return dispatch(receiveInputBS(state));
-      //return receiveInputBS(dispatch, state);
-
-      //return {
-      //  type: 'RECEIVE_INPUT_BS',
-      //  c: ''
-      //};
     default:
       event.preventDefault();
-      /* Add input character to msg_cmd. */
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  //state: receiveInput(state, e.key)
-      //  //state: dispatch(receiveInput(state, e.key))
-      //  //state: receiveInput(dispatch, state, e.key)
-      //  state: dispatch(receiveInput(dispatch, state, e.key))
-      //};
-      
-      //console.log('HERE!!');
+      return dispatch(receiveInput(state_fcd, e.key));
+      //return dispatch(receiveInput(state, e.key));
 
-      //dispatch({
-      //  type: 'RECEIVE_INPUT',
-      //  state: state
-      //});
-
-      return dispatch(receiveInput(state, e.key));
-      //return dispatch(receiveInput(state, e.key)).then((s) => {
-      //  dispatch({
-      //    type: 'END_NARROW_DOWN_ITEMS',
-      //    state: s
-      //  });
-      //});
-
-      //return receiveInput(dispatch, state, e.key);
-
-      //return dispatch(receiveInput(dispatch, state, e.key)).then(() => {
-      //  console.log('DONE!!');
-      //});
-
-      //return {
-      //  type: 'RECEIVE_INPUT',
-      //  c: e.key,
-      //  event: event
-      //};
   }
 }
 
 
-function switchInputModeNarrowDownItems(state, c){
+//function switchInputModeNarrowDownItems(state, c){
+function switchInputModeNarrowDownItems(state_fcd, c){
+  const state = state_fcd.state_core;
   //console.log('switchInputModeNarrowDownItems() <> input_mode: ' + state.get('input_mode'));
 
-  const id = state.get('active_pane_id');
+  const id = state_fcd.active_pane_id;
+  //const id = state.get('active_pane_id');
+
   const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
   //const state_new = state.set('input_mode', KEY_INPUT_MODE.SEARCH);
   if(msg.length > 0){
-    //return state_new;
-    return state.set('input_mode', KEY_INPUT_MODE.SEARCH);
+    return Object.assign(
+             {},
+             state_fcd,
+             { state_core: state.set('input_mode', KEY_INPUT_MODE.SEARCH) }
+           );
+
+    //return state.set('input_mode', KEY_INPUT_MODE.SEARCH);
 
   }else{
     //console.log('msg.length == 0');
     const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
 
-    //return NarrowDownItems(state_new, id, msg);
-
     const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
     const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
 
-    return state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
-                                     .setIn(['arr_pages', id, 'msg_cmd'], msg)
-                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
-                                     .setIn(['arr_line_cur', id], 0));
+    const arr_line_cur_prv = state_fcd.arr_line_cur;
+    //const arr_line_cur_prv = state.get('arr_line_cur');
+
+    const arr_line_cur = [
+      ...arr_line_cur_prv.slice(0, id),
+      0,
+      ...arr_line_cur_prv.slice(id+1)
+    ];
+
+    const state_core_new = state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
+                                                     .setIn(['arr_pages', id, 'msg_cmd'], msg)
+                                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+                                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
+
+    return Object.assign(
+             {},
+             state_fcd,
+             { 
+               state_core: state_core_new,
+               arr_line_cur: arr_line_cur
+             }
+           );
 
     //return state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
     //                                 .setIn(['arr_pages', id, 'msg_cmd'], msg)
     //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-    //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
+    //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+    //                                 .set('arr_line_cur', arr_line_cur));
+
   }
 }
 
-/* ORG @ 2017.01.08 */
-//function switchInputModeNarrowDownItems(state, c){
-//  //console.log('switchInputModeNarrowDownItems() <> input_mode: ' + state.get('input_mode'));
-//
-//  const id = state.get('active_pane_id');
-//  const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
-//  //const state_new = state.set('input_mode', KEY_INPUT_MODE.SEARCH);
-//  if(msg.length > 0){
-//    //return state_new;
-//    return state.set('input_mode', KEY_INPUT_MODE.SEARCH);
-//
-//  }else{
-//    //console.log('msg.length == 0');
-//    const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
-//
-//    //return NarrowDownItems(state_new, id, msg);
-//
-//    const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-//    const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
-//    return state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
-//                                     .setIn(['arr_pages', id, 'msg_cmd'], msg)
-//                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-//                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
-//  }
-//}
-
-//const receiveInput = (state, c) => (dispatch) => {
-//  const id = state.get('active_pane_id');
-//  const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
-//  dispatch(updatePaneCmd(state, id, msg));
-//  dispatch(startNarrowDownItems(state, id, msg));
-//
-//  return new Promise(function(resolve, reject){
-//    resolve(
-//      NarrowDownItemsCoreRet(state, id, msg)
-//    );
-//  });
-//}
-
-//const receiveInput = (state, c) => (dispatch) => {
-//  const id = state.get('active_pane_id');
-//  const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
-//  dispatch(NarrowDownItems(state, id, msg));
-//  return dispatch(updatePaneCmd(state, id, msg));
-//}
-
-const receiveInput = (state, c) => (dispatch) => {
+const receiveInput = (state_fcd, c) => (dispatch) => {
   //console.log('receiveinput()!!');
-  const id = state.get('active_pane_id');
+  const state = state_fcd.state_core;
+  const id = state_fcd.active_pane_id;
+  //const id = state.get('active_pane_id');
   const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
-  return dispatch(updatePaneCmd(state, id, msg));
+  return dispatch(updatePaneCmd(state_fcd, id, msg));
 }
 
-const receiveInputBS = (state) => (dispatch) => {
-  const id = state.get('active_pane_id');
+const receiveInputBS = (state_fcd) => (dispatch) => {
+  const state = state_fcd.state_core;
+  const id = state_fcd.active_pane_id;
+  //const id = state.get('active_pane_id');
   const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
-  return dispatch(updatePaneCmd(state, id, msg.slice(0, msg.length - 1)));
+  return dispatch(updatePaneCmd(state_fcd, id, msg.slice(0, msg.length - 1)));
 }
 
-const clearInput = (state) => (dispatch) => {
-  const id = state.get('active_pane_id');
+const clearInput = (state_fcd) => (dispatch) => {
+  const state = state_fcd.state_core;
+  const id = state_fcd.active_pane_id;
+  //const id = state.get('active_pane_id');
   const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
-  return dispatch(updatePaneCmd(state, id, msg.slice(0, 1)));
+  return dispatch(updatePaneCmd(state_fcd, id, msg.slice(0, 1)));
 }
 
-const updatePaneCmd = (state, id, msg) => {
+const updatePaneCmd = (state_fcd, id, msg) => {
   //console.log('updatePaneCmd()!!');
+  const state = state_fcd.state_core;
+  const state_core_new = state.setIn(['arr_pages', id, 'msg_cmd'], msg);
+  const state_fcd_new = Object.assign(
+                          {},
+                          state_fcd,
+                          { state_core:  state_core_new }
+                        );
   return {
     type: 'UPDATE_PANE_CMD',
-    state: state.setIn(['arr_pages', id, 'msg_cmd'], msg)
+    state: state_fcd_new
   }
 }
 
 
-//const c = cp.fork('./proc-narrow-items.js');
-//
-//const NarrowDownItems = (state, id, msg) => (dispatch) => {
-//  //console.log('NarrowDownItems() !!');
-//
-//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-//  console.log('NarrowDownItems <> dir_cur: ' + dir_cur);
-//  //console.log('state: ' + state);
-//
-//  c.on('narrow_down_items', () => {
-//    dispatch({
-//      type: 'END_NARROW_DOWN_ITEMS',
-//      state: state
-//    });
-//  });
-//
-//  console.log('HERE??');
-//  c.send({
-//    hello: 'world'
-//  });
-//
+///* ORG (START) @ 2017.02.26 */
+//const receiveInput = (state, c) => (dispatch) => {
+//  //console.log('receiveinput()!!');
+//  const id = state.get('active_pane_id');
+//  const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
 //  return dispatch(updatePaneCmd(state, id, msg));
-//
 //}
-
-//const NarrowDownItems = (state, id, msg) => (dispatch) => {
-//  //console.log('NarrowDownItems() !!');
 //
-//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-//  console.log('NarrowDownItems <> dir_cur: ' + dir_cur);
-//  //console.log('state: ' + state);
-//
-//  c.on('narrow_down_items', (state) => {
-//    dispatch({
-//      type: 'END_NARROW_DOWN_ITEMS',
-//      state: state
-//    });
-//  });
-//
-//  c.send({
-//    state: state,
-//    id: id,
-//    msg: msg
-//  });
-//
-//  return dispatch(updatePaneCmd(state, id, msg));
-//
+//const receiveInputBS = (state) => (dispatch) => {
+//  const id = state.get('active_pane_id');
+//  const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
+//  return dispatch(updatePaneCmd(state, id, msg.slice(0, msg.length - 1)));
 //}
-
-/* TEST @ 2017.01.07 */
-//const NarrowDownItems = (state, id, msg) => (dispatch) => {
-//  //console.log('NarrowDownItems() !!');
 //
-//  //const state_tmp = state;
-//  //ipcRenderer.once('narrow_down_items_cb', (event, ss) => {
-//  //  //const ss = im.fromJS(state_ret);
-//  //  console.log('narrow_down_items_cb');
-//  //  dispatch({
-//  //    type: 'END_NARROW_DOWN_ITEMS',
-//  //    state: state
-//  //    //state: im.fromJS(state_ret)
-//  //  });
-//  //});
-//
-//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-//  //console.log('NarrowDownItems <> dir_cur: ' + dir_cur);
-//  //console.log('state: ' + state);
-//
-//  const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
-//  //console.log('items: ' + items);
-//
-//  /* toJS() conversion is slow.. */
-//  ipcRenderer.send('narrow_down_items', state.toJS(), id, msg);
-//  //ipcRenderer.send('narrow_down_items', state, id, msg);
-//
-//  return updatePaneCmd(state, id, msg);
-//  //return dispatch(updatePaneCmd(state, id, msg));
-//
-//  //return{
-//  //  type: 'END_NARROW_DOWN_ITEMS',
-//  //  state: state
-//  //};
-//
+//const clearInput = (state) => (dispatch) => {
+//  const id = state.get('active_pane_id');
+//  const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
+//  return dispatch(updatePaneCmd(state, id, msg.slice(0, 1)));
 //}
-
-/* TEST @ 2017.01.05 */
-//const NarrowDownItems = (state, id, msg) => (dispatch) => {
-//  //console.log('NarrowDownItems() !!');
 //
-//  const state_tmp = state;
-//  ipcRenderer.once('narrow_down_items_cb', (event, ss) => {
-//    //const ss = im.fromJS(state_ret);
-//    dispatch({
-//      type: 'END_NARROW_DOWN_ITEMS',
-//      state: state
-//      //state: im.fromJS(state_ret)
-//    });
-//  });
-//
-//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-//  //console.log('NarrowDownItems <> dir_cur: ' + dir_cur);
-//  //console.log('state: ' + state);
-//
-//  const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
-//  //console.log('items: ' + items);
-//
-//  ipcRenderer.send('narrow_down_items', state.toJS(), id, msg);
-//  //ipcRenderer.send('narrow_down_items', state, id, msg);
-//
-//  return updatePaneCmd(state, id, msg);
-//  //return dispatch(updatePaneCmd(state, id, msg));
+//const updatePaneCmd = (state, id, msg) => {
+//  //console.log('updatePaneCmd()!!');
+//  return {
+//    type: 'UPDATE_PANE_CMD',
+//    state: state.setIn(['arr_pages', id, 'msg_cmd'], msg)
+//  }
 //}
+///* ORG (END) @ 2017.02.26 */
 
 
 /* ToDo; Need to find better way to set callback only one time.. */
 let is_initialized = false
-export const NarrowDownItems = (state, id, msg) => (dispatch) => {
-  //console.log('NarrowDownItems() !!');
+//export const NarrowDownItems = (state, id, msg) => (dispatch) => {
+export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
+  const state = state_fcd.state_core;
 
   if(is_initialized === false){
     ipcRenderer.on('narrow_down_items_cb', (event, ids, msg, input_mode) => {
@@ -686,46 +412,23 @@ export const NarrowDownItems = (state, id, msg) => (dispatch) => {
   return {
     type: 'START_NARROW_DOWN_ITEMS'
   }
-  //return updatePaneCmd(state, id, msg);
-
-  //return dispatch(updatePaneCmd(state, id, msg));
 }
 
-//const NarrowDownItems = (state, id, msg) => (dispatch) => {
-//  //console.log('NarrowDownItems() !!');
-//  return dispatch(NarrowDownItemsCore(state, id, msg));
+////const startNarrowDownItems = (state, id, msg) => {
+//const startNarrowDownItems = (state_fcd, id, msg) => {
+//  //console.log('startNarrowDownItems()!!');
+//  return {
+//    type: 'START_NARROW_DOWN_ITEMS',
+//    //state: state.setIn(['arr_pages', id, 'msg_cmd'], msg)
+//  }
 //}
 
-
-/* ORG */
-//export const NarrowDownItems = (state, id, msg) => (dispatch) => {
-////const NarrowDownItems = (state, id, msg) => (dispatch) => {
-//  //console.log('NarrowDownItems() !!');
-//
-//  return NarrowDownItemsCore(state, id, msg).then((ss) => {
-//    dispatch(
-//      {
-//        type: 'END_NARROW_DOWN_ITEMS',
-//        state: ss
-//      }
-//    );
-//  });
+//const endNarrowDownItems = (s) => {
+//  return {
+//    type: 'END_NARROW_DOWN_ITEMS',
+//    state: s
+//  }
 //}
-
-const startNarrowDownItems = (state, id, msg) => {
-  //console.log('startNarrowDownItems()!!');
-  return {
-    type: 'START_NARROW_DOWN_ITEMS',
-    //state: state.setIn(['arr_pages', id, 'msg_cmd'], msg)
-  }
-}
-
-const endNarrowDownItems = (s) => {
-  return {
-    type: 'END_NARROW_DOWN_ITEMS',
-    state: s
-  }
-}
 
 const switchInputModeNormalWithClear = () => {
   return {
@@ -734,99 +437,91 @@ const switchInputModeNormalWithClear = () => {
   }
 }
 
-//const requestUpdateItemsMatch = (e) => {
-//  return {
-//    type: 'UPDATE_ITEMS_MATCH'
+//const NarrowDownItemsCoreRet = (state, id, msg) => {
+//  if(msg.length <= 0){
+//    return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
+//                                     .set('input_mode', KEY_INPUT_MODE.NORMAL))
 //  }
+//
+//  const pattern = msg.slice(1, msg.length);
+//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+//  let items;
+//
+//  if(pattern.length > 0){
+//    //console.log('pattern.length > 0');
+//    const reg = new RegExp(pattern);
+//
+//    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+//                       .filter((e, i) => {
+//                         if(reg.test(e.name)){
+//                           return e;
+//                         }
+//                       });
+//
+//  }else{
+//    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+//  }
+//
+//  //const arr_line_cur = Object.assign({}, state.get('arr_line_cur'), {id: 0});
+//  const arr_line_cur_prv = state.get('arr_line_cur');
+//  const arr_line_cur = [
+//    ...arr_line_cur_prv.slice(0, id),
+//    0,
+//    ...arr_line_cur_prv.slice(id+1)
+//  ];
+//
+//  return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+//                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+//                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+//                                   .set('arr_line_cur', arr_line_cur))
+//
 //}
 
-const NarrowDownItemsCoreRet = (state, id, msg) => {
-  //console.log('NarrowDownItemsCore()!!');
-
-  if(msg.length <= 0){
-    return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
-                                     .set('input_mode', KEY_INPUT_MODE.NORMAL))
-  }
-
-  const pattern = msg.slice(1, msg.length);
-  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-  let items;
-
-  if(pattern.length > 0){
-    //console.log('pattern.length > 0');
-    const reg = new RegExp(pattern);
-
-    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
-                       .filter((e, i) => {
-                         if(reg.test(e.name)){
-                           return e;
-                         }
-                       });
-
-  }else{
-    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
-  }
-
-  //console.log('NarrowDownItemsCore() END!!');
-
-  return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
-                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                   .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
-                                   .setIn(['arr_line_cur', id], 0))
-
-  //return state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
-  //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-  //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
-
-}
-
-const NarrowDownItemsCore = (state, id, msg) => {
-  //console.log('NarrowDownItemsCore()!!');
-
-  return new Promise(function(resolve, reject){
-  //return new Promise( (resolve, reject) => {
-    if(msg.length <= 0){
-      resolve(
-        state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
-                                  .set('input_mode', KEY_INPUT_MODE.NORMAL))
-      );
-    }
-
-    const pattern = msg.slice(1, msg.length);
-    const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-    let items;
-
-    if(pattern.length > 0){
-      //console.log('pattern.length > 0');
-      const reg = new RegExp(pattern);
-
-      items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
-                         .filter((e, i) => {
-                           if(reg.test(e.name)){
-                             return e;
-                           }
-                         });
-
-    }else{
-      items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
-    }
-
-    //console.log('NarrowDownItemsCore() END!!');
-    resolve(
-      state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
-                                .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
-                                .setIn(['arr_line_cur', id], 0))
-    );
-
-    //resolve(
-    //  state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
-    //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-    //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
-    //);
-
-  });
-}
+//const NarrowDownItemsCore = (state, id, msg) => {
+//  return new Promise(function(resolve, reject){
+//  //return new Promise( (resolve, reject) => {
+//    if(msg.length <= 0){
+//      resolve(
+//        state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
+//                                  .set('input_mode', KEY_INPUT_MODE.NORMAL))
+//      );
+//    }
+//
+//    const pattern = msg.slice(1, msg.length);
+//    const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+//    let items;
+//
+//    if(pattern.length > 0){
+//      //console.log('pattern.length > 0');
+//      const reg = new RegExp(pattern);
+//
+//      items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+//                         .filter((e, i) => {
+//                           if(reg.test(e.name)){
+//                             return e;
+//                           }
+//                         });
+//
+//    }else{
+//      items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
+//    }
+//
+//    //const arr_line_cur = Object.assign({}, state.get('arr_line_cur'), {id: 0});
+//    const arr_line_cur_prv = state.get('arr_line_cur');
+//    const arr_line_cur = [
+//      ...arr_line_cur_prv.slice(0, id),
+//      0,
+//      ...arr_line_cur_prv.slice(id+1)
+//    ];
+//
+//    resolve(
+//      state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
+//                                .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
+//                                .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
+//                                .set('arr_line_cur', arr_line_cur))
+//    );
+//  });
+//}
 
 
 const TestSendMsg = () => (dispatch) => {

@@ -6,16 +6,28 @@ import fs from 'fs';
 
 import PanePathCur from '../containers/pane-path-cur';
 import PaneCmd from '../containers/pane-cmd';
-import ItemList from '../components/item-list';
+//import ItemList from '../components/item-list';
+import PaneItemList from '../containers/pane-item-list';
 
 const Footer = () => {
   const style = {
     borderLeft: 'solid 1px #FFFFFF',
+    borderTop: 'solid 1px #FFFFFF',
     borderRight: 'solid 1px #FFFFFF',
-    borderBottom: 'solid 1px #FFFFFF'
+    borderBottom: 'solid 1px #FFFFFF',
     //flex: '0 0 auto'
     //boxSizing: 'border-box'
+
+    display: 'flex',
+    flex: 'auto',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: '100%',
+    minHeight: '16.0px',
+    maxHeight: '16.0px'
+
   };
+
   return (
     <div style={style}>
       Footer
@@ -50,12 +62,6 @@ const Body = ({store}) => {
 class CmdAndItemList extends React.Component {
   constructor(props){
     super(props);
-    //console.log('CmdAndItemList <> store: ' + this.props.store);
-    //console.log('CmdAndItemList <> item_list.id: ' + this.props.item_list.id);
-
-    //ItemList.fForceUpdate();
-    //const ilist = new ItemList();
-    //ilist.fForceUpdate();
   }
 
   render(){
@@ -76,23 +82,48 @@ class CmdAndItemList extends React.Component {
       //border: '1px solid #0000FF'
     };
 
-    const state = this.props.store.getState();
+    const state_fcd = this.props.store.getState();
+    const state = state_fcd.state_core;
+    //const state = this.props.store.getState();
+
     const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
     console.log('app <> dir_cur: ' + dir_cur);
 
-    //return (
-    //  <div style={style}>
-    //    <PaneCmd id={id} />
-    //    <ItemList store={this.props.store} id={id} dir_cur={dir_cur} />
-    //  </div>
-    //);
+//    return (
+//      <div style={style}>
+//        <PaneCmd id={id} />
+//        <ItemList store={this.props.store} active_pane_id={state_fcd.active_pane_id} id={id}  />
+//      </div>
+//    );
+
+//    return (
+//      <div style={style}>
+//        <PaneCmd id={id} />
+//        <PaneItemList store={this.props.store} active_pane_id={state_fcd.active_pane_id} id={id}  />
+//      </div>
+//    );
+
+    const style_outer = {
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      width: '100%',
+      height: '100%',
+      borderBottom: 'solid 1px #FFFFFF',
+    };
 
     return (
       <div style={style}>
         <PaneCmd id={id} />
-        <ItemList store={this.props.store} id={id}  />
+        <div style={style_outer}>
+          <PaneItemList store={this.props.store} active_pane_id={state_fcd.active_pane_id} id={id} />
+        </div>
       </div>
     );
+
+
+
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -108,31 +139,31 @@ class CmdAndItemList extends React.Component {
 //    </div>
 //  );
 //}
-//
-//const BodyTest = () => {
-//  const style = {
-//    overflow: 'hidden',
-//    border: '1px solid #00FFFF',
-//    display: 'flex',
-//    flexDirection: 'row',
-//    justifyContent: 'flex-start',
-//    alignItems: 'stretch',
-//    alignContent: 'stretch',
-//    flex: '1'
-//  };
-//
-//  return (
-//    <div style={style}>
-//      Are
-//      <br/><br/>
-//      You
-//      <br/><br/>
-//      Knwon?
-//      <br/><br/>
-//    </div>
-//  );
-//}
-//
+
+const BodyTest = () => {
+  const style = {
+    overflow: 'hidden',
+    border: '1px solid #00FFFF',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    alignContent: 'stretch',
+    flex: '1'
+  };
+
+  return (
+    <div style={style}>
+      Are
+      <br/><br/>
+      You
+      <br/><br/>
+      Knwon?
+      <br/><br/>
+    </div>
+  );
+}
+
 //const FooterTest = () => {
 //  return (
 //    <div>
@@ -161,6 +192,7 @@ const App = ({store}) => {
     borderRight: 'solid 1px #FFFFFF'
   };
 
+  /* ORG */
   return (
     <div style={style}>
       <div style={style_path}>
@@ -171,6 +203,27 @@ const App = ({store}) => {
       <Footer />
     </div>
   );
+
+//  return (
+//    <div style={style}>
+//      <div style={style_path}>
+//        <PanePathCur id={0} />
+//        <PanePathCur id={1} />
+//      </div>
+//      <Body store={store} />
+//    </div>
+//  );
+
+//  return (
+//    <div style={style}>
+//      <div style={style_path}>
+//        <PanePathCur id={0} />
+//        <PanePathCur id={1} />
+//      </div>
+//      <BodyTest />
+//      <Footer />
+//    </div>
+//  );
 
   //return (
   //  <div style={style}>

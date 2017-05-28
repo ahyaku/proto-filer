@@ -6,24 +6,21 @@ import im from 'immutable';
 import PathCur from '../components/path-cur';
 
 
-const mapStateToProps = (state, props) => {
-
-  //let arr_path_cur = [];
-  //for(let e of state.arr_pages){
-  //  arr_path_cur.push(e.dir_cur);
-  //}
-  //return {arr_path_cur, props};
-
-  //console.log('PanePathCur() <> props.id = ' + props.id);
-
+const mapStateToProps = (state_fcd, props) => {
+  const state = state_fcd.state_core;
   const id = props.id;
-  //const dir_cur = state.arr_pages.get(id).get('dir_cur');
-  //console.log('state: ' + state);
   const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-  const active_pane_id = state.get('active_pane_id');
-  //console.log('pane-path-cur <> dir_cur: ' + dir_cur);
+  const active_pane_id = state_fcd.active_pane_id;
+  //const active_pane_id = state.get('active_pane_id');
   return {dir_cur, active_pane_id, props};
 }
+
+//const mapStateToProps = (state, props) => {
+//  const id = props.id;
+//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+//  const active_pane_id = state.get('active_pane_id');
+//  return {dir_cur, active_pane_id, props};
+//}
 
 const PanePathCur = connect(
   mapStateToProps

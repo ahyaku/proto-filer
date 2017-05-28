@@ -19,13 +19,17 @@ class PathCurView extends React.Component {
     const active_pane_id = this.props.active_pane_id;
     const id = this.props.id;
 
-    let style = {};
-    //const style = {
-    //  color: '#AAAAAA'
-    //  //border: '1px solid #FFFFFF'
-    //  //flex: '0 0 auto',
-    //  //overflowX: 'hidden'
-    //};
+    //let style = {};
+
+    let style = {
+      //border: '1px solid #FFFFFF',
+      minHeight: '20px',
+      maxHeight: '20px',
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+    };
 
     //console.log('props.id: ' + props.id + ', active_pane_id: ' + active_pane_id);
 
