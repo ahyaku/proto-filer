@@ -26,17 +26,13 @@ import {ITEM_TYPE_KIND} from './item_type';
 //
 //}
 
-const DISK_DRIVE = 'Disk Drives';
+export const DISK_DRIVE = 'Disk Drives';
 
 export function updateItemsAsDiskDrive(drive_list){
   const items = im.Seq(im.Range(0, drive_list.length))
                   .map((e, i) => {
-                    return initAsDiskDrive(i, name);
+                    return initAsDiskDrive(i, drive_list[i]);
                   });
-
-  //const ret = this.withMutations(s => s.set('items', items)
-  //                                     .set('items_match', items));
-  //return ret;
 
   return im.Map({
            'dir_cur': DISK_DRIVE,

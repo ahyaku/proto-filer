@@ -7,11 +7,8 @@ const path = require('path');
 const util = require('util');
 
 import im from 'immutable';
-//import ItemList from './item_list';
-import { updateItemsAsDiskDrive, updateItems } from './item_list';
+import { updateItemsAsDiskDrive, updateItems, DISK_DRIVE } from './item_list';
 
-
-const DISK_DRIVE = 'Disk Drives';
 
 //let STATE_SEARCH_FILTER = {
 //  NONE      : 0,
@@ -60,6 +57,7 @@ export function changeDrive(pages_fcd_src, drive_list){
 
 
   const items = updateItemsAsDiskDrive(drive_list);
+  console.log('changeDrive <> items: ', items.getIn(['items', 0]));
   return pages_fcd_src.withMutations( s => s.set('dir_cur', DISK_DRIVE)
                                             .setIn(['pages', DISK_DRIVE], items));
 }

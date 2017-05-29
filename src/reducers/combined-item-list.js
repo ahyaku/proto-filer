@@ -4,7 +4,7 @@ import fs from 'fs';
 import im from 'immutable';
 //import ItemListCore from '../core/item_list';
 //import { KEY_INPUT_MODE } from '../core/item_type';
-import { changeDirUpper, changeDirLower, updatePageCur } from '../util/item_list_pages';
+import { changeDirUpper, changeDirLower, updatePageCur, changeDrive } from '../util/item_list_pages';
 import { KEY_INPUT_MODE, ITEM_TYPE_KIND } from '../util/item_type';
 
 
@@ -26,11 +26,9 @@ function CombinedItemList(state_fcd, action){
         const state = state_fcd.state_core;
 
         const idx = state_fcd.active_pane_id;
-        //const idx = state.get('active_pane_id');
-        const pages = state.getIn(['arr_pages', idx]).changeDrive(action.dlist);
+        const pages = changeDrive(state.getIn(['arr_pages', idx]), action.dlist);
         const dir_cur = pages.get('dir_cur');
         const im_items = pages.getIn(['pages', dir_cur, 'items']);
-        //console.log('items: ' + items);
         const item_name_list = updateItemNameListCore(dir_cur, im_items);
 
         const items = im_items.toJS();
@@ -50,7 +48,7 @@ function CombinedItemList(state_fcd, action){
                       {},
                       state_fcd,
                       { 
-                        state_core: state_cre_new,
+                        state_core: state_core_new,
                         arr_items: arr_items
                       }
                     );

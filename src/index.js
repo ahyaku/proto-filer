@@ -37,8 +37,8 @@ process.env.NODE_ENV = 'production';
 //const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
 //const pages_right = new ItemListPages().updatePageCur('C:\\Go');
 
-//const pages_left = updatePageCur(null, 'C:\\msys64');
-const pages_left = updatePageCur(null, 'C:\\tmp\\many_items');
+const pages_left = updatePageCur(null, 'C:\\msys64');
+//const pages_left = updatePageCur(null, 'C:\\tmp\\many_items');
 const pages_right = updatePageCur(null, 'C:\\Go');
 //const pages_left = updatePageCur(null, 'C:\\Go');
 //const pages_right = updatePageCur(null, 'C:\\tmp\\many_items');
