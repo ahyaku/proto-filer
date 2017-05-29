@@ -1,5 +1,6 @@
 'use strict';
 
+//import 'react-virtualized/styles.css';
 import { List, AutoSizer} from 'react-virtualized';
 import React, { PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
@@ -46,7 +47,7 @@ class ItemList extends React.Component {
       //borderLeft: 'solid 1px #FFFFFF',
       //borderRight: 'solid 1px #FFFFFF',
       //borderBottom: 'solid 1px #FFFFFF',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
     }
 
     this._arr_pos = [];
@@ -177,6 +178,7 @@ class ItemList extends React.Component {
 //      })}
 //    </div>
 
+    /* ORG */
     return React.createElement(
       AutoSizer,
       null,
@@ -207,6 +209,30 @@ class ItemList extends React.Component {
       }
     );
 
+//        return React.createElement(
+//          ListClass,
+//          {
+//            width: 311,
+//            height: 464,
+//            //height: height + ROW_HEIGHT,
+//            rowCount: this.im_items.size,
+//            //rowCount: gitem_list.length,
+//            rowHeight: ROW_HEIGHT,
+//            scrollToAlignment: 'auto',
+//            scrollToIndex: this.props.line_cur/* this.props.cursor_pos */,
+//            cursor_pos: this.props.line_cur/* this.props.cursor_pos */,
+//            im_items: this.im_items,
+//            //items: items,
+//            id: id,
+//            active_pane_id: active_pane_id,
+//            dir_cur: dir_cur,
+//            is_dir_changed: this.is_dir_changed,
+//            ref: 'ListClass',
+//            rowRenderer: rowRenderer,
+//          }
+//        );
+
+
   }
 
   _rowRenderer ({
@@ -225,8 +251,9 @@ class ItemList extends React.Component {
       {
          color: '#FFFFFF',
          background: '#333333',
-         verticalAlign: 'bottom',
-         borderCollapse: 'separate',
+         //outline: 'solid 1px #FF0000',
+         //verticalAlign: 'bottom',
+         //borderCollapse: 'separate',
          boxSizing: 'border-box'
       }
     )
