@@ -12,6 +12,19 @@ const PathCur = ({dir_cur, active_pane_id, props}) => {
 class PathCurView extends React.Component {
   constructor(props){
     super(props);
+    this.style = {
+      //border: '1px solid #FFFFFF',
+      minHeight: '20px',
+      maxHeight: '20px',
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      //borderLeft: 'solid 1px #FFFFFF',
+      //borderRight: 'solid 1px #FFFFFF',
+      boxSizing: 'border-box'
+    };
+
   }
 
   render(){
@@ -21,26 +34,16 @@ class PathCurView extends React.Component {
 
     //let style = {};
 
-    let style = {
-      //border: '1px solid #FFFFFF',
-      minHeight: '20px',
-      maxHeight: '20px',
-      display: 'flex',
-      flex: 'auto',
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-    };
-
     //console.log('props.id: ' + props.id + ', active_pane_id: ' + active_pane_id);
 
     if(active_pane_id === id){
-      style['color'] = '#FFFFFF';
+      this.style['color'] = '#FFFFFF';
     }else{
-      style['color'] = '#AAAAAA';
+      this.style['color'] = '#AAAAAA';
     }
 
     return (
-      <div style={style}>
+      <div style={this.style}>
         {dir_cur}
       </div>
     );

@@ -11,8 +11,8 @@ import ViewItem from './view-item';
 import PaneViewItem from '../containers/pane-view-item';
 
 const LIST_MAX = 10000;
-//const ROW_HEIGHT = 16.0;
-const ROW_HEIGHT = 20.0;
+const ROW_HEIGHT = 16.0;
+//const ROW_HEIGHT = 20.0;
 const OFFSET_DELTA = 5;
 //const OFFSET_DELTA = 0;
 
@@ -43,9 +43,10 @@ class ItemList extends React.Component {
       //overflowX: 'ellipsis',
       overflowX: 'hidden',
       overflowY: 'scroll',
-      borderLeft: 'solid 1px #FFFFFF',
-      borderRight: 'solid 1px #FFFFFF',
-      borderBottom: 'solid 1px #FFFFFF',
+      //borderLeft: 'solid 1px #FFFFFF',
+      //borderRight: 'solid 1px #FFFFFF',
+      //borderBottom: 'solid 1px #FFFFFF',
+      boxSizing: 'border-box'
     }
 
     this._arr_pos = [];
@@ -216,7 +217,6 @@ class ItemList extends React.Component {
     style,        // Style object to be applied to row (to position it)
     parent
   }) {
-    let style_mdf;
     let style_cell;
 
     let style_cell_base = Object.assign(
@@ -243,15 +243,6 @@ class ItemList extends React.Component {
 
     if(index == parent.props.cursor_pos){
       //console.log('key: ' + key + ', index: ' + index + ', p_cpos: ' + parent.props.cursor_pos + ', line_cur: ' + this.props.line_cur);
-      style_mdf = Object.assign(
-                    {},
-                    style,
-                    {
-                      borderCollapse: 'separate',
-                      zIndex: '1'
-                    }
-                  );
-
       style_cell = Object.assign(
                      {},
                      style_cell_base,
@@ -259,20 +250,11 @@ class ItemList extends React.Component {
                         borderTop: 'solid 1px #333333',
                         borderLeft: 'solid 1px #333333',
                         borderRight: 'solid 1px #333333',
-                        borderBottom: 'solid 2px #0000FF',
+                        borderBottom: 'solid 2px #333333',
                         zIndex: '1',
                      }
                    );
     }else{
-      style_mdf = Object.assign(
-                    {},
-                    style,
-                    {
-                      borderCollapse: 'separate',
-                      zIndex: '0'
-                    }
-                  );
-
       style_cell = Object.assign(
                      {},
                      style_cell_base,
