@@ -109,6 +109,7 @@ class ItemList extends React.Component {
     const idx = item_list.get('line_cur');
     //console.log('idx: ' + idx);
 
+    //console.log('ItemList <> Before im_items check');
     if(this.im_items !== item_list.get('items_match')){
       this.im_items = item_list.get('items_match');
       //this.items = this.im_items.toArray();
@@ -117,6 +118,7 @@ class ItemList extends React.Component {
     }else{
       this.is_dir_changed = false;
     }
+    //console.log('ItemList <> After im_items check');
 
     //console.log('items len: ' + this.items.length + ', im_items len: ' + this.im_items.size);
 
@@ -178,6 +180,8 @@ class ItemList extends React.Component {
 //      })}
 //    </div>
 
+    //console.log('ItemList <> Before return');
+
     /* ORG */
     return React.createElement(
       AutoSizer,
@@ -194,8 +198,8 @@ class ItemList extends React.Component {
             //rowCount: gitem_list.length,
             rowHeight: ROW_HEIGHT,
             scrollToAlignment: 'auto',
-            scrollToIndex: this.props.line_cur/* this.props.cursor_pos */,
-            cursor_pos: this.props.line_cur/* this.props.cursor_pos */,
+            scrollToIndex: this.props.line_cur/* this.props.line_cur */,
+            line_cur: this.props.line_cur/* this.props.line_cur */,
             im_items: this.im_items,
             //items: items,
             id: id,
@@ -203,6 +207,7 @@ class ItemList extends React.Component {
             dir_cur: dir_cur,
             is_dir_changed: this.is_dir_changed,
             ref: 'ListClass',
+            style: {overflowY: 'scroll'},
             rowRenderer: rowRenderer,
           }
         );
@@ -219,8 +224,8 @@ class ItemList extends React.Component {
 //            //rowCount: gitem_list.length,
 //            rowHeight: ROW_HEIGHT,
 //            scrollToAlignment: 'auto',
-//            scrollToIndex: this.props.line_cur/* this.props.cursor_pos */,
-//            cursor_pos: this.props.line_cur/* this.props.cursor_pos */,
+//            scrollToIndex: this.props.line_cur/* this.props.line_cur */,
+//            line_cur: this.props.line_cur/* this.props.line_cur */,
 //            im_items: this.im_items,
 //            //items: items,
 //            id: id,
@@ -268,8 +273,8 @@ class ItemList extends React.Component {
 //      boxSizing: 'border-box'
 //    }
 
-    if(index == parent.props.cursor_pos){
-      //console.log('key: ' + key + ', index: ' + index + ', p_cpos: ' + parent.props.cursor_pos + ', line_cur: ' + this.props.line_cur);
+    if(index == parent.props.line_cur){
+      //console.log('key: ' + key + ', index: ' + index + ', p_cpos: ' + parent.props.line_cur + ', line_cur: ' + this.props.line_cur);
       style_cell = Object.assign(
                      {},
                      style_cell_base,
@@ -311,7 +316,7 @@ class ItemList extends React.Component {
         //item={parent.props.items.get(index)}
         items={parent.props.im_items}
         dir_cur={this.dir_cur}
-        line_cur={parent.props.cursor_pos}
+        line_cur={parent.props.line_cur}
         active_pane_id={this.props.active_pane_id}
         is_dir_changed={parent.props.is_dir_changed}
         index={index}
@@ -386,15 +391,15 @@ class ListClass extends List {
 
 //  shouldComponentUpdate(nextProps, nextState){
 //    console.log('ListClass shouldComponentUpdate <> size_cur: ' + this.props.im_items.size + ', size_next: ' + nextProps.im_items.size);
-//    console.log('ListClass shouldComponentUpdate <> this.props.cursor_pos: ' + this.props.cursor_pos + ', nextProps.cursor_pos: ' + nextProps.cursor_pos);
+//    console.log('ListClass shouldComponentUpdate <> this.props.line_cur: ' + this.props.line_cur + ', nextProps.line_cur: ' + nextProps.line_cur);
 //
 //    if( this.props.dir_cur === nextProps.dir_cur ){
 //      return true;
 //    }
 //    /* Render only current line and previous line items. */
-//    if( this.props.index === this.props.cursor_pos ||
-//        this.props.index === nextProps.cursor_pos  ){
-//      console.log('ListClass shouldComponentUpdate <> nextProps.cursor_pos: ' + nextProps.cursor_pos);
+//    if( this.props.index === this.props.line_cur ||
+//        this.props.index === nextProps.line_cur  ){
+//      console.log('ListClass shouldComponentUpdate <> nextProps.line_cur: ' + nextProps.line_cur);
 //        //console.log('name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
 //      return true;
 //    }else{
@@ -404,14 +409,52 @@ class ListClass extends List {
 //    return true;
 //  }
 
+//  shouldComponentUpdate(nextProps, nextState){
+//    //const state_cur = this.props.store.getState().state_core;
+//    //const state_new = nextProps.store.getState().state_core;
+//
+//    const line_cur = this.props.line_cur;
+//    const line_new = nextProps.line_cur;
+//    const im_items_cur = this.props.im_items;
+//    const im_items_new = nextProps.im_items;
+//    console.log('ListClass shouldComponentUpdate <> line_cur: ' + line_cur + ', line_new: ' + line_new);
+//    //console.log('ItemList shouldComponentUpdate <> im_items_cur: ' + line_cur + ', line_new: ' + line_new);
+//
+//    if( (line_cur === line_new) &&
+//        (im_items_cur === im_items_new ) ){
+//          console.log('HERE!!!!');
+//      return false;
+//    }
+//
+//    return true;
+//  }
+
+
+
   componentDidUpdate(prevProps, prevState){
     //console.log('ListClass componentDidUpdate <> this.props: ', this.props);
-    //console.log('ListClass componentDidUpdate <> cursor_pos: ' + this.props.cursor_pos);
-    //console.log('ListClass componentDidUpdate <> prevProps.cursor_pos: ' + prevProps.cursor_pos);
+    //console.log('ListClass componentDidUpdate <> line_cur: ' + this.props.line_cur);
+    //console.log('ListClass componentDidUpdate <> prevProps.line_cur: ' + prevProps.line_cur);
     //console.log('ListClass componentDidUpdate <> size_cur: ' + this.props.im_items.size + ', size_prv: ' + prevProps.im_items.size);
-    let offset = this.getOffsetForRow('auto', this.props.cursor_pos);
+    let offset = this.getOffsetForRow('auto', this.props.line_cur);
+
+
+//    const line_cur = this.props.line_cur;
+//    const line_new = prevProps.line_cur;
+//    const im_items_cur = this.props.im_items;
+//    const im_items_new = prevProps.im_items;
+//    //console.log('ListClass shouldComponentUpdate <> line_cur: ' + line_cur + ', line_new: ' + line_new);
+//    //console.log('ItemList shouldComponentUpdate <> im_items_cur: ' + line_cur + ', line_new: ' + line_new);
+//
+//    if( (line_cur === line_new) &&
+//        (im_items_cur === im_items_new ) ){
+//          console.log('HERE!!!!');
+//      return true;
+//    }
 
     this.forceUpdateGrid();
+
+
 
     const id = this.props.id;
     //const state_cur = this.props.store.getState().state_core;
@@ -450,16 +493,16 @@ class ListClass extends List {
     //console.log('ListClass componentDidUpdate <> rowCount: ' + this.props.rowCount);
     //console.log('ListClass componentDidUpdate <> id: ' + this.props.id + ', active_pane_id: ' + this.props.active_pane_id);
 
-    if( (prevProps.cursor_pos === 0) &&
-        (this.props.cursor_pos === (this.props.rowCount - 1)) ){
+    if( (prevProps.line_cur === 0) &&
+        (this.props.line_cur === (this.props.rowCount - 1)) ){
       this.scrollToPosition(offset + OFFSET_DELTA);
-    }else if( (prevProps.cursor_pos === (this.props.rowCount - 1)) &&
-              (this.props.cursor_pos === 0) ){
-    }else if(this.props.cursor_pos > prevProps.cursor_pos){
+    }else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
+              (this.props.line_cur === 0) ){
+    }else if(this.props.line_cur > prevProps.line_cur){
       if(offset > prevState.offset){
         this.scrollToPosition(offset + OFFSET_DELTA);
       }
-    }else if(this.props.cursor_pos < prevProps.cursor_pos){
+    }else if(this.props.line_cur < prevProps.line_cur){
     }else{
     }
 
