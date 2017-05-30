@@ -330,13 +330,14 @@ function moveCursor(state_fcd, delta){
 
 //function syncDir(state, idx_mdf, idx_ref){
 function syncDir(state_fcd, idx_mdf, idx_ref){
+  console.log('syncDir');
   const state = state_fcd.state_core;
 
   const dir_ref = state.getIn(['arr_pages', idx_ref, 'dir_cur']);
   //console.log('idx_other: ' + idx_other);
   //console.log('dir_other: ' + dir_other);
   //const pages = state.getIn(['arr_pages', idx_mdf]).updatePageCur(dir_ref);
-  const pages = updatePageCur(state.getIn(['arr_pages', idx_mdf]), dir_ref);
+  const pages = updatePageCur(state.getIn(['arr_pages', idx_mdf]), dir_ref, true);
   //const ret = state.setIn(['arr_pages', idx_src], arr_pages);
 
   const im_items = pages.getIn(['pages', dir_ref, 'items']);
@@ -351,7 +352,12 @@ function syncDir(state_fcd, idx_mdf, idx_ref){
                       items,
                       ...arr_items_prev.slice(idx_mdf+1)
                     ];
-
+  const arr_line_prev = state_fcd.arr_line_cur;
+  const arr_line_cur = [
+                         ...arr_line_prev.slice(0, idx_mdf),
+                         0,
+                         ...arr_line_prev.slice(idx_mdf+1)
+                       ];
   const state_core_new = state.withMutations((s) => s.setIn(['arr_pages', idx_mdf], pages)
                                                      .setIn(['arr_item_name_lists', idx_mdf], item_name_list)
                                                      .setIn(['arr_im_items', idx_mdf], im_items));
@@ -360,8 +366,9 @@ function syncDir(state_fcd, idx_mdf, idx_ref){
                 state_fcd,
                 { 
                   state_core: state_core_new,
-                  arr_items: arr_items
-                }
+                  arr_items: arr_items,
+                  arr_line_cur: arr_line_cur
+                },
               );
 
   //const ret = state.withMutations((s) => s.setIn(['arr_pages', idx_mdf], pages)
