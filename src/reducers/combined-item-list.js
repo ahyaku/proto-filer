@@ -129,7 +129,12 @@ function CombinedItemList(state_fcd, action){
         const idx = state_fcd.active_pane_id;
         //const idx = state.get('active_pane_id');
         //const pages = state.getIn(['arr_pages', idx]).changeDirLower();
-        const pages = changeDirLower(state.getIn(['arr_pages', idx]));
+
+        const pages_old = state.getIn(['arr_pages', idx]);
+        const pages = changeDirLower(pages_old);
+        if(pages === pages_old){
+          return state_fcd;
+        }
 
         const dir_cur = pages.get('dir_cur');
         //console.log('CHANGE_DIR_LOWER <> dir_cur: ' + dir_cur);
