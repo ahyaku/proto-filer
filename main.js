@@ -226,6 +226,8 @@ electron.ipcMain.on('popup', (event, mode, params) => {
         console.log('count: ' + count++ + ', key: ' + key + ', item: ' + params.items_selected[key]);
       }
       break;
+    //case 'quit':
+    //  break;
     default:
       /* Do Nothing.. */
       break;

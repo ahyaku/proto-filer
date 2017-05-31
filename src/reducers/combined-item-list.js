@@ -1,7 +1,7 @@
 'use strict';
-
 import fs from 'fs';
 import im from 'immutable';
+import { ipcRenderer } from 'electron'
 //import ItemListCore from '../core/item_list';
 //import { KEY_INPUT_MODE } from '../core/item_type';
 import { changeDirUpper, changeDirLower, updatePageCur, changeDrive } from '../util/item_list_pages';
@@ -266,6 +266,16 @@ function CombinedItemList(state_fcd, action){
         return state_fcd;
         //return state;
       }
+    case 'DISP_POPUP_FOR_QUIT':
+      {
+        dispPopUp('quit', null);
+        return state_fcd;
+      }
+    case 'CLOSE_MAIN_WINDOW':
+      {
+        closeMainWindow();
+        return state_fcd;
+      }
     case 'TEST_SEND_MSG':
       console.log('TEST_SEND_MSG');
       return state_fcd;
@@ -389,7 +399,6 @@ export const updateItemNameList = (state_fcd, id) => {
   return updateItemNameListCore(dir_cur, items);
 }
 
-/* ORG */
 const updateItemNameListCore = (dir_cur, items) => {
   let array = [];
   //console.log('items: ' + items.get(3));
@@ -400,54 +409,14 @@ const updateItemNameListCore = (dir_cur, items) => {
   return array;
 }
 
-//const updateItemNameListCore = (dir_cur, items) => {
-//  let array = [];
-//  //console.log('items: ' + items.get(3));
-//  for(let i=0; i<items.size; i++){
-//    array.push(items.get(i).toJS());
-//    //console.log('array[' + i + ']: ' + array[i]);
-//  }
-//  return array;
-//}
+const dispPopUp = (mode, params) => {
+  const ret = ipcRenderer.sendSync('popup', mode, params);
+  return;
+}
 
-//const updateItemNameListCore = (dir_cur, items) => {
-////  return items;
-//
-////  return im.Seq(im.Range(0, items.size))
-////           .map((e, i) => {
-////             console.log('toJS: ', items.get(i).toJS());
-////             return items.get(i);
-////           });
-//
-//  return im.Seq(im.Range(0, items.size))
-//           .map((e, i) => {
-//             //return this.im_items.get(i);
-//             //return 'foo';
-//             return im.Map({
-//                      //'id': items.getIn([i, 'id']),
-//                      //'name': items.getIn([i, 'name']),
-//                      //'basename': items.getIn([i, 'basename']),
-//                      //'ext': items.getIn([i, 'ext']),
-//                      //'kind': items.getIn([i, 'kind']),
-//                      //'fsize': items.getIn([i, 'fsize']),
-//                      //'date': items.getIn([i, 'date']),
-//                      //'time': items.getIn([i, 'time']),
-//                      //'selected': items.getIn([i, 'selected']),
-//                      'id': 0,
-//                      'name': 'bar',
-//                      'basename': 'bar',
-//                      'ext': 'txt',
-//                      'kind': ITEM_TYPE_KIND.TEXT,
-//                      'fsize': 20,
-//                      'date': '17-05-25',
-//                      'time': '15:52:32',
-//                      'selected': false
-//                    });
-//
-//           });
-//
-//
-//}
-
+const closeMainWindow = () => {
+  const ret = ipcRenderer.sendSync('closeMainWindow');
+  return;
+}
 
 export default CombinedItemList;

@@ -90,7 +90,11 @@ export const _checkKeyNormal = (state_fcd, e) => {
     //  //break;           
     //case 'm': /* 'm' */
     //  //break;           
-    //case 'q': /* 'q' */
+    case 'q': /* 'q' */
+      return {
+        type: 'DISP_POPUP_FOR_QUIT'
+        //type: 'CLOSE_MAIN_WINDOW'
+      };
     //  //this.closeMainWindow();
     //  //break;           
     //case '.': /* ',' */
