@@ -163,12 +163,14 @@ class ItemList extends React.Component {
       {},
       style,
       {
-         color: '#FFFFFF',
-         background: '#333333',
-         //outline: 'solid 1px #FF0000',
-         //verticalAlign: 'bottom',
-         //borderCollapse: 'separate',
-         boxSizing: 'border-box'
+        color: '#FFFFFF',
+        background: '#333333',
+        //outline: 'solid 1px #FF0000',
+        //verticalAlign: 'bottom',
+        //borderCollapse: 'separate',
+        boxSizing: 'border-box',
+        fontSize: '14px',
+        verticalAlign: 'top'
       }
     )
 

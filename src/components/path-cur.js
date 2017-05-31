@@ -14,15 +14,16 @@ class PathCurView extends React.Component {
     super(props);
     this.style = {
       //border: '1px solid #FFFFFF',
-      minHeight: '20px',
-      maxHeight: '20px',
+      minHeight: '16px',
+      maxHeight: '16px',
       display: 'flex',
       flex: 'auto',
       flexDirection: 'row',
       justifyContent: 'flex-start',
       //borderLeft: 'solid 1px #FFFFFF',
       //borderRight: 'solid 1px #FFFFFF',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      fontSize: '14px'
     };
 
   }
@@ -57,32 +58,5 @@ class PathCurView extends React.Component {
   //  console.log('PathCurView <> componentDidUpdate()');
   //}
 }
-
-//const PathCur = ({dir_cur, active_pane_id, props}) => {
-//  console.log('PathCur() <> props.id = ' + props.id);
-//  let style = {};
-//  //const style = {
-//  //  color: '#AAAAAA'
-//  //  //border: '1px solid #FFFFFF'
-//  //  //flex: '0 0 auto',
-//  //  //overflowX: 'hidden'
-//  //};
-//
-//  //console.log('props.id: ' + props.id + ', active_pane_id: ' + active_pane_id);
-//
-//  if(active_pane_id === props.id){
-//    style['color'] = '#FFFFFF';
-//  }else{
-//    style['color'] = '#AAAAAA';
-//  }
-//
-//  return (
-//    <div style={style}>
-//      {dir_cur}
-//    </div>
-//  );
-//}
-
-
 
 export default PathCur;

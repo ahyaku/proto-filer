@@ -37,10 +37,11 @@ export function changeDrive(pages_fcd_src, drive_list){
 export function updatePageCur(pages_fcd_src, _dir_cur, line_cur_zero){
   const dir_cur = fs.realpathSync(_dir_cur);
   //console.log('updatePageCur <> dir_cur: ' + dir_cur + ', _dir_cur: ' + _dir_cur);
+  const msg_cmd = '';
 
   if(pages_fcd_src === null){
     const item_list = updateItems(dir_cur);
-    return im.Map({ 'dir_cur': dir_cur }).setIn(['pages', dir_cur], item_list);
+    return im.Map({ 'dir_cur': dir_cur, 'msg_cmd': msg_cmd }).setIn(['pages', dir_cur], item_list);
   }else if( isDirRegistered(pages_fcd_src, dir_cur) ){
     //console.log('isDirRegistered!!');
 

@@ -41,8 +41,8 @@ class CmdView extends React.Component{
       borderBottom: '1px solid #FFFFFF',
       //margin: '0px, 0px 0px',
       //padding: '0px, 0px 0px',
-      minHeight: '20px',
-      maxHeight: '20px',
+      minHeight: '16px',
+      maxHeight: '16px',
       //overflowX: 'hidden',
       //overflowY: 'hidden'
 
@@ -50,8 +50,8 @@ class CmdView extends React.Component{
       flex: 'auto',
       flexDirection: 'row',
       justifyContent: 'flex-start',
-      boxSizing: 'border-box'
-
+      boxSizing: 'border-box',
+      fontSize: '14px'
     };
 
     if(this.props.id === 0){
