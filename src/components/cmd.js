@@ -33,18 +33,16 @@ class CmdView extends React.Component{
   constructor(props){
     super(props);
     this.count = 0;
-  }
-
-  render(){
-    const msg_cmd = this.props.msg_cmd;
-    const style = {
+    let style_base = {
       //minHeight: '20px',
       //height: '20px',
-      border: '1px solid #FFFFFF',
+      borderTop: '1px solid #FFFFFF',
+      borderLeft: '1px solid #FFFFFF',
+      borderBottom: '1px solid #FFFFFF',
       //margin: '0px, 0px 0px',
       //padding: '0px, 0px 0px',
-      minHeight: '20px',
-      maxHeight: '20px',
+      minHeight: '16px',
+      maxHeight: '16px',
       //overflowX: 'hidden',
       //overflowY: 'hidden'
 
@@ -52,11 +50,29 @@ class CmdView extends React.Component{
       flex: 'auto',
       flexDirection: 'row',
       justifyContent: 'flex-start',
-
+      boxSizing: 'border-box',
+      fontSize: '14px'
     };
 
+    if(this.props.id === 0){
+      this.style = Object.assign(
+        {},
+        style_base,
+      );
+    }else{
+      this.style = Object.assign(
+        {},
+        style_base,
+        {borderRight: '1px solid #FFFFFF'}
+      );
+    }
+
+  }
+
+  render(){
+    const msg_cmd = this.props.msg_cmd;
     return (
-      <div style={style}>
+      <div style={this.style}>
         {msg_cmd}
       </div>
     );

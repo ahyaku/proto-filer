@@ -49,14 +49,15 @@ export function initAsItem(id, name, dir_cur){
     const date = ret['mtime'].slice(2, 10);
     const time = ret['mtime'].slice(11, 19);
 
-    //return item_src.withMutations(s => s.set('id', id)
-    //                                    .set('name', name)
-    //                                    .set('fsize', fsize)
-    //                                    .set('date', date)
-    //                                    .set('time', time)
-    //                                    .set('basename', basename)
-    //                                    .set('ext', ext)
-    //                                    .set('kind', kind));
+//    return item_src.withMutations(s => s.set('id', id)
+//                                        .set('name', name)
+//                                        .set('basename', basename)
+//                                        .set('ext', ext)
+//                                        .set('kind', kind)
+//                                        .set('fsize', fsize)
+//                                        .set('date', date)
+//                                        .set('time', time)
+//                                        .set('selected', false));
 
     return im.Map({
              'id': id,
@@ -79,6 +80,18 @@ export function initAsItem(id, name, dir_cur){
     //                                    .set('basename', basename)
     //                                    .set('ext', ext)
     //                                    .set('kind', kind));
+
+    //return item_src.withMutations(s => s.set('id', id)
+    //                                    .set('name', name)
+    //                                    .set('basename', basename)
+    //                                    .set('ext', ext)
+    //                                    .set('kind', kind)
+    //                                    .set('fsize', '???')
+    //                                    .set('date', '???')
+    //                                    .set('time', '???')
+    //                                    .set('selected', false));
+
+
 
     return im.Map({
              'id': id,

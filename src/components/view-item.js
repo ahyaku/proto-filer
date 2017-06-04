@@ -34,6 +34,9 @@ class ViewItem extends React.Component {
 
     this._style_base = {
       zIndex: '0',
+      borderTop: 'none',
+      borderLeft: 'none',
+      borderRight: 'none',
       borderBottom: 'solid 1px #333333',
       //margin: '-3px 0px 0px',
       //padding: '0px 0px',
@@ -52,6 +55,7 @@ class ViewItem extends React.Component {
       //textOverflowX: 'hidden'
       //textOverflowX: 'ellipsis'
       //overflowX: 'ellipsis'
+      boxSizing: 'border-box'
     }
 
     this._styles = [];
@@ -192,10 +196,16 @@ class ViewItem extends React.Component {
 
     //style = this._styles[item.get('kind')];
 
+    const background = item.get('selected') === true
+                         ? '#0000FF'
+                         : '#333333';
     style = Object.assign(
                            {},
                            this.props.style,
-                           this._styles[item.get('kind')]
+                           this._styles[item.get('kind')],
+                           {
+                             background: background
+                           }
                          );
 
     if(this.props.c === line_cur){
@@ -206,6 +216,7 @@ class ViewItem extends React.Component {
         style['borderBottom'] = 'solid 1px #00FF00';
       }
     }
+
     //console.timeEnd('render');
 
     //console.log('name: ' + item.get('basename'));
@@ -316,7 +327,6 @@ class ViewItem extends React.Component {
 
     /* Directory is changed. */
     if(this.props.dir_cur !== nextProps.dir_cur){
-      console.log('HERE!!');
       //console.log('shouldComponentUpdate() <> this.props.dir_cur: ' + this.props.dir_cur + ', nextProps.dir_cur: ' + nextProps.dir_cur);
     //if(this.props.im_items !== nextProps.im_items){
       //console.log('now <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);

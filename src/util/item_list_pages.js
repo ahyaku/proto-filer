@@ -7,31 +7,7 @@ const path = require('path');
 const util = require('util');
 
 import im from 'immutable';
-//import ItemList from './item_list';
-import { updateItemsAsDiskDrive, updateItems } from './item_list';
-
-
-const DISK_DRIVE = 'Disk Drives';
-
-//let STATE_SEARCH_FILTER = {
-//  NONE      : 0,
-//  FILTERING : 1,
-//  FILTERED  : 2,
-//};
-//
-//const ItemListPagesRecord = im.Record({
-//  pages: im.Map(),
-//  msg_cmd: '',
-//  dir_cur: null
-//});
-//
-//class ItemListPages extends ItemListPagesRecord{
-//  constructor(props){
-//    super(props);
-//  }
-//
-//}
-
+import { updateItemsAsDiskDrive, updateItems, DISK_DRIVE } from './item_list';
 
 function isDirRegistered(pages_fcd_src, dir_cur){
   //console.log('isDirRegistered() Start!!');
@@ -51,56 +27,44 @@ function isDirRegistered(pages_fcd_src, dir_cur){
 }
 
 export function changeDrive(pages_fcd_src, drive_list){
-  //const items = new ItemList()
-  //                  .set('dir_cur', DISK_DRIVE)
-  //                  .updateItemsAsDiskDrive(drive_list);
-
-  //return this.withMutations(s => s.set('dir_cur', DISK_DRIVE)
-  //                                .setIn(['pages', DISK_DRIVE], items));
-
-
   const items = updateItemsAsDiskDrive(drive_list);
+  console.log('changeDrive <> items: ', items.getIn(['items', 0]));
   return pages_fcd_src.withMutations( s => s.set('dir_cur', DISK_DRIVE)
                                             .setIn(['pages', DISK_DRIVE], items));
 }
 
 
-export function updatePageCur(pages_fcd_src, _dir_cur){
+export function updatePageCur(pages_fcd_src, _dir_cur, line_cur_zero){
   const dir_cur = fs.realpathSync(_dir_cur);
   //console.log('updatePageCur <> dir_cur: ' + dir_cur + ', _dir_cur: ' + _dir_cur);
-
-//  if( this.isDirRegistered(dir_cur) ){
-//    const items = this.getIn(['pages', dir_cur, 'items']);
-//    //console.log('updatePageCur <> isDirRegistered()');
-//    //console.log('updatePageCur() <> items[0].name: ' + items.getIn([0, 'name']));
-//    return this.withMutations(s => s.setIn(['pages', dir_cur, 'items_match'], items)
-//                                    .set('dir_cur', dir_cur));
-//  //}else{
-//  //  console.log('updatePageCur <> !isDirRegistered()');
-//  }
-//
-//  const items = updateItems(dir_cur);
-//
-//  return this.withMutations(s => s.set('dir_cur', dir_cur)
-//                                  .setIn(['pages', dir_cur], items));
-
-  //console.log('updatePageCur <> pages_fcd_src: ', pages_fcd_src);
+  const msg_cmd = '';
 
   if(pages_fcd_src === null){
-    const items = updateItems(dir_cur);
-    return im.Map({ 'dir_cur': dir_cur }).setIn(['pages', dir_cur], items);
+    const item_list = updateItems(dir_cur);
+    return im.Map({ 'dir_cur': dir_cur, 'msg_cmd': msg_cmd }).setIn(['pages', dir_cur], item_list);
   }else if( isDirRegistered(pages_fcd_src, dir_cur) ){
-    const items = pages_fcd_src.getIn(['pages', dir_cur, 'items']);
-    //console.log('updatePageCur <> isDirRegistered()');
-    //console.log('updatePageCur() <> items[0].name: ' + items.getIn([0, 'name']));
-    return pages_fcd_src.withMutations(s => s.setIn(['pages', dir_cur, 'items_match'], items)
-                                             .set('dir_cur', dir_cur));
-  //}else{
-  //  console.log('updatePageCur <> !isDirRegistered()');
-  }else{
-    const items = updateItems(dir_cur);
+    //console.log('isDirRegistered!!');
+
+    let item_list;
+    if(line_cur_zero === true){
+      item_list = pages_fcd_src.getIn(['pages', dir_cur]).set('line_cur', 0);
+    }else{
+      item_list = pages_fcd_src.getIn(['pages', dir_cur]);
+    }
+
     return pages_fcd_src.withMutations(s => s.set('dir_cur', dir_cur)
-                                             .setIn(['pages', dir_cur], items));
+                                             .setIn(['pages', dir_cur], item_list));
+  }else{
+    //console.log('NOT isDirRegistered!!');
+    let item_list;
+    if(line_cur_zero === true){
+      item_list = updateItems(dir_cur).set('line_cur', 0);
+    }else{
+      item_list = updateItems(dir_cur);
+    }
+
+    return pages_fcd_src.withMutations(s => s.set('dir_cur', dir_cur)
+                                             .setIn(['pages', dir_cur], item_list));
   }
 
 
@@ -108,7 +72,7 @@ export function updatePageCur(pages_fcd_src, _dir_cur){
 
 export function changeDirUpper(pages_fcd_src){
   const dir_cur = path.parse(pages_fcd_src.get('dir_cur')).dir; 
-  return updatePageCur(pages_fcd_src, dir_cur);
+  return updatePageCur(pages_fcd_src, dir_cur, false);
 }
 
 export function changeDirLower(pages_fcd_src){
@@ -138,12 +102,8 @@ export function changeDirLower(pages_fcd_src){
 
   const ret = ipc_renderer.sendSync('fs.isDirectory', path_new)
   if(ret['is_dir']){
-    return updatePageCur(pages_fcd_src, path_new);
+    return updatePageCur(pages_fcd_src, path_new, false);
   }else{
     return pages_fcd_src;
   }
 }
-
-
-
-//module.exports = ItemListPages;

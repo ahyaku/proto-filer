@@ -32,6 +32,7 @@ export const _checkKeyNormal = (state_fcd, e) => {
   //                        pane_right.is_focused));
 
   //console.log('checkKeyNormal <> e.key: ' + e.key);
+
   switch(e.key){
     case 'j': /* 'j' */
       //this.cursorDown();
@@ -67,7 +68,18 @@ export const _checkKeyNormal = (state_fcd, e) => {
       return {
         type: 'SWITCH_ACTIVE_PANE'
       };
-    //case 'Space': /* 'space' */
+    case ' ': /* 'space' */
+      event.preventDefault();
+      if(event.shiftKey == true){
+        return {
+          type: 'TOGGLE_ITEM_SELECT_UP'
+        }
+      }else{
+        return {
+          type: 'TOGGLE_ITEM_SELECT_DOWN'
+        }
+      }
+
     //  //if(event.shiftKey == true){
     //  //  this.toggleUp();
     //  //}else{
@@ -90,7 +102,11 @@ export const _checkKeyNormal = (state_fcd, e) => {
     //  //break;           
     //case 'm': /* 'm' */
     //  //break;           
-    //case 'q': /* 'q' */
+    case 'q': /* 'q' */
+      return {
+        type: 'DISP_POPUP_FOR_QUIT'
+        //type: 'CLOSE_MAIN_WINDOW'
+      };
     //  //this.closeMainWindow();
     //  //break;           
     //case '.': /* ',' */

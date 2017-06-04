@@ -24,7 +24,8 @@ const Footer = () => {
     justifyContent: 'flex-start',
     width: '100%',
     minHeight: '16.0px',
-    maxHeight: '16.0px'
+    maxHeight: '16.0px',
+    boxSizing: 'border-box'
 
   };
 
@@ -43,12 +44,13 @@ const Body = ({store}) => {
     justifyContent: 'flex-start',
     //alignItems: 'stretch',
     //alignContent: 'stretch',
-    //border: '1px solid #FFFFFF',
+    //border: '1px solid #FF0000',
     //overflow: 'auto',
     //overflow: 'hidden',
     //textOverflowX: 'ellipsis'
     width: '100%',
-    height: '100%'
+    height: '100%',
+    boxSizing: 'border-box'
   };
 
   return (
@@ -62,11 +64,7 @@ const Body = ({store}) => {
 class CmdAndItemList extends React.Component {
   constructor(props){
     super(props);
-  }
-
-  render(){
-    const id = this.props.id;
-    const style = {
+    this.style = {
       display: 'flex',
       flex: 'auto',
       flexDirection: 'column',
@@ -80,8 +78,44 @@ class CmdAndItemList extends React.Component {
       ////overflowY: 'auto'
       //overflowY: 'hidden'
       //border: '1px solid #0000FF'
+      //border: 'solid 1px #FFFFFF',
+      border: 'none',
+      boxSizing: 'border-box'
     };
 
+
+    let style_outer_base = {
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      width: '100%',
+      height: '100%',
+      //border: 'none',
+      borderLeft: 'solid 1px #FFFFFF',
+      //borderBottom: 'solid 1px #FFFFFF',
+      boxSizing: 'border-box'
+    };
+    
+    //this.style_outer = style_outer_base;
+
+    if(this.props.id === 0){
+      this.style_outer = Object.assign(
+        {},
+        style_outer_base
+      );
+    }else{
+      this.style_outer = Object.assign(
+        {},
+        style_outer_base,
+        {borderRight: 'solid 1px #FFFFFF'},
+      );
+    }
+
+  }
+
+  render(){
+    const id = this.props.id;
     const state_fcd = this.props.store.getState();
     const state = state_fcd.state_core;
     //const state = this.props.store.getState();
@@ -89,46 +123,20 @@ class CmdAndItemList extends React.Component {
     const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
     console.log('app <> dir_cur: ' + dir_cur);
 
-//    return (
-//      <div style={style}>
-//        <PaneCmd id={id} />
-//        <ItemList store={this.props.store} active_pane_id={state_fcd.active_pane_id} id={id}  />
-//      </div>
-//    );
-
-//    return (
-//      <div style={style}>
-//        <PaneCmd id={id} />
-//        <PaneItemList store={this.props.store} active_pane_id={state_fcd.active_pane_id} id={id}  />
-//      </div>
-//    );
-
-    const style_outer = {
-      display: 'flex',
-      flex: 'auto',
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      width: '100%',
-      height: '100%',
-      borderBottom: 'solid 1px #FFFFFF',
-    };
-
     return (
-      <div style={style}>
+      <div style={this.style}>
         <PaneCmd id={id} />
-        <div style={style_outer}>
+        <div style={this.style_outer}>
           <PaneItemList store={this.props.store} active_pane_id={state_fcd.active_pane_id} id={id} />
         </div>
       </div>
     );
 
-
-
   }
 
-  componentDidUpdate(prevProps, prevState){
-    console.log('componentDidUpdate()!!');
-  }
+//  componentDidUpdate(prevProps, prevState){
+//    console.log('componentDidUpdate()!!');
+//  }
 }
 
 
@@ -140,29 +148,29 @@ class CmdAndItemList extends React.Component {
 //  );
 //}
 
-const BodyTest = () => {
-  const style = {
-    overflow: 'hidden',
-    border: '1px solid #00FFFF',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    alignContent: 'stretch',
-    flex: '1'
-  };
-
-  return (
-    <div style={style}>
-      Are
-      <br/><br/>
-      You
-      <br/><br/>
-      Knwon?
-      <br/><br/>
-    </div>
-  );
-}
+//const BodyTest = () => {
+//  const style = {
+//    overflow: 'hidden',
+//    border: '1px solid #00FFFF',
+//    display: 'flex',
+//    flexDirection: 'row',
+//    justifyContent: 'flex-start',
+//    alignItems: 'stretch',
+//    alignContent: 'stretch',
+//    flex: '1'
+//  };
+//
+//  return (
+//    <div style={style}>
+//      Are
+//      <br/><br/>
+//      You
+//      <br/><br/>
+//      Knwon?
+//      <br/><br/>
+//    </div>
+//  );
+//}
 
 //const FooterTest = () => {
 //  return (
@@ -184,12 +192,14 @@ const App = ({store}) => {
     color: '#FFFFFF',
     width: '100%',
     height: '100%',
+    boxSizing: 'border-box'
   };
 
   const style_path = {
     borderTop: 'solid 1px #FFFFFF',
     borderLeft: 'solid 1px #FFFFFF',
-    borderRight: 'solid 1px #FFFFFF'
+    borderRight: 'solid 1px #FFFFFF',
+    boxSizing: 'border-box'
   };
 
   /* ORG */

@@ -27,21 +27,19 @@ import {KEY_INPUT_MODE} from './util/item_type';
 
 import { ipcRenderer } from 'electron';
 import cp from 'child_process';
-//import electron from electron;
 
 import { updateItemNameList } from './reducers/combined-item-list';
 
 process.env.NODE_ENV = 'production';
 
-
 //const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
 //const pages_right = new ItemListPages().updatePageCur('C:\\Go');
 
-//const pages_left = updatePageCur(null, 'C:\\msys64');
-const pages_left = updatePageCur(null, 'C:\\tmp\\many_items');
-const pages_right = updatePageCur(null, 'C:\\Go');
-//const pages_left = updatePageCur(null, 'C:\\Go');
-//const pages_right = updatePageCur(null, 'C:\\tmp\\many_items');
+const pages_left = updatePageCur(null, 'C:\\msys64', true);
+//const pages_left = updatePageCur(null, 'C:\\tmp\\many_items', true);
+const pages_right = updatePageCur(null, 'C:\\Go', true);
+//const pages_left = updatePageCur(null, 'C:\\Go', true);
+//const pages_right = updatePageCur(null, 'C:\\tmp\\many_items', true);
 const arr_pages = im.List.of(pages_left, pages_right);
 //console.log('arr_pages: ' + arr_pages);
 
