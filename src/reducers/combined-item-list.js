@@ -484,6 +484,7 @@ const toggleItemSelect = (state_fcd) => {
       state_core: state_new
     }
   );
+
 }
 
 export default CombinedItemList;
