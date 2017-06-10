@@ -302,22 +302,34 @@ class Props extends React.Component{
     const style_ext = {
       marginLeft: '0px',
       width: '30px',
-      textAlign: 'left'
+      textAlign: 'left',
+      textOverflow: 'ellipsis',
+      overflowX: 'hidden',
+      overflowY: 'hidden'
     };
     const style_fsize = {
       marginLeft: '15px',
       width: '80px',
-      textAlign: 'right'
+      textAlign: 'right',
+      textOverflow: 'ellipsis',
+      overflowX: 'hidden',
+      overflowY: 'hidden'
     };
     const style_date = {
       marginLeft: '5px',
       width: '60px',
-      textAlign: 'right'
+      textAlign: 'right',
+      textOverflow: 'ellipsis',
+      overflowX: 'hidden',
+      overflowY: 'hidden'
     };
     const style_time = {
       marginLeft: '5px',
       width: '60px',
-      textAlign: 'right'
+      textAlign: 'right',
+      textOverflow: 'ellipsis',
+      overflowX: 'hidden',
+      overflowY: 'hidden'
     };
 
     //console.log('size: ' + this.props.size);

@@ -152,17 +152,23 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
 
       let page_new;
       if(line_cur_zero === true){
-        page_new = page.withMutations(s => s.set('line_cur', 0)
-                                            .set('id_map', im.List(im.Range(0, items.size))));
+        //page_new = page.withMutations(s => s.set('line_cur', 0)
+        //                                    .set('id_map', im.List(im.Range(0, items.size))));
+        page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
+                                            .set('selected_items', im.List.of())
+                                            .set('line_cur', 0));
       }else{
-        page_new = page.set('id_map', im.List(im.Range(0, items.size)));
+        //page_new = page.set('id_map', im.List(im.Range(0, items.size)));
+        page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
+                                            .set('selected_items', im.List.of()));
 
       }
 
       const item_names = updateItemNames(items);
       return state.withMutations(s => s.set('dirs', dirs_new)
                                        .setIn(['pages', dir_cur], page_new)
-                                       .set('item_names', item_names));
+                                       .set('item_names', item_names)
+                                       .set('msg_cmd', ''));
 
     }else{
 
@@ -180,7 +186,8 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
 
       return state.withMutations(s => s.set('dirs', dirs_new)
                                        .setIn(['pages', dir_cur], page)
-                                       .set('item_names', item_names));
+                                       .set('item_names', item_names)
+                                       .set('msg_cmd', ''));
 
     }
 

@@ -108,21 +108,9 @@ export const _checkKeyNormal = (state_fcd, e) => {
     //  break;
     case '/': /* '/' */
       {
-        const active_pane_id = state_fcd.active_pane_id;
-        const state = state_fcd.state_core.get(active_pane_id);
-        const state_new = switchInputModeNarrowDownItems(state, e.key);
-        //console.log('SWITCH_INPUT <> msg: ' + state_new.get('msg_cmd'));
-        const state_fcd_new = Object.assign(
-                                {},
-                                state_fcd,
-                                {
-                                  input_mode: KEY_INPUT_MODE.SEARCH,
-                                  state_core: state_fcd.state_core.set(active_pane_id, state_new)
-                                }
-                              );
         return {
           type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
-          state: state_fcd_new
+          key: e.key
         };
       }
     case 's':
@@ -252,59 +240,32 @@ const _checkKeySearch = (state_fcd, e) => (dispatch) => {
 
 }
 
-function switchInputModeNarrowDownItems(state, c){
-  //console.log('switchInputModeNarrowDownItems() <> input_mode: ' + state.get('input_mode'));
-  const msg = state.get('msg_cmd');
-  if(msg.length > 0){
-    return state;
-  }else{
-    return state.withMutations(s => s.set('msg_cmd', msg + c)
-                                     .set('line_cur', 0));
-  }
-}
-
-
 const receiveInput = (state_fcd, c) => (dispatch) => {
   //console.log('receiveinput()!!');
   const active_pane_id = state_fcd.active_pane_id;
   const state = state_fcd.state_core.get(active_pane_id);
   const msg = state.get('msg_cmd') + c;
-  return dispatch(updatePaneCmd(state_fcd, active_pane_id, msg));
+  return dispatch(updatePaneCmd(msg));
 }
 
 const receiveInputBS = (state_fcd) => (dispatch) => {
   const active_pane_id = state_fcd.active_pane_id;
   const state = state_fcd.state_core.get(active_pane_id);
   const msg = state.get('msg_cmd');
-  return dispatch(updatePaneCmd(state_fcd, active_pane_id, msg.slice(0, msg.length - 1)));
+  return dispatch(updatePaneCmd(msg.slice(0, msg.length - 1)));
 }
 
 const clearInput = (state_fcd) => (dispatch) => {
   const active_pane_id = state_fcd.active_pane_id;
   const state = state_fcd.state_core.get(active_pane_id);
   const msg = state.get('msg_cmd');
-  return dispatch(updatePaneCmd(state_fcd, active_pane_id, msg.slice(0, 1)));
+  return dispatch(updatePaneCmd(msg.slice(0, 1)));
 }
 
-const updatePaneCmd = (state_fcd, id, msg) => {
-  //console.log('updatePaneCmd()!!');
-  const active_pane_id = state_fcd.active_pane_id;
-  const state = state_fcd.state_core.get(active_pane_id);
-  const dir = state.getIn(['dirs', 0]);
-  const state_new = state.withMutations(s => s.set('msg_cmd', msg)
-                                              .setIn(['pages', dir, 'line_cur'], 0));
-  const state_fcd_new = Object.assign(
-                          {},
-                          state_fcd,
-                          {
-                            state_core: state_fcd.state_core.set(active_pane_id, state_new)
-                          }
-                        );
-
-
+const updatePaneCmd = (msg) => {
   return {
     type: 'UPDATE_PANE_CMD',
-    state: state_fcd_new
+    msg_cmd: msg
   }
 }
 
