@@ -5,15 +5,8 @@ const util = require('util');
 const path = require('path');
 const electron = require('electron');
 const shell = electron.shell;
-
 const execFile = require('child_process').execFile;
 const os = require('os');
-//const iconv = require('iconv-lite');
-
-//const KEY_INPUT_MODE = require('./src/core/item_type');
-//import { KEY_INPUT_MODE } from './src/core/item_type':
-
-//const cp = require('child_process');
 
 // Module to control application life.
 const app = electron.app

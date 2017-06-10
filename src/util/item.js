@@ -6,27 +6,6 @@ import im from 'immutable';
 import { ITEM_TYPE_KIND } from './item_type';
 import { ipcRenderer } from 'electron'
 
-//const ItemRecord = im.Record({
-//  id: null,
-//  name: null,
-//  basename: null,
-//  ext : null,
-//  kind: null,
-//  fsize: '???',
-//  date: '???',
-//  time: '???',
-//  selected: false,
-//  color: null,
-//});
-
-//class Item extends ItemRecord{
-//
-//  constructor(props){
-//    super(props);
-//  }
-//
-//}
-
 export function initAsItem(id, name, dir_cur){
   //console.log('initAsItem()');
   const fpath = path.join(dir_cur, name);
@@ -49,16 +28,6 @@ export function initAsItem(id, name, dir_cur){
     const date = ret['mtime'].slice(2, 10);
     const time = ret['mtime'].slice(11, 19);
 
-//    return item_src.withMutations(s => s.set('id', id)
-//                                        .set('name', name)
-//                                        .set('basename', basename)
-//                                        .set('ext', ext)
-//                                        .set('kind', kind)
-//                                        .set('fsize', fsize)
-//                                        .set('date', date)
-//                                        .set('time', time)
-//                                        .set('selected', false));
-
     return im.Map({
              'id': id,
              'name': name,
@@ -75,23 +44,6 @@ export function initAsItem(id, name, dir_cur){
     ext = path.extname(name);
     basename = path.basename(name, ext);
     kind = getItemTypeKind(ext);
-    //return item_src.withMutations(s => s.set('id', id)
-    //                                    .set('name', name)
-    //                                    .set('basename', basename)
-    //                                    .set('ext', ext)
-    //                                    .set('kind', kind));
-
-    //return item_src.withMutations(s => s.set('id', id)
-    //                                    .set('name', name)
-    //                                    .set('basename', basename)
-    //                                    .set('ext', ext)
-    //                                    .set('kind', kind)
-    //                                    .set('fsize', '???')
-    //                                    .set('date', '???')
-    //                                    .set('time', '???')
-    //                                    .set('selected', false));
-
-
 
     return im.Map({
              'id': id,
@@ -125,9 +77,7 @@ export function initAsDiskDrive(id, name){
            'time': '',
            'selected': false
          });
-  
 }
-
 
 function getItemTypeKind(ext){
   const opt = {sensitivity: 'base'};
@@ -160,5 +110,3 @@ function getItemTypeKind(ext){
     return ITEM_TYPE_KIND.OTHER;
   }
 }
-
-//module.exports = Item;

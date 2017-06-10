@@ -115,15 +115,12 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
                                        .set('msg_cmd', ''));
 
     }else{
-
       const items = _updateItems(dir_cur);
       const dirs_new = dirs.unshift(dir_cur);
       const is_selected = im.List(im.Range(0, items.size))
                             .map((e, i) => {
                               return false;
                             });
-
-
 
       const page = im.Map({
                      'items': items,
@@ -138,11 +135,8 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
                                        .setIn(['pages', dir_cur], page)
                                        .set('item_names', item_names)
                                        .set('msg_cmd', ''));
-
     }
-
   }
-    
 }
 
 export function changeDirUpper(state){
