@@ -12,10 +12,10 @@ function rootReducer(state_fcd, action){
 
   const id = state_fcd.active_pane_id;
   const state = state_fcd.state_core.get(id);
+
   switch(action.type){
     case 'MOVE_CURSOR_UP':
       {
-        //return moveCursor(state_fcd, -1);
         const state_core_new = state_fcd.state_core.set(id, moveCursor(state, -1));
         return Object.assign(
                  {},
@@ -24,13 +24,9 @@ function rootReducer(state_fcd, action){
                    state_core: state_core_new
                  }
                );
-        //return moveCursor(state, -1);
       }
     case 'MOVE_CURSOR_DOWN':
       {
-        //console.log('HERE!!');
-        //return state_fcd;
-        //return moveCursor(state_fcd, 1);
         const state_core_new = state_fcd.state_core.set(id, moveCursor(state, 1));
         return Object.assign(
                  {},
@@ -39,26 +35,19 @@ function rootReducer(state_fcd, action){
                    state_core: state_core_new
                  }
                );
-        //return moveCursor(state, 1);
       }
     case 'CHANGE_DRIVE':
       {
         const state_new = changeDrive(state, action.dlist);
-        //const dir_cur = state_new.get('dir_cur');
         const dir = state_new.getIn(['dirs', 0]);
         const im_items = state_new.getIn(['pages', dir, 'items']);
-        //const item_name_list = updateItemNameListCore(dir_cur, im_items);
-        //const item_name_list = updateItemNameListCore(im_items);
-
-        const ret = Object.assign(
-                      {},
-                      state_fcd,
-                      { 
-                        state_core: state_fcd.state_core.set(id, state_new),
-                      }
-                    );
-
-        return ret;
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   state_core: state_fcd.state_core.set(id, state_new),
+                 }
+               );
       }
     case 'CHANGE_DIR_UPPER':
       {
@@ -66,18 +55,13 @@ function rootReducer(state_fcd, action){
         const dir = state_new.getIn(['dirs', 0]);
         const page = state_new.getIn(['pages', dir]);
         const im_items = page.get('items');
-
-        //const item_name_list = updateItemNameListCore(im_items);
-
-        const ret = Object.assign(
-                      {},
-                      state_fcd,
-                      { 
-                        state_core: state_fcd.state_core.set(id, state_new),
-                      }
-                    );
-
-        return ret;
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   state_core: state_fcd.state_core.set(id, state_new),
+                 }
+               );
       }
     case 'CHANGE_DIR_LOWER':
       {
@@ -89,23 +73,16 @@ function rootReducer(state_fcd, action){
         const dir = state_new.getIn(['dirs', 0]);
         const page = state_new.getIn(['pages', dir]);
         const im_items = page.get('items');
-
-        //const item_name_list = updateItemNameListCore(im_items);
-
-        const ret = Object.assign(
-                      {},
-                      state_fcd,
-                      { 
-                        state_core: state_fcd.state_core.set(id, state_new),
-                      }
-                    );
-
-        return ret;
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   state_core: state_fcd.state_core.set(id, state_new),
+                 }
+               );
       }
     case 'SWITCH_ACTIVE_PANE':
       switch(id){
-      //const state = state_fcd.state_core;
-      //switch(state.get('active_pane_id')){
         case 0:
           return Object.assign(
                    {},
@@ -131,7 +108,7 @@ function rootReducer(state_fcd, action){
         const idx_other = idx_cur === 1
                           ? 0
                           : 1;
-        return _syncDir(state_fcd, idx_cur, idx_other);
+        return syncDirFcd(state_fcd, idx_cur, idx_other);
       }
 
     case 'SYNC_DIR_OTHER_TO_CUR':
@@ -141,16 +118,11 @@ function rootReducer(state_fcd, action){
         const idx_other = idx_cur === 1
                           ? 0
                           : 1;
-        return _syncDir(state_fcd, idx_other, idx_cur);
+        return syncDirFcd(state_fcd, idx_other, idx_cur);
       }
 
     case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
-      //{
-      //  return state_fcd;
-      //}
       {
-        //const active_pane_id = state_fcd.active_pane_id;
-        //const state = state_fcd.state_core.get(active_pane_id);
         const state_new = switchInputModeNarrowDownItems(state, action.key);
         //console.log('SWITCH_INPUT <> msg: ' + state_new.get('msg_cmd'));
         return Object.assign(
@@ -172,8 +144,6 @@ function rootReducer(state_fcd, action){
       }
     case 'SWITCH_INPUT_MODE_NORMAL_WITH_CLEAR':
       {
-        //const id = state_fcd.active_pane_id;
-        //const state = state_fcd.state_core.get(id);
         const dir = state.getIn(['dirs', 0]);
         const page = state.getIn(['pages', dir]);
         const id_map = im.List(im.Range(0, page.get('items').size));
@@ -227,9 +197,6 @@ function rootReducer(state_fcd, action){
       }
     case 'END_NARROW_DOWN_ITEMS':
       {
-        //const id = state_fcd.active_pane_id;
-        //const state = state_fcd.state_core.get(id);
-
         const dir_cur = state.getIn(['dirs', 0]);
         const page = state.getIn(['pages', dir_cur]);
 
@@ -274,7 +241,6 @@ function rootReducer(state_fcd, action){
 function moveCursor(state, delta){
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
-  //const len = page.get('items').size;
   const len = page.get('id_map').size;
   const line_cur = page.get('line_cur');
 
@@ -289,15 +255,57 @@ function moveCursor(state, delta){
   return state.setIn(['pages', dir, 'line_cur'], vv);
 }
 
-function syncDir(state_mdf, state_ref){
+const dispPopUp = (mode, params) => {
+  const ret = ipcRenderer.sendSync('popup', mode, params);
+  return;
+}
+
+const closeMainWindow = () => {
+  const ret = ipcRenderer.sendSync('closeMainWindow');
+  return;
+}
+
+const toggleItemSelect = (state) => {
+  const dir = state.getIn(['dirs', 0]);
+  const page = state.getIn(['pages', dir]);
+  const line_cur = page.get('line_cur');
+  const items = page.get('items');
+  const id_map = page.get('id_map');
+  const id = id_map.get(line_cur);
+  const item = items.get(id);
+  const item_new = item.set('selected', !item.get('selected'));
+
+  return state.setIn(['pages', dir, 'items', id], item_new);
+}
+
+const syncDirFcd = (state_fcd, idx_mdf, idx_ref) => {
+  const state_mdf = state_fcd.state_core.get(idx_mdf);
+  const state_ref = state_fcd.state_core.get(idx_ref);
+  const state_new = syncDir(state_mdf, state_ref);
+
+  const dir = state_new.getIn(['dirs', 0]);
+  //console.log('SYNC_DIR <> dir_new: ' + dir);
+  const page = state_new.getIn(['pages', dir]);
+  //console.log('SYNC_DIR <> page.getIn(items, 1, name): ' + page.getIn(['items', 1, 'name']));
+  const im_items = page.get('items');
+
+  const ret = Object.assign(
+                {},
+                state_fcd,
+                { 
+                  state_core: state_fcd.state_core.set(idx_mdf, state_new),
+                }
+              );
+
+  return ret;
+}
+
+const syncDir = (state_mdf, state_ref) => {
   //console.log('syncDir');
 
   const dirs = state_mdf.get('dirs');
-  //const dir_mdf = dirs.get(0);
-  //const page_mdf = state_mdf.getIn(['pages', dir_mdf]);
   const pages_mdf = state_mdf.get('pages');
   const dir_ref = state_ref.getIn(['dirs', 0]);
-  //const page_ref = state_ref.getIn(['pages', dir_ref]);
   const items_ref = state_ref.getIn(['pages', dir_ref, 'items']);
   let dirs_new;
 
@@ -321,51 +329,7 @@ function syncDir(state_mdf, state_ref){
          );
 }
 
-const dispPopUp = (mode, params) => {
-  const ret = ipcRenderer.sendSync('popup', mode, params);
-  return;
-}
 
-const closeMainWindow = () => {
-  const ret = ipcRenderer.sendSync('closeMainWindow');
-  return;
-}
-
-const toggleItemSelect = (state) => {
-  const dir = state.getIn(['dirs', 0]);
-  const page = state.getIn(['pages', dir]);
-  const line_cur = page.get('line_cur');
-  const items = page.get('items');
-  const id_map = page.get('id_map');
-  const id = id_map.get(line_cur);
-  const item = items.get(id);
-  const item_new = item.set('selected', !item.get('selected'));
-
-  //const page_new = page.setIn(['items', id], item_new);
-  return state.setIn(['pages', dir, 'items', id], item_new);
-}
-
-const _syncDir = (state_fcd, idx_mdf, idx_ref) => {
-  const state_mdf = state_fcd.state_core.get(idx_mdf);
-  const state_ref = state_fcd.state_core.get(idx_ref);
-  const state_new = syncDir(state_mdf, state_ref);
-
-  const dir = state_new.getIn(['dirs', 0]);
-  //console.log('SYNC_DIR <> dir_new: ' + dir);
-  const page = state_new.getIn(['pages', dir]);
-  //console.log('SYNC_DIR <> page.getIn(items, 1, name): ' + page.getIn(['items', 1, 'name']));
-  const im_items = page.get('items');
-
-  const ret = Object.assign(
-                {},
-                state_fcd,
-                { 
-                  state_core: state_fcd.state_core.set(idx_mdf, state_new),
-                }
-              );
-
-  return ret;
-}
 
 const switchInputModeNarrowDownItems = (state, c) => {
   //console.log('switchInputModeNarrowDownItems() <> input_mode: ' + state.get('input_mode'));
@@ -377,8 +341,5 @@ const switchInputModeNarrowDownItems = (state, c) => {
                                      .set('line_cur', 0));
   }
 }
-
-
-
 
 export default rootReducer;
