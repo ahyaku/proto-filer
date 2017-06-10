@@ -30,7 +30,6 @@ class ViewItem extends React.Component {
   constructor(props){
     //console.log('ViewItem constructor()');
     super(props);
-    //console.log('ItemView <> getState(): ' + this.props.store);
 
     this._style_base = {
       zIndex: '0',
@@ -81,59 +80,6 @@ class ViewItem extends React.Component {
     return items.get(index);
   }
 
-  //render(){
-  //  console.log('ViewItem <> render()');
-  //  //console.time('render');
-  //  let style;
-  //  const line_cur = this.props.line_cur;
-  //  //console.log('rener() <> line_cur: ' + line_cur);
-  //  const id = this.props.id;
-  //  const active_pane_id = this.props.active_pane_id;
-
-  //  const state = this.props.store.getState();
-  //  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-  //  const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
-  //  const items = item_list.get('items_match');
-  //  //const item = items.get(this.props.c);
-  //  const item = this.props.item;
-  //  //const item2 = this.props.item;
-  //  //console.log('item2: ' + item2);
-
-  //  //const item = this.props.item;
-
-  //  //if(items.size <= 0){
-  //  //  return (
-  //  //    <div>
-  //  //    </div>
-  //  //  );
-  //  //}
-
-  //  this.didupdate = true;
-
-  //  style = this._styles[item.get('kind')];
-  //  if(this.props.c === line_cur){
-  //    style = Object.assign({}, style, {zIndex: '1'});
-
-  //    if(id === active_pane_id){
-  //      style['borderBottom'] = 'solid 1px #00FF00';
-  //    }
-  //  }
-  //  //console.timeEnd('render');
-
-  //  //console.log('name: ' + item.get('basename'));
-  //  return (
-  //    <div>
-  //      <div style={style}>
-  //        <Basename basename={item.get('basename')} />
-  //        <Props ext={item.get('ext')}
-  //               size={item.get('size')}
-  //               date={item.get('date')}
-  //               time={item.get('time')} />
-  //      </div>
-  //    </div>
-  //  );
-  //}
-
   render(){
     //console.log('ViewItem <> render()');
     //console.log('ViewItem <> index: ' + this.props.index);
@@ -159,29 +105,7 @@ class ViewItem extends React.Component {
     //console.log('rener() <> line_cur: ' + line_cur);
     const id = this.props.id;
     const active_pane_id = this.props.active_pane_id;
-
-    //const state = this.props.store.getState().state_core;
-    //const state = this.props.store.getState();
-
-    //const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-    //const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
-    //const items = item_list.get('items_match');
-    //const item = items.get(this.props.c);
-
-    //const item = this.props.item;
-
     const item = this.cbGetItem(items, index);
-    //console.log('ViewItem <> render() item: ', item);
-    //console.log('ViewItem <> render() item.name: ' + item.get('name'));
-
-    //const item = this.props.item.toJS();
-
-    //const item = this.props.im_item;
-
-    ///console.log('item: ', this.props.item);
-    //console.log('item.name: ' + this.props.item.name);
-
-    //console.log('item: ' + item);
 
     //if(items.size <= 0){
     //  return (
@@ -193,7 +117,6 @@ class ViewItem extends React.Component {
     this.didupdate = true;
 
     //style = this._styles[item.kind];
-
     //style = this._styles[item.get('kind')];
 
     const background = item.get('selected') === true
@@ -217,54 +140,7 @@ class ViewItem extends React.Component {
       }
     }
 
-    //console.timeEnd('render');
-
-    //console.log('name: ' + item.get('basename'));
-
-//    return (
-//      <div>
-//        <div style={style}>
-//          hoge
-//        </div>
-//      </div>
-//    );
-
-//    return (
-//      <div>
-//        <div style={style}>
-//          {item}
-//        </div>
-//      </div>
-//    );
-
-//    return (
-//      <div>
-//        <div style={style}>
-//          <Basename basename={item} />
-//        </div>
-//      </div>
-//    );
-
-//    return (
-//      <div>
-//        <div style={style}>
-//          <Basename basename={item.get('basename')} />
-//        </div>
-//      </div>
-//    );
-
-//    return (
-//      <div>
-//        <div style={style}>
-//          <Basename basename={item.basename} />
-//          <Props ext={item.ext}
-//                 fsize={item.fsize}
-//                 date={item.date}
-//                 time={item.time} />
-//        </div>
-//      </div>
-//    );
-
+    //console.log('view-item <> c: ' + this.props.c + ', name: ' + item.get('name') + ', selected: ' + item.get('selected'));
     return (
       <div style={style}>
         <Basename basename={item.get('basename')} />
@@ -275,55 +151,14 @@ class ViewItem extends React.Component {
       </div>
     );
 
-//    return (
-//      <div>
-//        <div style={style}>
-//          <Basename basename={item.get('basename')} />
-//          <Props ext={item.get('ext')}
-//                 fsize={item.get('fsize')}
-//                 date={item.get('date')}
-//                 time={item.get('time')} />
-//        </div>
-//      </div>
-//    );
-
   }
 
 
   shouldComponentUpdate(nextProps, nextState){
-    //console.log('VideItem <> shouldComponentUpdate()');
-    //console.log('line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
-
-    if(this.props.is_dir_changed === true){
+    /* Displayed items are changed by Narrow Down. */
+    if(this.props.id_map !== nextProps.id_map){
       return true;
     }
-
-    //if(this.props.c === 0){
-    //  const state = this.props.store.getState();
-    //  //const state = this.props.state;
-    //  const id = this.props.id;
-    //  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-
-    //  const state_next = nextProps.store.getState();
-    //  //const state_next = nextProps.state;
-    //  const id_next = nextProps.id;
-    //  const dir_cur_next = state_next.getIn(['arr_pages', id_next, 'dir_cur']);
-
-    //  console.log('view-item.js <> dir_cur: ' + dir_cur + ', dir_cur_next: ' + dir_cur_next);
-
-    //  const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
-    //  const items = item_list.get('items_match');
-    //  const item = items.get(this.props.c);
-    //  const name = item.get('name');
-    //  console.log('name: ' + name);
-
-    //}
-
-    //{
-    //  const jret = (this.props.im_items !== nextProps.im_items);
-    //}
-
-    //console.log('view-item.js <> this.props.dir_cur: ' + this.props.dir_cur + ', nextProps.dir_cur: ' + nextProps.dir_cur);
 
     /* Directory is changed. */
     if(this.props.dir_cur !== nextProps.dir_cur){
@@ -339,14 +174,28 @@ class ViewItem extends React.Component {
       return true;
     }
 
+    const id = this.props.c;
     /* Render only current line and previous line items. */
-    if( this.props.c === this.props.line_cur ||
-        this.props.c === nextProps.line_cur  ){
+    if( id === this.props.line_cur ||
+        id === nextProps.line_cur  ){
         //console.log('name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
       return true;
     }else{
-      return false;
+      const item = this.cbGetItem(this.props.items, id);
+      const item_next = this.cbGetItem(nextProps.items, id);
+
+      /* react-virtualized skips re-rendering of items when cursor moves
+       * from the last item to the first few items with 'toggle-down' (for performance?) 
+       * This causes the issue that 'selected' attribute is changed but item background color is not updated.
+       * Following if case is necessary to avoid this issue.
+       * */
+      if( item.get('selected') !== item_next.get('selected')){
+        return true;
+      }else{
+        return false;
+      }
     }
+
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -365,7 +214,6 @@ class ViewItem extends React.Component {
 
       let id = this.props.id;
       let dir_cur = this.props.dir_cur;
-      //console.timeEnd('componentDidUpdate1');
 
       switch(this.props.action_type){
         case 'CHANGE_DIR_UPPER':
@@ -374,7 +222,6 @@ class ViewItem extends React.Component {
           return;
         default:
           {
-            //console.time('componentDidUpdate2');
             let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
             let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
             let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
@@ -405,13 +252,10 @@ class ViewItem extends React.Component {
           return;
       }
 
-      //console.time('componentDidUpdate3');
       if(this.didupdate === true){
         this.didupdate = false;
         this.setState(this.props);
       }
-      //console.timeEnd('componentDidUpdate3');
-      
     }
 
   }

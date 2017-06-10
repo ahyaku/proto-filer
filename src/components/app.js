@@ -36,7 +36,7 @@ const Footer = () => {
   );
 }
 
-const Body = ({store}) => {
+const Body = () => {
   const style = {
     display: 'flex',
     flex: 'auto',
@@ -55,8 +55,8 @@ const Body = ({store}) => {
 
   return (
     <div style={style}>
-      <CmdAndItemList id={0} store={store} />
-      <CmdAndItemList id={1} store={store} />
+      <CmdAndItemList id={0} />
+      <CmdAndItemList id={1} />
     </div>
   );
 }
@@ -116,18 +116,12 @@ class CmdAndItemList extends React.Component {
 
   render(){
     const id = this.props.id;
-    const state_fcd = this.props.store.getState();
-    const state = state_fcd.state_core;
-    //const state = this.props.store.getState();
-
-    const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-    console.log('app <> dir_cur: ' + dir_cur);
 
     return (
       <div style={this.style}>
         <PaneCmd id={id} />
         <div style={this.style_outer}>
-          <PaneItemList store={this.props.store} active_pane_id={state_fcd.active_pane_id} id={id} />
+          <PaneItemList id={id} />
         </div>
       </div>
     );
@@ -180,7 +174,7 @@ class CmdAndItemList extends React.Component {
 //  );
 //}
 
-const App = ({store}) => {
+const App = () => {
   const style = {
     display: 'flex',
     flex: 'auto',
@@ -209,31 +203,10 @@ const App = ({store}) => {
         <PanePathCur id={0} />
         <PanePathCur id={1} />
       </div>
-      <Body store={store} />
+      <Body />
       <Footer />
     </div>
   );
-
-//  return (
-//    <div style={style}>
-//      <div style={style_path}>
-//        <PanePathCur id={0} />
-//        <PanePathCur id={1} />
-//      </div>
-//      <Body store={store} />
-//    </div>
-//  );
-
-//  return (
-//    <div style={style}>
-//      <div style={style_path}>
-//        <PanePathCur id={0} />
-//        <PanePathCur id={1} />
-//      </div>
-//      <BodyTest />
-//      <Footer />
-//    </div>
-//  );
 
   //return (
   //  <div style={style}>

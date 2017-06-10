@@ -17,16 +17,6 @@ const ROW_HEIGHT = 16.0;
 const OFFSET_DELTA = 5;
 //const OFFSET_DELTA = 0;
 
-let gitem_list = [];
-
-for(let i=0; i<LIST_MAX + 1; i++){
-  gitem_list.push(i);
-}
-
-gitem_list[LIST_MAX] = '';
-
-
-
 class ItemList extends React.Component {
 
   constructor(props){
@@ -57,88 +47,67 @@ class ItemList extends React.Component {
 
     this.count = 0;
     this.names = null;
-    //this.items = null;
-    this.im_items = null;
+    //this.im_items = null;
+
     //this.dir_cur = null;
-
-    this.is_dir_changed = false;
-
-    //console.log('ItemList constructor()');
-    const store = this.props.store;
-
-    this.unsubscribe = store.subscribe(() => {
-      const store = this.props.store;
-      const state = store.getState().state_core;
-      const id = this.props.id;
-      const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-      const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
-
-      /* - When directory is changed. 
-       * - When no item name is displayed.
-       * */
-      if(this.im_items !== item_list.get('items_match')){
-        //console.log('subscribed function!!');
-        this.is_dir_changed = true;
-        console.log('subscribed function!! <> is_dir_changed: ' + this.is_dir_changed);
-        this.setState();
-        //this.forceUpdate();
-      }
-    });
+    this.id_map = null
 
     this._rowRenderer = this._rowRenderer.bind(this);
   }
   
-  componentWillUnmount(){
-    this.unsubscribe();
-  }
+//  componentWillUnmount(){
+//    this.unsubscribe();
+//  }
 
   render(){
     //console.log('ItemList <> render()');
     const rowRenderer = this._rowRenderer;
-    const state = this.props.store.getState().state_core;
     const id = this.props.id;
-    const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-    const item_list = state.getIn(['arr_pages', id, 'pages', dir_cur]);
+    const dir_cur = this.props.dir;
+    const page = this.props.page;
+    const id_map = page.get('id_map');
     const active_pane_id = this.props.active_pane_id;
-    const idx = item_list.get('line_cur');
 
-    let is_dir_changed;
+    this.id_map = id_map;
 
-    if(this.im_items !== item_list.get('items_match')){
-      this.im_items = item_list.get('items_match');
-      is_dir_changed = true;
-    }else{
-      is_dir_changed = this.is_dir_changed;
-    }
-    this.is_dir_changed = false;
-
-    if(this.im_items.size <= 0){
+    if(this.id_map.size <= 0){
       return (
         <div ref="item_list" style={this._style_list}>
         </div>
       );
     }
 
+    const im_items = this._getItemsByMap(page);
+
+//    if(id === active_pane_id){
+//      console.log('item-list <> ', page.getIn(['items', dir_cur, 1, 'name']));
+//      console.log('item-list <> im_items: ', im_items);
+//      console.log('item-list <> im_items.get(0): ', im_items.get(0));
+//    }
+
+    //console.log('ItemList <> pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
+
     return React.createElement(
       AutoSizer,
       null,
       ({height, width}) => {
-        //console.log('height: ' + height + ', width: ' + width + ', item_num: ' + this.im_items.size);
+        //console.log('height: ' + height + ', width: ' + width + ', item_num: ' + im_items.size);
         return React.createElement(
           ListClass,
           {
             width: width,
             height: height,
-            rowCount: this.im_items.size,
+            rowCount: this.id_map.size,
             rowHeight: ROW_HEIGHT,
             scrollToAlignment: 'auto',
             scrollToIndex: this.props.line_cur/* this.props.line_cur */,
             line_cur: this.props.line_cur/* this.props.line_cur */,
-            im_items: this.im_items,
+            im_items: im_items,
             id: id,
             active_pane_id: active_pane_id,
             dir_cur: dir_cur,
-            is_dir_changed: is_dir_changed,
+            id_map: id_map,
+            //is_dir_changed: is_dir_changed,
             ref: 'ListClass',
             style: {overflowY: 'scroll'},
             rowRenderer: rowRenderer,
@@ -165,6 +134,7 @@ class ItemList extends React.Component {
       {
         color: '#FFFFFF',
         background: '#333333',
+        //textDecoration: 'underline #FFFFFF',
         //outline: 'solid 1px #FF0000',
         //verticalAlign: 'bottom',
         //borderCollapse: 'separate',
@@ -178,6 +148,7 @@ class ItemList extends React.Component {
 
     if(index == parent.props.line_cur){
       //console.log('key: ' + key + ', index: ' + index + ', p_cpos: ' + parent.props.line_cur + ', line_cur: ' + this.props.line_cur);
+      //console.log('pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
       style_cell = Object.assign(
                      {},
                      style_cell_base,
@@ -204,6 +175,7 @@ class ItemList extends React.Component {
     }
 
     //console.log('this.im_items: ', parent.props.im_items.get(index));
+    //console.log('this.im_items: ', parent.props.im_items.getIn([index, 'name']));
     //console.log('items: ', parent.props.items[index]);
     //console.log('items: ', parent.props.items.get(index));
 
@@ -217,15 +189,38 @@ class ItemList extends React.Component {
         dir_cur={parent.props.dir_cur}
         line_cur={parent.props.line_cur}
         active_pane_id={parent.props.active_pane_id}
-        is_dir_changed={parent.props.is_dir_changed}
+        id_map={parent.props.id_map}
+        //is_dir_changed={parent.props.is_dir_changed}
         index={index}
         />
     );
 
   }
 
-}
+  _getItemsByMap(page){
+    //console.log('getItemsByMap <> id_map: ', page.get('id_map'));
+    //console.log('getItemsByMap <> items: ', page.get('items'));
+    
+    const items = page.get('id_map').map(
+                    (e, i) => {
+                      //console.log('getItemsByMap <> items[' + i + '].name: ' + page.getIn(['items', e, 'name']));
+                      return page.getIn(['items', e]);
+                    }
+                  );
 
+    //console.log('getItemsByMap <> items.size: ', items.size);
+
+    return items;
+  }
+
+
+  //shouldComponentUpdate(nextState, nextProps){
+  //  return true;
+  //}
+
+
+
+}
 
 class ListClass extends List {
   constructor(props){
@@ -265,6 +260,14 @@ class ListClass extends List {
 
     return true;
   }
+
+//  shouldComponentUpdate(nextState, nextProps){
+//    if(this.props.id === this.props.active_pane_id){
+//      return true;
+//    }
+//
+//    return false;
+//  }
 
 }
 

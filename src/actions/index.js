@@ -2,15 +2,9 @@
 
 import { ipcRenderer } from 'electron';
 import cp from 'child_process';
-//import { KEY_INPUT_MODE } from '../core/item_type';
 import { KEY_INPUT_MODE } from '../util/item_type';
 
 import im from 'immutable';
-
-//export const updateItemList = (item_list) => ({
-//  type: 'UPDATE_ITEM_LIST',
-//  item_list
-//});
 
 export const updateItemList = (id) => ({
   type: 'UPDATE_ITEM_LIST',
@@ -21,11 +15,6 @@ export const checkKeyNormal = (state_fcd, e) => {
   return _checkKeyNormal(state_fcd, e);
 }
 
-//export const checkKeyNormal = (state, e) => {
-//  return _checkKeyNormal(state, e);
-//}
-
-//export const _checkKeyNormal = (state, e) => {
 export const _checkKeyNormal = (state_fcd, e) => {
   //console.log(util.format('pane_left: %d, pane_right: %d',
   //                        pane_left.is_focused,
@@ -118,15 +107,24 @@ export const _checkKeyNormal = (state_fcd, e) => {
     //  //break;           
     //  break;
     case '/': /* '/' */
-      return {
-        type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
-        state: switchInputModeNarrowDownItems(state_fcd, e.key)
-        //state: switchInputModeNarrowDownItems(state, e.key)
-      };
-      //return {
-      //  type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
-      //  c: e.key
-      //};
+      {
+        const active_pane_id = state_fcd.active_pane_id;
+        const state = state_fcd.state_core.get(active_pane_id);
+        const state_new = switchInputModeNarrowDownItems(state, e.key);
+        //console.log('SWITCH_INPUT <> msg: ' + state_new.get('msg_cmd'));
+        const state_fcd_new = Object.assign(
+                                {},
+                                state_fcd,
+                                {
+                                  input_mode: KEY_INPUT_MODE.SEARCH,
+                                  state_core: state_fcd.state_core.set(active_pane_id, state_new)
+                                }
+                              );
+        return {
+          type: 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS',
+          state: state_fcd_new
+        };
+      }
     case 's':
     case 'e':
       return {
@@ -135,9 +133,7 @@ export const _checkKeyNormal = (state_fcd, e) => {
     case '\\':
       //console.log('\\');
       let ret = ipcRenderer.sendSync('get_disk_drive_list');
-      //console.log('!!!!!!!!!!!!');
-      //let drive_list = arr.slice(1, arr.length - 2);
-      //console.log(ret);
+      //console.log('CHANGE_DRIVE <> ret: ', ret);
       return {
         type: 'CHANGE_DRIVE',
         dlist: ret
@@ -194,7 +190,6 @@ const _checkKeySearchWithCtrl = (state_fcd, e) => (dispatch) => {
   switch(e.key){
     case 'Control':
       return dispatch(receiveInput(state_fcd, ''));
-      //return dispatch(receiveInput(state, ''));
     case 'm':
       event.preventDefault();
       return dispatch(
@@ -207,21 +202,17 @@ const _checkKeySearchWithCtrl = (state_fcd, e) => (dispatch) => {
       return dispatch(switchInputModeNormalWithClear());
     case 'h':
       return dispatch(receiveInputBS(state_fcd));
-      //return dispatch(receiveInputBS(state));
     case 'u':
       return dispatch(clearInput(state_fcd));
-      //return dispatch(clearInput(state));
     case 's':
       console.log('HERE!!');
       return dispatch(TestSendMsg());
 
     default:
       return dispatch(receiveInput(state_fcd, e.key));
-      //return dispatch(receiveInput(state, e.key));
   }
 }
 
-//const _checkKeySearch = (state, e) => (dispatch) => {
 const _checkKeySearch = (state_fcd, e) => (dispatch) => {
 
   //console.log('e.key: ' + e.key);
@@ -243,7 +234,6 @@ const _checkKeySearch = (state_fcd, e) => (dispatch) => {
       );
     case '[':
       return dispatch(receiveInput(state_fcd, e.key));
-      //return dispatch(receiveInput(state, e.key));
 
     case 'Tab':
     case 'Shift':
@@ -251,113 +241,67 @@ const _checkKeySearch = (state_fcd, e) => (dispatch) => {
     case 'Alt':
       /* Do Nothing.. */
       return dispatch(receiveInput(state_fcd, ''));
-      //return dispatch(receiveInput(state, ''));
 
     case 'Backspace':
       return dispatch(receiveInputBS(state_fcd));
-      //return dispatch(receiveInputBS(state));
 
     default:
       event.preventDefault();
       return dispatch(receiveInput(state_fcd, e.key));
-      //return dispatch(receiveInput(state, e.key));
-
   }
+
 }
 
-
-//function switchInputModeNarrowDownItems(state, c){
-function switchInputModeNarrowDownItems(state_fcd, c){
-  const state = state_fcd.state_core;
+function switchInputModeNarrowDownItems(state, c){
   //console.log('switchInputModeNarrowDownItems() <> input_mode: ' + state.get('input_mode'));
-
-  const id = state_fcd.active_pane_id;
-  //const id = state.get('active_pane_id');
-
-  const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
-  //const state_new = state.set('input_mode', KEY_INPUT_MODE.SEARCH);
+  const msg = state.get('msg_cmd');
   if(msg.length > 0){
-    return Object.assign(
-             {},
-             state_fcd,
-             { state_core: state.set('input_mode', KEY_INPUT_MODE.SEARCH) }
-           );
-
-    //return state.set('input_mode', KEY_INPUT_MODE.SEARCH);
-
+    return state;
   }else{
-    //console.log('msg.length == 0');
-    const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
-
-    const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-    const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
-
-    const arr_line_cur_prv = state_fcd.arr_line_cur;
-    //const arr_line_cur_prv = state.get('arr_line_cur');
-
-    const arr_line_cur = [
-      ...arr_line_cur_prv.slice(0, id),
-      0,
-      ...arr_line_cur_prv.slice(id+1)
-    ];
-
-    const state_core_new = state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
-                                                     .setIn(['arr_pages', id, 'msg_cmd'], msg)
-                                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-                                                     .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
-
-    return Object.assign(
-             {},
-             state_fcd,
-             { 
-               state_core: state_core_new,
-               arr_line_cur: arr_line_cur
-             }
-           );
-
-    //return state.withMutations(s => s.set('input_mode', KEY_INPUT_MODE.SEARCH)
-    //                                 .setIn(['arr_pages', id, 'msg_cmd'], msg)
-    //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-    //                                 .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0)
-    //                                 .set('arr_line_cur', arr_line_cur));
-
+    return state.withMutations(s => s.set('msg_cmd', msg + c)
+                                     .set('line_cur', 0));
   }
 }
+
 
 const receiveInput = (state_fcd, c) => (dispatch) => {
   //console.log('receiveinput()!!');
-  const state = state_fcd.state_core;
-  const id = state_fcd.active_pane_id;
-  //const id = state.get('active_pane_id');
-  const msg = state.getIn(['arr_pages', id, 'msg_cmd']) + c;
-  return dispatch(updatePaneCmd(state_fcd, id, msg));
+  const active_pane_id = state_fcd.active_pane_id;
+  const state = state_fcd.state_core.get(active_pane_id);
+  const msg = state.get('msg_cmd') + c;
+  return dispatch(updatePaneCmd(state_fcd, active_pane_id, msg));
 }
 
 const receiveInputBS = (state_fcd) => (dispatch) => {
-  const state = state_fcd.state_core;
-  const id = state_fcd.active_pane_id;
-  //const id = state.get('active_pane_id');
-  const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
-  return dispatch(updatePaneCmd(state_fcd, id, msg.slice(0, msg.length - 1)));
+  const active_pane_id = state_fcd.active_pane_id;
+  const state = state_fcd.state_core.get(active_pane_id);
+  const msg = state.get('msg_cmd');
+  return dispatch(updatePaneCmd(state_fcd, active_pane_id, msg.slice(0, msg.length - 1)));
 }
 
 const clearInput = (state_fcd) => (dispatch) => {
-  const state = state_fcd.state_core;
-  const id = state_fcd.active_pane_id;
-  //const id = state.get('active_pane_id');
-  const msg = state.getIn(['arr_pages', id, 'msg_cmd']);
-  return dispatch(updatePaneCmd(state_fcd, id, msg.slice(0, 1)));
+  const active_pane_id = state_fcd.active_pane_id;
+  const state = state_fcd.state_core.get(active_pane_id);
+  const msg = state.get('msg_cmd');
+  return dispatch(updatePaneCmd(state_fcd, active_pane_id, msg.slice(0, 1)));
 }
 
 const updatePaneCmd = (state_fcd, id, msg) => {
   //console.log('updatePaneCmd()!!');
-  const state = state_fcd.state_core;
-  const state_core_new = state.setIn(['arr_pages', id, 'msg_cmd'], msg);
+  const active_pane_id = state_fcd.active_pane_id;
+  const state = state_fcd.state_core.get(active_pane_id);
+  const dir = state.getIn(['dirs', 0]);
+  const state_new = state.withMutations(s => s.set('msg_cmd', msg)
+                                              .setIn(['pages', dir, 'line_cur'], 0));
   const state_fcd_new = Object.assign(
                           {},
                           state_fcd,
-                          { state_core:  state_core_new }
+                          {
+                            state_core: state_fcd.state_core.set(active_pane_id, state_new)
+                          }
                         );
+
+
   return {
     type: 'UPDATE_PANE_CMD',
     state: state_fcd_new
@@ -395,15 +339,50 @@ const updatePaneCmd = (state_fcd, id, msg) => {
 ///* ORG (END) @ 2017.02.26 */
 
 
+/* Before */
+/* ToDo; Need to find better way to set callback only one time.. */
+//let is_initialized = false
+//export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
+//  const state = state_fcd.state_core;
+//
+//  if(is_initialized === false){
+//    ipcRenderer.on('narrow_down_items_cb', (event, ids, msg, input_mode) => {
+//      //console.log('ids: ' + ids);
+//      //console.log('NarrowDownItems() <> ids.length: ' + ids.length);
+//      if(msg.length <= 0){
+//        dispatch(switchInputModeNormalWithClear());
+//      }else{
+//        dispatch({
+//          type: 'END_NARROW_DOWN_ITEMS',
+//          ids: ids,
+//          //msg_cmd: msg,
+//          input_mode: input_mode
+//        });
+//      }
+//    });
+//    is_initialized = true;
+//  }
+//
+//  const item_names = state.getIn(['arr_item_name_lists', id]);
+//  //console.log('item_names.length: ' + item_names.length);
+//
+//  ipcRenderer.send('narrow_down_items', state.getIn(['arr_item_name_lists', id]), id, msg);
+//  //ipcRenderer.send('narrow_down_items', state.get('name_list_left'), id, msg);
+//
+//  return {
+//    type: 'START_NARROW_DOWN_ITEMS'
+//  }
+//}
+
 /* ToDo; Need to find better way to set callback only one time.. */
 let is_initialized = false
-//export const NarrowDownItems = (state, id, msg) => (dispatch) => {
 export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
-  const state = state_fcd.state_core;
+  //const state = state_fcd.state_core;
+  const state = state_fcd.state_core.get(id);
 
   if(is_initialized === false){
     ipcRenderer.on('narrow_down_items_cb', (event, ids, msg, input_mode) => {
-      //console.log('ids: ' + ids);
+      //console.log('NarrowDownItems() <> ids: ' + ids);
       //console.log('NarrowDownItems() <> ids.length: ' + ids.length);
       if(msg.length <= 0){
         dispatch(switchInputModeNormalWithClear());
@@ -411,7 +390,6 @@ export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
         dispatch({
           type: 'END_NARROW_DOWN_ITEMS',
           ids: ids,
-          //msg_cmd: msg,
           input_mode: input_mode
         });
       }
@@ -419,10 +397,11 @@ export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
     is_initialized = true;
   }
 
-  const item_names = state.getIn(['arr_item_name_lists', id]);
-  //console.log('item_names.length: ' + item_names.length);
+  const item_names = state_fcd.arr_item_name_lists.get(id);
+  //console.log('NarrowDownItems <> item_names: ', item_names);
+  //console.log('NarrowDownItems <> item_names.length: ' + item_names.length);
 
-  ipcRenderer.send('narrow_down_items', state.getIn(['arr_item_name_lists', id]), id, msg);
+  ipcRenderer.send('narrow_down_items', item_names, id, msg);
   //ipcRenderer.send('narrow_down_items', state.get('name_list_left'), id, msg);
 
   return {
@@ -447,6 +426,7 @@ export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
 //}
 
 const switchInputModeNormalWithClear = () => {
+  //console.log('switchInputModeNormalWithClear()');
   return {
     type: 'SWITCH_INPUT_MODE_NORMAL_WITH_CLEAR',
     c: ''

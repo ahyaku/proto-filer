@@ -6,7 +6,7 @@ const path = require('path');
 const electron = require('electron');
 const shell = electron.shell;
 
-const spawn = require('child_process').spawn;
+const execFile = require('child_process').execFile;
 const os = require('os');
 //const iconv = require('iconv-lite');
 
@@ -344,10 +344,6 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
 
 
 
-//const cmd = spawn('cmd');
-//const cmd = spawn('wmic', ['logicaldisk', 'get', 'name\\n']);
-//const cmd = spawn('dir');
-
 //let ret = null;
 //console.log('------------------------');
 //console.log(ret);
@@ -356,6 +352,7 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
 electron.ipcMain.on('get_disk_drive_list', (event, arg) => {
   switch( os.platform() ){
     case 'win32':
+      console.log('win32')
       detectDiskDriveWin32(event);
       break;
     case 'aix':
@@ -372,31 +369,27 @@ electron.ipcMain.on('get_disk_drive_list', (event, arg) => {
 
 });
 
+
+
 const detectDiskDriveWin32 = (event) => {
-  let count = 0;
-  const cmd = spawn('cmd');
-
-  cmd.stdout.setEncoding('utf8');
-  cmd.stdout.on('data', function(data){
-    //console.log('count: ' + count);
-    //console.log('stdout??: ' + data);
-
-    if(count === 1){
-      //console.log('stdout!!: ' + data);
-      const arr = data.split('\n');
-      const drive_list = arr.slice(1, arr.length - 2).map((e) => {
-        return e.trim(' ');
-      });
-
-      event.returnValue = drive_list;
+  const child = execFile('wmic', ['logicaldisk', 'get', 'name'], (error, stdout, stderr) => {
+    if (error) {
+        console.error('stderr', stderr);
+        throw error;
     }
+    //console.log('stdout', stdout);
 
-    count++;
+    const arr = stdout.split('\n');
+    const drive_list = arr.slice(1, arr.length - 2).map((e) => {
+      return e.trim(' ');
+    });
+
+    //console.log('drive_list: ' + drive_list);
+
+    event.returnValue = drive_list;
+
 
   });
-  
-  cmd.stdin.write('wmic logicaldisk get name\n')
-  cmd.stdin.end();
 }
 
 

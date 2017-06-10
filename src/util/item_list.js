@@ -74,15 +74,6 @@ export function updateItems(dir_cur){
                     return initAsItem(i, es[i], dir_cur);
                   });
 
-  //const ret = this.withMutations(s => s.set('items', items)
-  //                                     .set('items_match', items));
-
-  //return ret;
-
-  //console.log('updateItems() <> items: ' + items);
-  //console.log('updateItems() <> items.get(0): ' + items.get(0));
-  //const items_new = items.set(0, items.get(0));
-
 
   return im.Map({
            'dir_cur': dir_cur,

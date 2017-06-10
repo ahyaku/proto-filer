@@ -35,77 +35,153 @@ process.env.NODE_ENV = 'production';
 //const pages_left = new ItemListPages().updatePageCur('C:\\msys64');
 //const pages_right = new ItemListPages().updatePageCur('C:\\Go');
 
-const pages_left = updatePageCur(null, 'C:\\msys64', true);
+const state_core_left = updatePageCur(null, 'C:\\msys64', true);
 //const pages_left = updatePageCur(null, 'C:\\tmp\\many_items', true);
-const pages_right = updatePageCur(null, 'C:\\Go', true);
+const state_core_right = updatePageCur(null, 'C:\\Go', true);
 //const pages_left = updatePageCur(null, 'C:\\Go', true);
 //const pages_right = updatePageCur(null, 'C:\\tmp\\many_items', true);
-const arr_pages = im.List.of(pages_left, pages_right);
+//const arr_pages = im.List.of(pages_left, pages_right);
 //console.log('arr_pages: ' + arr_pages);
 
-const dir_cur_left = pages_left.get('dir_cur');
-const dir_cur_right = pages_right.get('dir_cur');
-const im_items_left = pages_left.getIn(['pages', dir_cur_left, 'items_match']);
-const im_items_right = pages_right.getIn(['pages', dir_cur_right, 'items_match']);
-const arr_im_items = im.List.of(im_items_left, im_items_right);
-const items_left = im_items_left.toJS();
-const items_right = im_items_right.toJS();
-const arr_items = [items_left, items_right];
-//const arr_items = im.List.of(items_left, items_right);
+//const dir_cur_left = pages_left.get('dir_cur');
+//const dir_cur_right = pages_right.get('dir_cur');
+//const im_items_left = pages_left.getIn(['pages', dir_cur_left, 'items_match']);
+//const im_items_right = pages_right.getIn(['pages', dir_cur_right, 'items_match']);
 
-//console.log('items_left[2]: ' + items_left[2]['time']);
+//const getItemsByMap = (page) => {
+//  //console.log('getItemsByMap <> id_maps: ', pages.get('id_maps'));
+//  //console.log('getItemsByMap <> id_maps: ', pages.getIn(['id_maps', dir_cur]));
+//  
+//  const items = page.get('id_map').map(
+//                  (e, i) => {
+//                    return page.getIn(['items', e]);
+//                  }
+//                );
+//  return items;
+//}
 
-//const name_list_left = [
-//  'dev',
-//  'etc',
-//  'home',
-//  'mingw32',
-//  'mingw64',
-//  'opt',
-//  'tmp',
-//  'usr',
-//  'var',
-//  'autorebase.bat',
-//  'autorebasebase1st.bat',
-//  'components.xml',
-//  'dir',
-//  'InstallationLog.txt',
-//  'maintenancetool.dat',
-//  'maintenancetool.exe',
-//  'maintenancetool.ini',
-//  'msys2.ico',
-//  'msys2_shell.cmd',
-//  'network.xml',
-//  'test'
-//]
+//const dir_cur_left = state_core_left.getIn(['dirs', 0]);
+//const page_left = state_core_left.getIn(['pages', dir_cur_left]);
+//const im_items_left = getItemsByMap(page_left);
+//const dir_cur_right = state_core_right.getIn(['dirs', 0]);
+//const page_right = state_core_right.getIn(['pages', dir_cur_right]);
+//const im_items_right = getItemsByMap(page_right);
 
-//const name_list_left = [
-//  'autorebase.bat',
-//  'autorebasebase1st.bat'
-//]
+//const arr_im_items = im.List.of(im_items_left, im_items_right);
+//const items_left = im_items_left.toJS();
+//const items_right = im_items_right.toJS();
+//const arr_items = [items_left, items_right];
 
 
+/* Test */
+//{
+//  const idxs_name = im.List(im.Range(0, im_items_left.size));
+//  const idxs_rev = idxs_name.map(
+//                     (e, i) => {
+//                       return idxs_name.size - 1 - i;
+//                     }
+//                   );
+//  const root = im.Map({
+//    'items_base': im_items_left,
+//    'items_rev' : im.Map(),
+//    'idxs_name': idxs_name,
+//    'idxs_rev' : idxs_rev,
+//    'idxs_time': im.List.of(),
+//    'idxs_size': im.List.of(),
+//    'idxs_ext': im.List.of()
+//  });
+//
+//  console.log('Test <> idxs_name: ', root.get('idxs_name'));
+//  const dumy = root.get('idxs_name').map(
+//                 (e, i) => {
+//                   //console.log('i: ' + i + ', e: ' + e);
+//                   return e;
+//                 }
+//               );
+//  
+//  const dumy2 = root.get('idxs_rev').map(
+//                 (e, i) => {
+//                   //console.log('i: ' + i + ', e: ' + e);
+//                   return e;
+//                 }
+//               );
+//  
+//  //console.log('Test <> idxs_name: ', root.getIn(['idxs_name', 0]));
+//  console.log('Test <> dumy ', dumy);
+//  console.log('Test <> dumy.get(5): ' + dumy.get(5));
+//  console.log('Test <> idxs_time: ', root.get('idxs_time'));
+//
+//  console.log('Test <> root.get(items_rev): ', root.get('items_rev'));
+//
+//  const items_rev = root.get('items_base').sort(
+//                      (a, b) => {
+//                        const id_a = a.get('id');
+//                        const id_b = b.get('id');
+//                        if(id_a === id_b){
+//                          return 0;
+//                        }else if(id_a < id_b){
+//                          return 1;
+//                        }else{
+//                          return -1;
+//                        }
+//                      }
+//                    );
+//  console.log('Test <> root.get(items_rev): ', root.get('items_rev'));
+//
+//  const items_rev2 = root.get('idxs_rev').map(
+//                       (e, i) => {
+//                         return im_items_left.get(e);
+//                       }
+//                     );
+//
+//
+//  //const dumy3 = root.get('items_base').map(
+//  //               (e, i) => {
+//  //                 console.log('i: ' + i + ', e.get(name): ' + e.get('name'));
+//  //                 return e;
+//  //               }
+//  //             );
+//  
+//  //const dumy4 = items_rev.map(
+//  //               (e, i) => {
+//  //                 console.log('i: ' + i + ', e.get(name): ' + e.get('name'));
+//  //                 return e;
+//  //               }
+//  //             );
+//  
+//  const dumy5 = items_rev2.map(
+//                 (e, i) => {
+//                   console.log('i: ' + i + ', e.get(name): ' + e.get('name'));
+//                   return e;
+//                 }
+//               );
+//  
+//}
 
 
-const state_core = im.Map({
-  arr_pages: arr_pages,
-  //active_pane_id: 0,
-  action_type: 'NONE',
-  input_mode: KEY_INPUT_MODE.NORMAL,
-  msg_cmd: '',
-  arr_item_name_lists: im.List.of(),
-  //arr_line_cur: im.List.of(),
-  //arr_line_cur: {0: 84, 1: 0},
-  //arr_line_cur: [0, 0],
-  arr_im_items: arr_im_items,
-  //arr_items: arr_items
-});
+//const state_core = im.Map({
+//  arr_pages: arr_pages,
+//  //active_pane_id: 0,
+//  action_type: 'NONE',
+//  input_mode: KEY_INPUT_MODE.NORMAL,
+//  msg_cmd: '',
+//  arr_item_name_lists: im.List.of(),
+//  //arr_line_cur: im.List.of(),
+//  //arr_line_cur: {0: 84, 1: 0},
+//  //arr_line_cur: [0, 0],
+//  arr_im_items: arr_im_items,
+//  //arr_items: arr_items
+//});
+
+const state_core = im.List.of(state_core_left, state_core_right);
+//console.log('index <> state_core: ', state_core);
 
 const state_init = {
   state_core: state_core,
-  arr_line_cur: [0, 0],
-  arr_items: arr_items,
-  active_pane_id: 0
+  arr_item_name_lists: im.List.of(),
+  active_pane_id: 0,
+  input_mode: KEY_INPUT_MODE.NORMAL,
+  msg_cmd: ''
 };
 
 //const state_init = im.Map({
@@ -142,19 +218,19 @@ const state_init = {
 //console.log('arr_item_name_lists[0]: ' + state_tmp01.getIn(['arr_item_name_lists', 0]));
 //console.log('arr_item_name_lists[1]: ' + state_tmp01.getIn(['arr_item_name_lists', 1]));
 
-const item_name_list_left = updateItemNameList(state_init, 0);
-const item_name_list_right = updateItemNameList(state_init, 1);
+const item_name_list_left = updateItemNameList(state_core_left);
+const item_name_list_right = updateItemNameList(state_core_right);
 
 //console.log('index <> item_name_list_left: ', item_name_list_left);
 
-const state_core2 = state_init.state_core.withMutations((s) => s.setIn(['arr_item_name_lists', 0], item_name_list_left)
-                                                                .setIn(['arr_item_name_lists', 1], item_name_list_right));
+const arr_item_name_lists_new = state_init.arr_item_name_lists.withMutations((s) => s.set(0, item_name_list_left)
+                                                                                     .set(1, item_name_list_right));
 
 
 const state_init2 = Object.assign(
                       {},
                       state_init,
-                      { state_core: state_core2 }
+                      { arr_item_name_lists: arr_item_name_lists_new }
                     );
 
 //const items = state_init2.arr_items[0];
@@ -199,8 +275,10 @@ function mapKeydownToAction(getState, e){
 
     //const state = getState();
 
-    switch(state.get('input_mode')){
+    //switch(state.get('input_mode')){
+    switch(state_fcd.input_mode){
       case KEY_INPUT_MODE.NORMAL:
+        //console.log('HERE??');
         return dispatch(checkKeyNormal(state_fcd, e));
         //return dispatch(checkKeyNormal(state, e));
       case KEY_INPUT_MODE.SEARCH:
@@ -259,7 +337,7 @@ const style = {
 
 render(
   <Provider store={store}>
-    <App style={style} store={store}/>
+    <App style={style} />
   </Provider>,
   document.getElementById('root')
 );
