@@ -397,7 +397,9 @@ export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
     is_initialized = true;
   }
 
-  const item_names = state_fcd.arr_item_name_lists.get(id);
+  //const item_names = state_fcd.arr_item_name_lists.get(id);
+
+  const item_names = state.get('item_names');
   //console.log('NarrowDownItems <> item_names: ', item_names);
   //console.log('NarrowDownItems <> item_names.length: ' + item_names.length);
 

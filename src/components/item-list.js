@@ -12,7 +12,9 @@ import ViewItem from './view-item';
 import PaneViewItem from '../containers/pane-view-item';
 
 const LIST_MAX = 10000;
+const FONT_SIZE = '13px';
 const ROW_HEIGHT = 16.0;
+//const ROW_HEIGHT = 17.0;
 //const ROW_HEIGHT = 20.0;
 const OFFSET_DELTA = 5;
 //const OFFSET_DELTA = 0;
@@ -22,8 +24,10 @@ class ItemList extends React.Component {
   constructor(props){
     super(props);
     this._style_list = {
-      background: '#333333',
-      color: '#FFFFFF',
+      //background: '#333333',
+      //color: '#FFFFFF',
+      background: '#333333FF',
+      color: '#FFFFFFFF',
       display: 'flex',
       flex: 'auto',
       flexDirection: 'column',
@@ -132,14 +136,24 @@ class ItemList extends React.Component {
       {},
       style,
       {
-        color: '#FFFFFF',
-        background: '#333333',
+        //color: '#FFFFFF',
+        //background: '#333333FF',
+        color: 'rgba(255,255,255,1)',
+        background: 'rgba(51,51,51,1)',
+        //textDecoration: 'underline solid 1px red',
+        //textDecoration: 'underline',
+        //textDecorationColor: 'red',
+        //textDecorationColor: '#FF0000FF',
+
+        //color: '#FFFFFF',
+        //background: '#333333',
+
         //textDecoration: 'underline #FFFFFF',
         //outline: 'solid 1px #FF0000',
         //verticalAlign: 'bottom',
         //borderCollapse: 'separate',
         boxSizing: 'border-box',
-        fontSize: '14px',
+        fontSize: FONT_SIZE,
         verticalAlign: 'top'
       }
     )
@@ -149,27 +163,41 @@ class ItemList extends React.Component {
     if(index == parent.props.line_cur){
       //console.log('key: ' + key + ', index: ' + index + ', p_cpos: ' + parent.props.line_cur + ', line_cur: ' + this.props.line_cur);
       //console.log('pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
+      const zindex = parent.props.im_items.size;
       style_cell = Object.assign(
                      {},
                      style_cell_base,
                      {
-                        borderTop: 'solid 1px #333333',
-                        borderLeft: 'solid 1px #333333',
-                        borderRight: 'solid 1px #333333',
-                        borderBottom: 'solid 2px #333333',
-                        zIndex: '1',
+                        //borderTop: 'solid 1px #333333',
+                        //borderLeft: 'solid 1px #333333',
+                        //borderRight: 'solid 1px #333333',
+                        //borderBottom: 'solid 2px #333333',
+                        borderTop:    'solid 1px rgba(51,51,51,1)',
+                        borderLeft:   'solid 1px rgba(51,51,51,1)',
+                        borderRight:  'solid 1px rgba(51,51,51,1)',
+                        borderBottom: 'solid 1px rgba(51,51,51,1)',
+                        opacity: 1,
+                        //zIndex: '1',
+                        zIndex: zindex,
                      }
                    );
     }else{
+      const zindex = parent.props.im_items.size - index - 1;
       style_cell = Object.assign(
                      {},
                      style_cell_base,
                      {
-                        borderTop: 'solid 1px #333333',
-                        borderLeft: 'solid 1px #333333',
-                        borderRight: 'solid 1px #333333',
-                        borderBottom: 'solid 2px #333333',
-                        zIndex: '0',
+                        //borderTop: 'solid 1px #333333',
+                        //borderLeft: 'solid 1px #333333',
+                        //borderRight: 'solid 1px #333333',
+                        //borderBottom: 'solid 2px #333333',
+                        borderTop:    'solid 1px rgba(51,51,51,1)',
+                        borderLeft:   'solid 1px rgba(51,51,51,1)',
+                        borderRight:  'solid 1px rgba(51,51,51,1)',
+                        borderBottom: 'solid 1px rgba(51,51,51,1)',
+                        opacity: 1,
+                        //zIndex: '0',
+                        zIndex: index,
                      }
                    );
     }

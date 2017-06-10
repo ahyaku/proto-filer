@@ -32,7 +32,7 @@ class ViewItem extends React.Component {
     super(props);
 
     this._style_base = {
-      zIndex: '0',
+      //zIndex: '0',
       borderTop: 'none',
       borderLeft: 'none',
       borderRight: 'none',
@@ -132,11 +132,12 @@ class ViewItem extends React.Component {
                          );
 
     if(this.props.c === line_cur){
-      style = Object.assign({}, style, {zIndex: '1'});
+      //style = Object.assign({}, style, {zIndex: '1'});
 
       /* ToDo: Need to judge the currently acive pane. */
       if(id === active_pane_id){
-        style['borderBottom'] = 'solid 1px #00FF00';
+        //style['borderBottom'] = 'solid 1px #00FF00';
+        style['borderBottom'] = 'solid 1px rgba(0,255,0,1)';
       }
     }
 

@@ -59,24 +59,5 @@ function itemList(state_fcd, action){
   return state_fcd_ret;
 }
 
-//function itemList(state, action){
-//  let state_ret;
-//  switch(state.get('input_mode')){
-//    case KEY_INPUT_MODE.NORMAL:
-//      state_ret = CombinedItemList(state, action);
-//      state_ret = CombinedCmd(state_ret, action);
-//      break;
-//    case KEY_INPUT_MODE.SEARCH:
-//      state_ret = CombinedCmd(state, action);
-//      state_ret = CombinedItemList(state_ret, action);
-//      break;
-//    default:
-//      /* Do Nothing.. */
-//      break;
-//  }
-//
-//  return state_ret;
-//}
-
 
 export default itemList;

@@ -135,6 +135,7 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
     return im.Map({
              'dirs': im.List.of(dir_cur),
              'pages': im.Map({[dir_cur]: page}),
+             'item_names': updateItemNames(items),
              'msg_cmd': ''
            });
 
@@ -146,26 +147,27 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
       const dirs_new = dirs.withMutations(s => s.delete(idx_dir)
                                                 .unshift(dir_cur));
 
+      const page = state.getIn(['pages', dirs_new.get(0)]);
+      const items = page.get('items');
+
+      let page_new;
       if(line_cur_zero === true){
-        //return pages_fcd_src.withMutations(s => s.set('dir_cur', dir_cur)
-        //                                         .setIn(['line_cur', dir_cur], 0));
-        const page = state.getIn(['pages', dirs_new[0]]);
-        return state.withMutations(s => s.set('dirs', dirs_new)
-                                                 .setIn(['pages', dir_cur], 0));
+        page_new = page.withMutations(s => s.set('line_cur', 0)
+                                            .set('id_map', im.List(im.Range(0, items.size))));
       }else{
-        //return pages_fcd_src.set('dir_cur', dir_cur);
-        return state.set('dirs', dirs_new);
+        page_new = page.set('id_map', im.List(im.Range(0, items.size)));
+
       }
+
+      const item_names = updateItemNames(items);
+      return state.withMutations(s => s.set('dirs', dirs_new)
+                                       .setIn(['pages', dir_cur], page_new)
+                                       .set('item_names', item_names));
 
     }else{
 
       const items = _updateItems(dir_cur);
       const dirs_new = dirs.unshift(dir_cur);
-
-      //return pages_fcd_src.withMutations(s => s.set('dir_cur', dir_cur)
-      //                                         .setIn(['items', dir_cur], items)
-      //                                         .setIn(['id_maps', dir_cur], im.List(im.Range(0, items.size))));
-
 
       const page = im.Map({
                      'items': items,
@@ -174,8 +176,11 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
                      'selected_items': im.List.of()
                    });
 
+      const item_names = updateItemNames(items);
+
       return state.withMutations(s => s.set('dirs', dirs_new)
-                                       .setIn(['pages', dir_cur], page));
+                                       .setIn(['pages', dir_cur], page)
+                                       .set('item_names', item_names));
 
     }
 
@@ -292,3 +297,15 @@ const _updateItems = (dir_cur) => {
 
   return items;
 }
+
+const updateItemNames = (items) => {
+  let array = [];
+  //console.log('items: ' + items.get(3));
+  for(let i=0; i<items.size; i++){
+    array.push(items.getIn([i, 'name']));
+    //console.log('array[' + i + ']: ' + array[i]);
+  }
+  return array;
+}
+
+

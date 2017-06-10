@@ -50,14 +50,13 @@ function CombinedItemList(state_fcd, action){
         const dir = state_new.getIn(['dirs', 0]);
         const im_items = state_new.getIn(['pages', dir, 'items']);
         //const item_name_list = updateItemNameListCore(dir_cur, im_items);
-        const item_name_list = updateItemNameListCore(im_items);
+        //const item_name_list = updateItemNameListCore(im_items);
 
         const ret = Object.assign(
                       {},
                       state_fcd,
                       { 
                         state_core: state_fcd.state_core.set(idx, state_new),
-                        arr_item_name_lists: state_fcd.arr_item_name_lists.set(idx, item_name_list)
                       }
                     );
 
@@ -72,29 +71,15 @@ function CombinedItemList(state_fcd, action){
         const page = state_new.getIn(['pages', dir]);
         const im_items = page.get('items');
 
-        const item_name_list = updateItemNameListCore(im_items);
+        //const item_name_list = updateItemNameListCore(im_items);
 
         const ret = Object.assign(
                       {},
                       state_fcd,
                       { 
                         state_core: state_fcd.state_core.set(idx, state_new),
-                        arr_item_name_lists: state_fcd.arr_item_name_lists.set(idx, item_name_list)
                       }
                     );
-
-        //const arr_line_cur_prev = state.get('arr_line_cur');
-        //const arr_line_cur = [
-        //  ...arr_line_cur_prev.slice(0, idx),
-        //  line_cur,
-        //  ...arr_line_cur_prev.slice(idx+1),
-        //];
-        //
-        //const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
-        //                                        .setIn(['arr_item_name_lists', idx], item_name_list)
-        //                                        .set('arr_line_cur', arr_line_cur)
-        //                                        .setIn(['arr_im_items', idx], im_items)
-        //                                        .setIn(['arr_items', idx], items));
 
         return ret;
       }
@@ -111,31 +96,16 @@ function CombinedItemList(state_fcd, action){
         const page = state_new.getIn(['pages', dir]);
         const im_items = page.get('items');
 
-        const item_name_list = updateItemNameListCore(im_items);
+        //const item_name_list = updateItemNameListCore(im_items);
 
         const ret = Object.assign(
                       {},
                       state_fcd,
                       { 
                         state_core: state_fcd.state_core.set(idx, state_new),
-                        arr_item_name_lists: state_fcd.arr_item_name_lists.set(idx, item_name_list)
+                        //arr_item_name_lists: state_fcd.arr_item_name_lists.set(idx, item_name_list)
                       }
                     );
-
-
-
-        //const arr_line_cur_prev = state.get('arr_line_cur');
-        //const arr_line_cur = [
-        //  ...arr_line_cur_prev.slice(0, idx),
-        //  line_cur,
-        //  ...arr_line_cur_prev.slice(idx+1),
-        //];
-        //
-        //const ret = state.withMutations((s) => s.setIn(['arr_pages', idx], pages)
-        //                                        .setIn(['arr_item_name_lists', idx], item_name_list)
-        //                                        .set('arr_line_cur', arr_line_cur)
-        //                                        .setIn(['arr_im_items', idx], im_items)
-        //                                        .setIn(['arr_items', idx], items));
 
         return ret;
       }
@@ -199,14 +169,13 @@ function CombinedItemList(state_fcd, action){
         //console.log('SYNC_DIR <> page.getIn(items, 1, name): ' + page.getIn(['items', 1, 'name']));
         const im_items = page.get('items');
 
-        const item_name_list = updateItemNameListCore(im_items);
+        //const item_name_list = updateItemNameListCore(im_items);
 
         const ret = Object.assign(
                       {},
                       state_fcd,
                       { 
                         state_core: state_fcd.state_core.set(idx_cur, state_new),
-                        arr_item_name_lists: state_fcd.arr_item_name_lists.set(idx_cur, item_name_list)
                       }
                     );
 
@@ -229,14 +198,13 @@ function CombinedItemList(state_fcd, action){
         const page = state_new.getIn(['pages', dir]);
         const im_items = page.get('items');
 
-        const item_name_list = updateItemNameListCore(im_items);
+        //const item_name_list = updateItemNameListCore(im_items);
 
         const ret = Object.assign(
                       {},
                       state_fcd,
                       { 
                         state_core: state_fcd.state_core.set(idx_other, state_new),
-                        arr_item_name_lists: state_fcd.arr_item_name_lists.set(idx_other, item_name_list)
                       }
                     );
 
@@ -419,27 +387,27 @@ function syncDir(state_mdf, state_ref){
 //  return array;
 //}
 
-export const updateItemNameList = (state_core) => {
-  console.log('combined-item-list <> updateItemNameList()');
-  //const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-  const dir_cur = state_core.getIn(['dirs', 0]);
-  const page = state_core.getIn(['pages', dir_cur]);
-  //const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
-  //const items = state.getIn(['arr_pages', id, 'items', dir_cur]);
-  const items = page.get('items');
-
-  return updateItemNameListCore(items);
-}
-
-const updateItemNameListCore = (items) => {
-  let array = [];
-  //console.log('items: ' + items.get(3));
-  for(let i=0; i<items.size; i++){
-    array.push(items.getIn([i, 'name']));
-    //console.log('array[' + i + ']: ' + array[i]);
-  }
-  return array;
-}
+//export const updateItemNameList = (state_core) => {
+//  console.log('combined-item-list <> updateItemNameList()');
+//  //const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
+//  const dir_cur = state_core.getIn(['dirs', 0]);
+//  const page = state_core.getIn(['pages', dir_cur]);
+//  //const items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
+//  //const items = state.getIn(['arr_pages', id, 'items', dir_cur]);
+//  const items = page.get('items');
+//
+//  return updateItemNameListCore(items);
+//}
+//
+//const updateItemNameListCore = (items) => {
+//  let array = [];
+//  //console.log('items: ' + items.get(3));
+//  for(let i=0; i<items.size; i++){
+//    array.push(items.getIn([i, 'name']));
+//    //console.log('array[' + i + ']: ' + array[i]);
+//  }
+//  return array;
+//}
 
 //const _getItemsWithMap = (pages) => {
 //  const dir_cur = pages.get('dir_cur');
