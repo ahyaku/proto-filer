@@ -72,12 +72,17 @@ class ViewItem extends React.Component {
       this._arr_pos[i] = [];
     }
 
-    this.cbGetItem = this.cbGetItem.bind(this);
+    this._cbGetItem = this._cbGetItem.bind(this);
+    this._cbGetIsSelected = this._cbGetIsSelected.bind(this);
   }
 
-  cbGetItem(items, index){
-    //console.log('cbGetItem <> items.size: ' + items.size + ', dir_cur: ' + items.get('dir_cur'));
+  _cbGetItem(items, index){
+    //console.log('_cbGetItem <> items.size: ' + items.size + ', dir_cur: ' + items.get('dir_cur'));
     return items.get(index);
+  }
+
+  _cbGetIsSelected(is_selected, index){
+    return is_selected.get(index);
   }
 
   render(){
@@ -105,7 +110,7 @@ class ViewItem extends React.Component {
     //console.log('rener() <> line_cur: ' + line_cur);
     const id = this.props.id;
     const active_pane_id = this.props.active_pane_id;
-    const item = this.cbGetItem(items, index);
+    const item = this._cbGetItem(items, index);
 
     //if(items.size <= 0){
     //  return (
@@ -119,7 +124,14 @@ class ViewItem extends React.Component {
     //style = this._styles[item.kind];
     //style = this._styles[item.get('kind')];
 
-    const background = item.get('selected') === true
+    //const background = item.get('selected') === true
+    //                     ? '#0000FF'
+    //                     : '#333333';
+
+    //console.log('view-item <> is_selected: ', this.is_selected);
+
+
+    const background = this._cbGetIsSelected(this.props.is_selected, index) === true
                          ? '#0000FF'
                          : '#333333';
     style = Object.assign(
@@ -182,15 +194,19 @@ class ViewItem extends React.Component {
         //console.log('name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
       return true;
     }else{
-      const item = this.cbGetItem(this.props.items, id);
-      const item_next = this.cbGetItem(nextProps.items, id);
+      //const item = this._cbGetItem(this.props.items, id);
+      //const item_next = this._cbGetItem(nextProps.items, id);
+
+      const is_selected = this._cbGetIsSelected(this.props.is_selected, id);
+      const is_selected_next = this._cbGetIsSelected(nextProps.is_selected, id);
 
       /* react-virtualized skips re-rendering of items when cursor moves
        * from the last item to the first few items with 'toggle-down' (for performance?) 
        * This causes the issue that 'selected' attribute is changed but item background color is not updated.
        * Following if case is necessary to avoid this issue.
        * */
-      if( item.get('selected') !== item_next.get('selected')){
+      //if( item.get('selected') !== item_next.get('selected')){
+      if( is_selected !== is_selected_next ){
         return true;
       }else{
         return false;

@@ -82,6 +82,8 @@ class ItemList extends React.Component {
     }
 
     const im_items = this._getItemsByMap(page);
+    const is_selected = this._getIsSelectedByMap(page);
+    //console.log('item-list <> is_selected: ', is_selected);
 
 //    if(id === active_pane_id){
 //      console.log('item-list <> ', page.getIn(['items', dir_cur, 1, 'name']));
@@ -107,6 +109,7 @@ class ItemList extends React.Component {
             scrollToIndex: this.props.line_cur/* this.props.line_cur */,
             line_cur: this.props.line_cur/* this.props.line_cur */,
             im_items: im_items,
+            is_selected: is_selected,
             id: id,
             active_pane_id: active_pane_id,
             dir_cur: dir_cur,
@@ -207,6 +210,8 @@ class ItemList extends React.Component {
     //console.log('items: ', parent.props.items[index]);
     //console.log('items: ', parent.props.items.get(index));
 
+    //console.log('item-list _rowRenderer <> is_selected: ', parent.props.is_selected);
+
     return (
       <ViewItem 
         style={style_cell}
@@ -214,6 +219,7 @@ class ItemList extends React.Component {
         c={index}
         id={this.props.id}
         items={parent.props.im_items}
+        is_selected={parent.props.is_selected}
         dir_cur={parent.props.dir_cur}
         line_cur={parent.props.line_cur}
         active_pane_id={parent.props.active_pane_id}
@@ -239,6 +245,22 @@ class ItemList extends React.Component {
     //console.log('getItemsByMap <> items.size: ', items.size);
 
     return items;
+  }
+
+  _getIsSelectedByMap(page){
+    //console.log('getItemsByMap <> id_map: ', page.get('id_map'));
+    //console.log('getItemsByMap <> items: ', page.get('items'));
+    
+    const is_selected = page.get('id_map').map(
+                          (e, i) => {
+                            //console.log('getItemsByMap <> items[' + i + '].name: ' + page.getIn(['items', e, 'name']));
+                            return page.getIn(['is_selected', e]);
+                          }
+                        );
+
+    //console.log('getItemsByMap <> items.size: ', items.size);
+
+    return is_selected;
   }
 
 

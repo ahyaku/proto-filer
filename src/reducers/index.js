@@ -269,13 +269,13 @@ const toggleItemSelect = (state) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
   const line_cur = page.get('line_cur');
-  const items = page.get('items');
   const id_map = page.get('id_map');
   const id = id_map.get(line_cur);
-  const item = items.get(id);
-  const item_new = item.set('selected', !item.get('selected'));
 
-  return state.setIn(['pages', dir, 'items', id], item_new);
+  const is_selected = page.get('is_selected');
+  const is_selected_new = is_selected.set(id, !is_selected.get(id));
+
+  return state.setIn(['pages', dir, 'is_selected'], is_selected_new);
 }
 
 const syncDirFcd = (state_fcd, idx_mdf, idx_ref) => {
@@ -317,11 +317,16 @@ const syncDir = (state_mdf, state_ref) => {
     dirs_new = dirs.unshift(dir_ref);
   }
 
+  const is_selected = im.List(im.Range(0, items_ref.size))
+                        .map((e, i) => {
+                          return false;
+                        });
+
   const page_mdf_new = im.Map({
                                'items': items_ref,
                                'line_cur': 0,
                                'id_map': im.List(im.Range(0, items_ref.size)),
-                               'selected_items': im.List.of()
+                               'is_selected': is_selected
                              });
 
   return state_mdf.withMutations(s => s.set('dirs', dirs_new)
