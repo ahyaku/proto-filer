@@ -25,4 +25,15 @@ export const KEY_INPUT_MODE = {
   SEARCH : 1,
 };
 
+export const SORT_TYPE = {
+  NAME_ASC : 0,
+  EXT_ASC  : 1,
+  SIZE_ASC : 2,
+  TIME_ASC : 3,
+  NAME_DES : 4,
+  EXT_DES  : 5,
+  SIZE_DES : 6,
+  TIME_DES : 7
+};
+
 //export default ITEM_TYPE_KIND;

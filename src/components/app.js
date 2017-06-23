@@ -3,6 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import fs from 'fs';
+import { ipcRenderer } from 'electron';
+import { connect } from 'react-redux';
 
 import PanePathCur from '../containers/pane-path-cur';
 import PaneCmd from '../containers/pane-cmd';
@@ -174,47 +176,115 @@ class CmdAndItemList extends React.Component {
 //  );
 //}
 
-const App = () => {
-  const style = {
-    display: 'flex',
-    flex: 'auto',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    //alignItems: 'stretch',
-    //alignContent: 'stretch',
-    background: '#333333',
-    color: '#FFFFFF',
-    width: '100%',
-    height: '100%',
-    boxSizing: 'border-box'
-  };
+class App extends React.Component {
+  constructor(props){
+    super(props);
+    this.cbSortItems = this.cbSortItems.bind(this);
+  }
 
-  const style_path = {
-    borderTop: 'solid 1px #FFFFFF',
-    borderLeft: 'solid 1px #FFFFFF',
-    borderRight: 'solid 1px #FFFFFF',
-    boxSizing: 'border-box'
-  };
+  render(){
+    const style = {
+      display: 'flex',
+      flex: 'auto',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      //alignItems: 'stretch',
+      //alignContent: 'stretch',
+      background: '#333333',
+      color: '#FFFFFF',
+      width: '100%',
+      height: '100%',
+      boxSizing: 'border-box'
+    };
 
-  /* ORG */
-  return (
-    <div style={style}>
-      <div style={style_path}>
-        <PanePathCur id={0} />
-        <PanePathCur id={1} />
+    const style_path = {
+      borderTop: 'solid 1px #FFFFFF',
+      borderLeft: 'solid 1px #FFFFFF',
+      borderRight: 'solid 1px #FFFFFF',
+      boxSizing: 'border-box'
+    };
+
+    /* ORG */
+    return (
+      <div style={style}>
+        <div style={style_path}>
+          <PanePathCur id={0} />
+          <PanePathCur id={1} />
+        </div>
+        <Body />
+        <Footer />
       </div>
-      <Body />
-      <Footer />
-    </div>
-  );
+    );
 
-  //return (
-  //  <div style={style}>
-  //    <HeaderTest />
-  //    <BodyTest />
-  //    <FooterTest />
-  //  </div>
-  //);
+    //return (
+    //  <div style={style}>
+    //    <HeaderTest />
+    //    <BodyTest />
+    //    <FooterTest />
+    //  </div>
+    //);
+
+  }
+
+  componentDidMount(){
+    ipcRenderer.on('sortItems', this.cbSortItems);
+  }
+
+  componentWillUnmount(){
+    ipcRenderer.removeListener('sortItems', this.cbSortItems);
+  }
+
+  cbSortItems(event, sort_type){
+    //console.log('cbSortItems <> sort_type: ' + sort_type);
+    this.props.dispatch({
+      type: 'SORT_ITEM_LIST',
+      sort_type: sort_type
+    });
+  }
+
 }
 
-export default App;
+//const App = () => {
+//  const style = {
+//    display: 'flex',
+//    flex: 'auto',
+//    flexDirection: 'column',
+//    justifyContent: 'flex-start',
+//    //alignItems: 'stretch',
+//    //alignContent: 'stretch',
+//    background: '#333333',
+//    color: '#FFFFFF',
+//    width: '100%',
+//    height: '100%',
+//    boxSizing: 'border-box'
+//  };
+//
+//  const style_path = {
+//    borderTop: 'solid 1px #FFFFFF',
+//    borderLeft: 'solid 1px #FFFFFF',
+//    borderRight: 'solid 1px #FFFFFF',
+//    boxSizing: 'border-box'
+//  };
+//
+//  /* ORG */
+//  return (
+//    <div style={style}>
+//      <div style={style_path}>
+//        <PanePathCur id={0} />
+//        <PanePathCur id={1} />
+//      </div>
+//      <Body />
+//      <Footer />
+//    </div>
+//  );
+//
+//  //return (
+//  //  <div style={style}>
+//  //    <HeaderTest />
+//  //    <BodyTest />
+//  //    <FooterTest />
+//  //  </div>
+//  //);
+//}
+
+export default connect()(App);

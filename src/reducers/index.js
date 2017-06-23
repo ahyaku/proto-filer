@@ -4,7 +4,7 @@ import fs from 'fs';
 import im from 'immutable';
 import { ipcRenderer } from 'electron'
 import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex } from '../util/item_list_pages';
-import { KEY_INPUT_MODE, ITEM_TYPE_KIND } from '../util/item_type';
+import { KEY_INPUT_MODE, ITEM_TYPE_KIND, SORT_TYPE } from '../util/item_type';
 
 function rootReducer(state_fcd, action){
   //console.log('reducer <> state_fcd.input_mode: ', state_fcd.input_mode);
@@ -225,6 +225,26 @@ function rootReducer(state_fcd, action){
                  }
                );
       }
+    case 'DISP_POPUP_FOR_SORT_ITEM_LIST':
+      {
+        dispPopUp('sort', null);
+        return state_fcd;
+      }
+    case 'SORT_ITEM_LIST':
+      {
+        //const dir = state.getIn(['dirs', 0]);
+        //const state_new = state.withMutations(s => s.set('msg_cmd', action.msg_cmd)
+        //                                            .setIn(['pages', dir, 'line_cur'], 0));
+
+        const state_new = sortItemList(state, action.sort_type);
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   state_core: state_fcd.state_core.set(id, state_new)
+                 }
+               );
+      }
     case 'TEST_SEND_MSG':
       console.log('TEST_SEND_MSG');
       return state_fcd;
@@ -234,6 +254,44 @@ function rootReducer(state_fcd, action){
     default:
       return state_fcd;
   }
+
+}
+
+const sortItemList = (state, sort_type) => {
+  const dir = state.getIn(['dirs', 0]);
+  const page = state.getIn(['pages', dir]);
+  const id_map = page.get('id_map');
+  const items = page.get('items');
+  let id_map_new;
+
+  //console.log('Before <> id_map: ' + id_map);
+  switch(sort_type){
+    //case 'name_asc':
+    case SORT_TYPE.NAME_ASC:
+      id_map_new = sortByName(items, id_map, true);
+      break;
+    //case 'name_des':
+    case SORT_TYPE.NAME_DES:
+      id_map_new = sortByName(items, id_map, false);
+      break;
+    default:
+      /* Do Nothing.. */
+      break;
+  }
+  //console.log('After <> id_map: ' + id_map_new);
+
+  return state.setIn(['pages', dir, 'id_map'], id_map_new);
+}
+
+const sortByName = (items, id_map, is_asc) => {
+  const coef = is_asc === true
+               ? 1
+               : -1;
+
+  return id_map.sort(
+    (a, b) => {
+      return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
+    });
 
 }
 

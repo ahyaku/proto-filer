@@ -20,7 +20,7 @@ export const _checkKeyNormal = (state_fcd, e) => {
   //                        pane_left.is_focused,
   //                        pane_right.is_focused));
 
-  //console.log('checkKeyNormal <> e.key: ' + e.key);
+  //console.log('checkKeyNormal <> e.key: ' + e.key + ', e.keyCode: ' + e.keyCode + ', shift: ' + event.shiftKey);
 
   switch(e.key){
     case 'j': /* 'j' */
@@ -113,7 +113,12 @@ export const _checkKeyNormal = (state_fcd, e) => {
           key: e.key
         };
       }
-    case 's':
+    case 's': /* 's' */
+    case 'S': /* 'S' */
+      event.preventDefault();
+      return {
+        type: 'DISP_POPUP_FOR_SORT_ITEM_LIST'
+      }
     case 'e':
       return {
         type: 'DEBUG_COUNT_END'

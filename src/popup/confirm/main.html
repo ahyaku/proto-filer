@@ -3,18 +3,18 @@
   <head>
     <meta charset="UTF-8">
     <title>Confirmation</title>
-    <link rel="stylesheet" type="text/css" href="./confirm.css">
+    <link rel="stylesheet" type="text/css" href="./main.css">
   </head>
   <body id='window'>
     <div id="main">
-      <div class="item" id="message">
+      <div class="item" id="msg_body">
       </div>
-      <div class="item">
-        (Y)es / (N)o
+      <div class="item" id="yesno">
       </div>
     </div>
   </body>
   <script>
-    require('./confirm.js')
+    require('babel-register')
+    require('./main.js')
   </script>
 </html>

@@ -22,29 +22,13 @@ process.env.NODE_ENV = 'production';
 let mainWindow
 
 let confWindow
+let sortWindow
 
-let g_mode;
 let g_items_selected
 let g_dir_cur;
 
 function createWindow () {
   console.log(process.versions);
-  {
-    //let path = fs.realpathSync('C:\\');
-    //let items = fs.readdirSync(path);
-    //for(let e of items){
-    //  console.log(util.format('[%s, %s]', e, e.ext));
-    //}
-
-    //try{ 
-    //  /* This cause error */
-    //  val = fs.statSync('C:\\hiberfil.sys').isDirectory();
-    //  console.log(val);
-    //}catch(e){
-    //  console.log('catch: ' + e);
-    //}
-  }
-
   const path_react_devtool = app.getPath('userData') + '\\extensions\\fmkadmapgofadopljbjfkapdkoienihi';
   console.log('path_react_devtool: ' + path_react_devtool);
   BrowserWindow.addDevToolsExtension(path_react_devtool);
@@ -71,19 +55,48 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
-
-    //if(confWindow != null){
-    //  confWindow.close();
-    //  confWindow = null;
-    //}
   })
   console.log(webContents);
 
-  {
-    g_mode = null;
-  }
+
+  confWindow = createPopupWindow('quit', 320, 240);
+  confWindow.hide();
+
+  sortWindow = createPopupWindow('sort', 200, 240);
+  sortWindow.hide();
 
 }
+
+function createPopupWindow(ptype, width, height){
+  let pwindow;
+  console.log('popup');
+  pwindow = new BrowserWindow({parent: mainWindow,
+                                  modal: true, 
+                                  width: width,
+                                  height: height,
+                                  resizable: true,
+                                  minimizable: false,
+                                  frame: true});
+  pwindow.setMenu(null);
+  switch(ptype){
+    case 'quit':
+      pwindow.loadURL(`file://${__dirname}/src/popup/confirm/main.html`);
+      break;
+    case 'sort':
+      pwindow.loadURL(`file://${__dirname}/src/popup/sort/main.html`);
+      break;
+  }
+
+  //pwindow.webContents.openDevTools();
+
+  pwindow.on('closed', function() {
+    //console.log('closed!!!');
+    pwindow = null;
+  });
+
+  return pwindow;
+}
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -132,12 +145,6 @@ electron.ipcMain.on('fs.readdirSync', (event, arg) => {
 
 electron.ipcMain.on('fs.isDirectory', (event, arg) => {
   //console.log(arg);
-  //try{
-  //  event.returnValue = fs.statSync(arg).isDirectory();
-  //}catch(e){
-  //  console.log('stat catch: ' + e);
-  //  event.returnValue = false;
-  //}
   try{
     const stat = fs.statSync(arg);
     event.returnValue = {is_dir: stat.isDirectory(),
@@ -157,7 +164,7 @@ electron.ipcMain.on('copy', (event, item_dst, item_src) => {
   console.log('HERE!!!');
   console.log(item_src);
   console.log(item_dst);
-  //event.returnValue = null;
+
   try{
     event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
   }catch(e){
@@ -177,36 +184,9 @@ electron.ipcMain.on('delete', (event) => {
   event.returnValue = true;
 });
 
-//electron.ipcMain.on('popup', (event, mode, question) => {
 electron.ipcMain.on('popup', (event, mode, params) => {
-//electron.ipcMain.on('popup', (event, args) => {
-  console.log('popup');
-  //mainWindow.setFocusable(false);
-  //mainWindow.setIgnoreMouseEvents(true);
-  confWindow = new BrowserWindow({parent: mainWindow,
-                                  modal: true, 
-                                  width: 320,
-                                  height: 240,
-                                  resizable: true,
-                                  minimizable: false,
-                                  frame: true});
-  //confWindow.webContents.openDevTools();
-  confWindow.setMenu(null);
-  confWindow.loadURL(`file://${__dirname}/popup/confirm.html`);
 
-  confWindow.on('closed', function() {
-    //console.log('closed!!!');
-    confWindow = null;
-  });
-
-  confWindow.on('closed', function () {
-    console.log('confWindow closed');
-    mainWindow.webContents.send('popupClosed', 0);
-  });
-
-  g_mode = mode;
-
-  switch(g_mode){
+  switch(mode){
     case 'delete':
       g_dir_cur = params.dir_cur;
       g_items_selected = params.items_selected;
@@ -219,8 +199,12 @@ electron.ipcMain.on('popup', (event, mode, params) => {
         console.log('count: ' + count++ + ', key: ' + key + ', item: ' + params.items_selected[key]);
       }
       break;
-    //case 'quit':
-    //  break;
+    case 'quit':
+      confWindow.show();
+      break;
+    case 'sort':
+      sortWindow.show();
+      break;
     default:
       /* Do Nothing.. */
       break;
@@ -231,23 +215,34 @@ electron.ipcMain.on('popup', (event, mode, params) => {
 
 electron.ipcMain.on('closeMainWindow', (event) => {
   console.log('closeMainWindow');
+  confWindow.close();
+  sortWindow.close();
   mainWindow.close();
 })
 
-electron.ipcMain.on('closePopup', (event) => {
-  if(confWindow != null){
-    confWindow.close();
-    confWindow = null;
-  }else{
-    console.log('confWindow == null!!');
+electron.ipcMain.on('closePopup', (event, ptype) => {
+  console.log('HERE!!');
+
+  switch(ptype){
+    case 'quit':
+      confWindow.hide();
+      break;
+    case 'sort':
+      sortWindow.hide();
+      break;
   }
+  mainWindow.focus();
+
   event.returnValue = true;
 });
 
-electron.ipcMain.on('check_mode', (event) => {
-  console.log('check_mode is called!!');
-  //event.returnValue = g_mode;
-  event.returnValue = [g_mode, g_items_selected];
+electron.ipcMain.on('sortItems', (event, type) => {
+  //console.log('sortItems!!');
+  mainWindow.webContents.send('sortItems', type);
+  sortWindow.hide();
+  mainWindow.focus();
+
+  event.returnValue = true;
 });
 
 electron.ipcMain.on('isearch_start', (event) => {
@@ -255,13 +250,6 @@ electron.ipcMain.on('isearch_start', (event) => {
 
   event.returnValue = true;
 });
-
-//electron.ipcMain.on('test_message', (event, arg_msg, dispatch) => {
-//  const ret_msg = "Are you known??";
-//  console.log('test_message <> arg_msg: ' + arg_msg);
-//  console.log('test_message <> ret_msg: ' + ret_msg);
-//  event.sender.send('test_message_reply', ret_msg, dispatch);
-//});
 
 electron.ipcMain.on('test_message', (event, arg_msg) => {
   const ret_msg = "Are you known??";
@@ -307,11 +295,6 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
 
   }
 
-  //console.log('ids: ' + ids);
-  //if(pattern.length === 4){
-  //  console.log('ids.length: ' + ids.length + ', names: ' + names);
-  //}
-
   event.sender.send(
     'narrow_down_items_cb',
     ids,
@@ -335,13 +318,6 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
 
 });
 
-
-
-//let ret = null;
-//console.log('------------------------');
-//console.log(ret);
-//console.log('------------------------');
-
 electron.ipcMain.on('get_disk_drive_list', (event, arg) => {
   switch( os.platform() ){
     case 'win32':
@@ -361,8 +337,6 @@ electron.ipcMain.on('get_disk_drive_list', (event, arg) => {
   }
 
 });
-
-
 
 const detectDiskDriveWin32 = (event) => {
   const child = execFile('wmic', ['logicaldisk', 'get', 'name'], (error, stdout, stderr) => {
@@ -384,114 +358,3 @@ const detectDiskDriveWin32 = (event) => {
 
   });
 }
-
-
-//electron.ipcMain.on('narrow_down_items', (event, state_str, id, msg) => {
-//  setTimeout(
-//    () => {
-//      event.sender.send(
-//        'narrow_down_items_cb',
-//        state_str
-//      );
-//    },
-//    0
-//  );
-//  //event.sender.send(
-//  //  'narrow_down_items_cb',
-//  //  state_str
-//  //);
-//});
-
-//electron.ipcMain.on('narrow_down_items', (event, state_str, id, msg) => {
-//  let state_ret;
-//  const state = im.fromJS(state_str);
-//  //console.log('state: ' + state);
-//
-//  if(msg.length <= 0){
-//    state_ret = state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
-//                                          .set('input_mode', KEY_INPUT_MODE.NORMAL));
-//    event.sender.send(
-//      'narrow_down_items_cb',
-//      state_ret.toJS()
-//    );
-//
-//    //event.sender.send(
-//    //  'narrow_down_items_cb',
-//    //  state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], '')
-//    //                            .set('input_mode', KEY_INPUT_MODE.NORMAL))
-//    //);
-//  }
-//
-//  const pattern = msg.slice(1, msg.length);
-//  const dir_cur = state.getIn(['arr_pages', id, 'dir_cur']);
-//  console.log('dir_cur: ' + dir_cur);
-//  let items;
-//
-//  items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items']);
-//  //console.log('items: ' + items);
-//
-//  if(pattern.length > 0){
-//    console.log('pattern.length > 0');
-//    console.log('pattern: ' + pattern);
-//    const reg = new RegExp(pattern);
-//
-//    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
-//                       .filter((e, i) => {
-//                         //console.log('e: ' + e);
-//                         //console.log('e.name: ' + e.name); /* NG */
-//                         //console.log('e[name]: ' + e["name"]); /* NG */
-//                         console.log('e[name]: ' + e.get('name')); /* OK */
-//                         //const item = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items', i]);
-//                         //console.log('item.name: ' + item.name);
-//                         if(reg.test(e.name)){
-//                           console.log('match <> ' + e.name);
-//                           return e;
-//                         }
-//                       });
-//
-//  }else{
-//    items = state.getIn(['arr_pages', id, 'pages', dir_cur, 'items'])
-//  }
-//
-//  //console.log('NarrowDownItemsCore() END!!');
-//
-//  state_ret = state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
-//                                        .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-//                                        .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0));
-//  event.sender.send(
-//    'narrow_down_items_cb',
-//    state_ret.toJS()
-//  );
-//
-//  //event.sender.send(
-//  //  'narrow_down_items_cb',
-//  //  state.withMutations(s => s.setIn(['arr_pages', id, 'msg_cmd'], msg)
-//  //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'items_match'], items)
-//  //                            .setIn(['arr_pages', id, 'pages', dir_cur, 'line_cur'], 0))
-//  //);
-//
-//});
-
-//const c = cp.fork('./src/proc-narrow-items.js');
-//
-//c.on('message', (m) => {
-//  console.log('narrow_down_items_cb!! <> m: ' + m);
-//});
-//
-//function test(){
-//  console.log('HERE??');
-//  //const ret = c.send({
-//  //  channel: 'message',
-//  //  arg: 'world'
-//  //});
-//  const ret = c.send({
-//    hello: 'world'
-//  });
-//  console.log('ret: ' + ret);
-//}
-//
-//test();
-
-
-//const worker = new Worker("./src/webworker.js");
-
