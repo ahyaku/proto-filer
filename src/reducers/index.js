@@ -6,7 +6,7 @@ import { ipcRenderer } from 'electron'
 import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex } from '../util/item_list_pages';
 import { KEY_INPUT_MODE, ITEM_TYPE_KIND, SORT_TYPE } from '../util/item_type';
 
-function rootReducer(state_fcd, action){
+const rootReducer = (state_fcd, action) => {
   //console.log('reducer <> state_fcd.input_mode: ', state_fcd.input_mode);
   //console.log('reducer <> state_fcd.state_core: ', state_fcd.state_core);
 
@@ -284,19 +284,47 @@ const sortItemList = (state, sort_type) => {
 }
 
 const sortByName = (items, id_map, is_asc) => {
+  const id_head = id_map.get(0);
+  const id_tail = id_map.get(id_map.size - 1);
+
   const coef = is_asc === true
                ? 1
                : -1;
 
-  return id_map.sort(
+  let id_parent;
+  let id_map_sort;
+
+  if( items.getIn([id_head, 'basename']) === '..'){
+    id_map_sort = id_map.slice(1, id_map.size);
+    id_parent = id_head;
+  }else if( items.getIn([id_tail, 'basename']) === '..' ){
+    id_map_sort = id_map.slice(0, id_map.size - 1);
+    id_parent = id_tail;
+  }else{
+    id_map_sort = id_map;
+    id_parent = -1;
+  }
+
+  const id_map_sorted = id_map_sort.sort(
     (a, b) => {
       return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
     });
 
+  if(id_parent === -1){
+    return id_map_sorted;
+  }else{
+    if(is_asc === true){
+      return id_map_sorted.unshift(id_parent);
+    }else if(is_asc === false){
+      return id_map_sorted.push(id_parent);
+    }else{
+      console.log('Sort Error!!');
+    }
+  }
 }
 
 
-function moveCursor(state, delta){
+const moveCursor = (state, delta) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
   const len = page.get('id_map').size;

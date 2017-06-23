@@ -60,10 +60,13 @@ const checkKeySort = (e) => {
       sortItems(SORT_TYPE.NAME_DES);
       //procNo();
       break;
-    case '[': /* 'n' */
+    case '[': /* '[' */
       if(event.ctrlKey === true){
         procNo();
       }
+      break;
+    case 'q': /* 'q' */
+      procNo();
       break;
     default:
       break;
