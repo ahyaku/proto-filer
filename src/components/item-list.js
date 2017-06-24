@@ -74,6 +74,8 @@ class ItemList extends React.Component {
 
     this.id_map = id_map;
 
+    //console.log('ItemList() <> this.id_map: ' + this.id_map);
+
     if(this.id_map.size <= 0){
       return (
         <div ref="item_list" style={this._style_list}>
