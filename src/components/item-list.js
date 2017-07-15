@@ -7,9 +7,10 @@ import { findDOMNode } from 'react-dom';
 import util from 'util';
 import im from 'immutable';
 //import {ITEM_TYPE_KIND} from '../core/item_type';
-import {ITEM_TYPE_KIND} from '../util/item_type';
+import { ITEM_TYPE_KIND } from '../util/item_type';
 import ViewItem from './view-item';
 import PaneViewItem from '../containers/pane-view-item';
+import { KEY_INPUT_MODE } from '../util/item_type';
 
 const LIST_MAX = 10000;
 const FONT_SIZE = '13px';
@@ -57,6 +58,9 @@ class ItemList extends React.Component {
     this.id_map = null
 
     this._rowRenderer = this._rowRenderer.bind(this);
+    
+    //this.mynode = findDOMNode(this);
+    //console.log('this.node: ', this.mynode);
   }
   
 //  componentWillUnmount(){
@@ -266,11 +270,27 @@ class ItemList extends React.Component {
   }
 
 
-  //shouldComponentUpdate(nextState, nextProps){
-  //  return true;
-  //}
+  shouldComponentUpdate(nextState, nextProps){
+    //const node = findDOMNode(this);
+    //console.log('ItemList <> node: ', node);
+    //console.log('ItemList <> node: ', node.getBoundingClientRect());
+    //console.log('ItemList <> node: ', node.offsetTop);
+    //console.log('ItemList <> node: ', node.scrollTop);
+    return true;
+  }
 
-
+  componentDidUpdate(prevState, prevProps){
+    //console.log('item-list <> componentDidUpdate() input_mode: ' + this.props.input_mode);
+    if( this.props.active_pane_id === this.props.id     &&
+        this.props.input_mode ===  KEY_INPUT_MODE.POPUP ){
+      const node = findDOMNode(this);
+      const rect = node.getBoundingClientRect();
+      //const node_root = this.props.cbGetNodeRoot();
+      //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
+      //console.log('refs: ', this.refs);
+      this.props.dispPopUpForSort(rect.left, rect.top);
+    }
+  }
 
 }
 

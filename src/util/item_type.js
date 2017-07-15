@@ -23,6 +23,7 @@ export const ITEM_TYPE_KIND = {
 export const KEY_INPUT_MODE = {
   NORMAL : 0,
   SEARCH : 1,
+  POPUP  : 2
 };
 
 export const SORT_TYPE = {
@@ -33,7 +34,8 @@ export const SORT_TYPE = {
   NAME_DES : 4,
   EXT_DES  : 5,
   SIZE_DES : 6,
-  TIME_DES : 7
+  TIME_DES : 7,
+  CANCEL   : 8
 };
 
 //export default ITEM_TYPE_KIND;

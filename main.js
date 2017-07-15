@@ -17,6 +17,8 @@ const webContents = electron.webContents
 
 process.env.NODE_ENV = 'production';
 
+const POPUP_POS_MARGIN = 10;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -38,6 +40,8 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    frame: true,
+    useContentSize: false,
     webPreferences: {
       //nodeIntegration: false
     }
@@ -56,13 +60,15 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  //mainWindow.setMenu(null);
   console.log(webContents);
 
 
   confWindow = createPopupWindow('quit', 320, 240);
   confWindow.hide();
 
-  sortWindow = createPopupWindow('sort', 200, 240);
+  sortWindow = createPopupWindow('sort', 150, 240);
   sortWindow.hide();
 
 }
@@ -203,6 +209,19 @@ electron.ipcMain.on('popup', (event, mode, params) => {
       confWindow.show();
       break;
     case 'sort':
+      //console.log('sort <> left: ' + params.left + ', top: ' + params.top);
+
+      const wpos = mainWindow.getPosition();
+      const rect = mainWindow.getBounds();
+      const crect = mainWindow.getContentBounds();
+
+      //console.log('sort <> wleft: ' + wpos[0] + ', wtop: ' + wpos[1]);
+      //console.log('sort rect <> x:' + rect.x + ', y:' + rect.y);
+      //console.log('sort crect <> x:' + crect.x + ', y:' + crect.y);
+
+      const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
+      const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
+      sortWindow.setPosition(left, top);
       sortWindow.show();
       break;
     default:

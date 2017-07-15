@@ -2,7 +2,7 @@
 
 import React from 'react';
 //import { KEY_INPUT_MODE } from '../core/item_type';
-import { KEY_INPUT_MODE } from '../util/item_type';
+//import { KEY_INPUT_MODE } from '../util/item_type';
 import { NarrowDownItems } from '../actions/index.js';
 
 //const Cmd = ({msg_cmd, input_mode}) => {

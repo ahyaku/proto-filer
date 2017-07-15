@@ -117,8 +117,11 @@ export const _checkKeyNormal = (state_fcd, e) => {
     case 'S': /* 'S' */
       event.preventDefault();
       return {
-        type: 'DISP_POPUP_FOR_SORT_ITEM_LIST'
+        type: 'WILL_DISP_POPUP_FOR_SORT_ITEM_LIST'
       }
+      //return {
+      //  type: 'DISP_POPUP_FOR_SORT_ITEM_LIST'
+      //}
     case 'e':
       return {
         type: 'DEBUG_COUNT_END'

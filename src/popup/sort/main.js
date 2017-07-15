@@ -95,11 +95,11 @@ const checkKeySort = (e) => {
       break;
     case '[': /* '[' */
       if(event.ctrlKey === true){
-        procNo();
+        sortItems(SORT_TYPE.CANCEL);
       }
       break;
     case 'q': /* 'q' */
-      procNo();
+      sortItems(SORT_TYPE.CANCEL);
       break;
     default:
       break;

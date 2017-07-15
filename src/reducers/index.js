@@ -225,11 +225,29 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+    case 'WILL_DISP_POPUP_FOR_SORT_ITEM_LIST':
+      {
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { input_mode: KEY_INPUT_MODE.POPUP }
+               );
+      }
     case 'DISP_POPUP_FOR_SORT_ITEM_LIST':
       {
-        dispPopUp('sort', null);
+        //console.log('DISP_POPUP_FOR_SORT_ITEM_LIST <> left: ' + action.left + ', top: ' + action.top);
+        dispPopUp('sort', {left: action.left, top: action.top});
         return state_fcd;
+
       }
+    //case 'CLOSE_POPUP_FOR_SORT_ITEM_LIST':
+    //  {
+    //    return Object.assign(
+    //             {},
+    //             state_fcd,
+    //             { input_mode: KEY_INPUT_MODE.NORMAL }
+    //           );
+    //  }
     case 'SORT_ITEM_LIST':
       {
         //const dir = state.getIn(['dirs', 0]);
@@ -241,7 +259,18 @@ const rootReducer = (state_fcd, action) => {
                  {},
                  state_fcd,
                  {
-                   state_core: state_fcd.state_core.set(id, state_new)
+                   state_core: state_fcd.state_core.set(id, state_new),
+                   input_mode: KEY_INPUT_MODE.NORMAL
+                 }
+               );
+      }
+    case 'CLOSE_POPUP_FOR_SORT_ITEM_LIST':
+      {
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   input_mode: KEY_INPUT_MODE.NORMAL
                  }
                );
       }
@@ -302,6 +331,9 @@ const sortItemList = (state, sort_type) => {
     case SORT_TYPE.SIZE_DES:
       //id_map_new = sortByName(items, id_map, false);
       id_map_new = sort(items, id_map, filterSize, false);
+      break;
+    case SORT_TYPE.CANCEL:
+      id_map_new = id_map;
       break;
     default:
       /* Do Nothing.. */

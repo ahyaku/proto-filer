@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import fs from 'fs';
 import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
+import { findDOMNode } from 'react-dom';
 
 import PanePathCur from '../containers/pane-path-cur';
 import PaneCmd from '../containers/pane-cmd';
@@ -38,7 +39,7 @@ const Footer = () => {
   );
 }
 
-const Body = () => {
+const Body = (props) => {
   const style = {
     display: 'flex',
     flex: 'auto',
@@ -55,10 +56,12 @@ const Body = () => {
     boxSizing: 'border-box'
   };
 
+  //props.cbGetNodeRoot();
+
   return (
     <div style={style}>
-      <CmdAndItemList id={0} />
-      <CmdAndItemList id={1} />
+      <CmdAndItemList id={0} cbGetNodeRoot={props.cbGetNodeRoot} />
+      <CmdAndItemList id={1} cbGetNodeRoot={props.cbGetNodeRoot} />
     </div>
   );
 }
@@ -123,12 +126,19 @@ class CmdAndItemList extends React.Component {
       <div style={this.style}>
         <PaneCmd id={id} />
         <div style={this.style_outer}>
-          <PaneItemList id={id} />
+          <PaneItemList id={id} cbGetNodeRoot={this.props.cbGetNodeRoot} />
         </div>
       </div>
     );
 
   }
+
+//  shouldComponentUpdate(nextProps, nextState){
+//    const node = findDOMNode(this.refs.paneItemList);
+//    console.log('app <> paneItemList: ', node);
+//
+//    return true;
+//  }
 
 //  componentDidUpdate(prevProps, prevState){
 //    console.log('componentDidUpdate()!!');
@@ -204,14 +214,19 @@ class App extends React.Component {
       boxSizing: 'border-box'
     };
 
+    const cbGetNodeRoot = () => {
+      console.log('cbGetNodeRoot()!!');
+      return findDOMNode(this);
+    }
+
     /* ORG */
     return (
-      <div style={style}>
+      <div style={style} ref='AppRoot'>
         <div style={style_path}>
           <PanePathCur id={0} />
           <PanePathCur id={1} />
         </div>
-        <Body />
+        <Body cbGetNodeRoot={cbGetNodeRoot} />
         <Footer />
       </div>
     );
@@ -241,6 +256,16 @@ class App extends React.Component {
       sort_type: sort_type
     });
   }
+
+  componentDidUpdate(prevState, prevProps){
+    //console.log('app <> componentDidUpdate() input_mode: ' + this.props.input_mode);
+    const node = findDOMNode(this);
+    const rect = node.getBoundingClientRect();
+    //const rect_root = node_root.getBoundingClientRect();
+    console.log('app <> rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
+    //console.log('refs: ', this.refs);
+  }
+
 
 }
 

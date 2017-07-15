@@ -21,12 +21,29 @@ const mapStateToProps = (state, props) => {
     dir: dir,
     page: page,
     id: props.id,
-    line_cur: line_cur
+    line_cur: line_cur,
+    input_mode: state.input_mode
   };
 }
 
+const mapDispatchToProps = (dispatch, props) => ({
+  dispPopUpForSort: (left, top) => {
+    dispatch({
+      type: 'DISP_POPUP_FOR_SORT_ITEM_LIST',
+      left: left,
+      top: top
+    });
+  },
+  props
+});
+
 const PaneItemList = connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(ItemList);
+
+//const PaneItemList = connect(
+//  mapStateToProps
+//)(ItemList);
 
 export default PaneItemList;
