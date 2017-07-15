@@ -51,47 +51,35 @@ const checkKeySort = (e) => {
       break;
     case 'n': /* 'n' */
       console.log('n');
-      //sortItems('name_asc');
       sortItems(SORT_TYPE.NAME_ASC);
       break;
     case 'N': /* 'N' */
       console.log('N');
-      //sortItems('name_des');
       sortItems(SORT_TYPE.NAME_DES);
-      //procNo();
       break;
     case 't': /* 't' */
       console.log('t');
-      //sortItems('name_asc');
       sortItems(SORT_TYPE.TIME_ASC);
       break;
     case 'T': /* 'T' */
       console.log('T');
-      //sortItems('name_des');
       sortItems(SORT_TYPE.TIME_DES);
-      //procNo();
       break;
     case 'e': /* 'e' */
       console.log('e');
-      //sortItems('name_asc');
       sortItems(SORT_TYPE.EXT_ASC);
       break;
     case 'E': /* 'E' */
       console.log('E');
-      //sortItems('name_des');
       sortItems(SORT_TYPE.EXT_DES);
-      //procNo();
       break;
     case 's': /* 's' */
       console.log('s');
-      //sortItems('name_asc');
       sortItems(SORT_TYPE.SIZE_ASC);
       break;
     case 'S': /* 'S' */
       console.log('S');
-      //sortItems('name_des');
       sortItems(SORT_TYPE.SIZE_DES);
-      //procNo();
       break;
     case '[': /* '[' */
       if(event.ctrlKey === true){

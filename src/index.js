@@ -32,124 +32,6 @@ const state_core_left = updatePageCur(null, 'C:\\msys64', true);
 const state_core_right = updatePageCur(null, 'C:\\Go', true);
 //const pages_left = updatePageCur(null, 'C:\\Go', true);
 //const pages_right = updatePageCur(null, 'C:\\tmp\\many_items', true);
-//const arr_pages = im.List.of(pages_left, pages_right);
-//console.log('arr_pages: ' + arr_pages);
-
-//const dir_cur_left = pages_left.get('dir_cur');
-//const dir_cur_right = pages_right.get('dir_cur');
-//const im_items_left = pages_left.getIn(['pages', dir_cur_left, 'items_match']);
-//const im_items_right = pages_right.getIn(['pages', dir_cur_right, 'items_match']);
-
-//const getItemsByMap = (page) => {
-//  //console.log('getItemsByMap <> id_maps: ', pages.get('id_maps'));
-//  //console.log('getItemsByMap <> id_maps: ', pages.getIn(['id_maps', dir_cur]));
-//  
-//  const items = page.get('id_map').map(
-//                  (e, i) => {
-//                    return page.getIn(['items', e]);
-//                  }
-//                );
-//  return items;
-//}
-
-//const dir_cur_left = state_core_left.getIn(['dirs', 0]);
-//const page_left = state_core_left.getIn(['pages', dir_cur_left]);
-//const im_items_left = getItemsByMap(page_left);
-//const dir_cur_right = state_core_right.getIn(['dirs', 0]);
-//const page_right = state_core_right.getIn(['pages', dir_cur_right]);
-//const im_items_right = getItemsByMap(page_right);
-
-//const arr_im_items = im.List.of(im_items_left, im_items_right);
-//const items_left = im_items_left.toJS();
-//const items_right = im_items_right.toJS();
-//const arr_items = [items_left, items_right];
-
-
-/* Test */
-//{
-//  const idxs_name = im.List(im.Range(0, im_items_left.size));
-//  const idxs_rev = idxs_name.map(
-//                     (e, i) => {
-//                       return idxs_name.size - 1 - i;
-//                     }
-//                   );
-//  const root = im.Map({
-//    'items_base': im_items_left,
-//    'items_rev' : im.Map(),
-//    'idxs_name': idxs_name,
-//    'idxs_rev' : idxs_rev,
-//    'idxs_time': im.List.of(),
-//    'idxs_size': im.List.of(),
-//    'idxs_ext': im.List.of()
-//  });
-//
-//  console.log('Test <> idxs_name: ', root.get('idxs_name'));
-//  const dumy = root.get('idxs_name').map(
-//                 (e, i) => {
-//                   //console.log('i: ' + i + ', e: ' + e);
-//                   return e;
-//                 }
-//               );
-//  
-//  const dumy2 = root.get('idxs_rev').map(
-//                 (e, i) => {
-//                   //console.log('i: ' + i + ', e: ' + e);
-//                   return e;
-//                 }
-//               );
-//  
-//  //console.log('Test <> idxs_name: ', root.getIn(['idxs_name', 0]));
-//  console.log('Test <> dumy ', dumy);
-//  console.log('Test <> dumy.get(5): ' + dumy.get(5));
-//  console.log('Test <> idxs_time: ', root.get('idxs_time'));
-//
-//  console.log('Test <> root.get(items_rev): ', root.get('items_rev'));
-//
-//  const items_rev = root.get('items_base').sort(
-//                      (a, b) => {
-//                        const id_a = a.get('id');
-//                        const id_b = b.get('id');
-//                        if(id_a === id_b){
-//                          return 0;
-//                        }else if(id_a < id_b){
-//                          return 1;
-//                        }else{
-//                          return -1;
-//                        }
-//                      }
-//                    );
-//  console.log('Test <> root.get(items_rev): ', root.get('items_rev'));
-//
-//  const items_rev2 = root.get('idxs_rev').map(
-//                       (e, i) => {
-//                         return im_items_left.get(e);
-//                       }
-//                     );
-//
-//
-//  //const dumy3 = root.get('items_base').map(
-//  //               (e, i) => {
-//  //                 console.log('i: ' + i + ', e.get(name): ' + e.get('name'));
-//  //                 return e;
-//  //               }
-//  //             );
-//  
-//  //const dumy4 = items_rev.map(
-//  //               (e, i) => {
-//  //                 console.log('i: ' + i + ', e.get(name): ' + e.get('name'));
-//  //                 return e;
-//  //               }
-//  //             );
-//  
-//  const dumy5 = items_rev2.map(
-//                 (e, i) => {
-//                   console.log('i: ' + i + ', e.get(name): ' + e.get('name'));
-//                   return e;
-//                 }
-//               );
-//  
-//}
-
 
 const state_core = im.List.of(state_core_left, state_core_right);
 //console.log('index <> state_core: ', state_core);
@@ -160,14 +42,6 @@ const state_init = {
   input_mode: KEY_INPUT_MODE.NORMAL,
   msg_cmd: ''
 };
-
-//const item_name_list_left = updateItemNameList(state_core_left);
-//const item_name_list_right = updateItemNameList(state_core_right);
-
-//console.log('index <> item_name_list_left: ', item_name_list_left);
-
-//const items = state_init2.arr_items[0];
-//console.log('items[4].name: ' + items[4].name);
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
 
@@ -196,7 +70,6 @@ function ListenKeydown(mapEventToAction){
 
 function mapKeydownToAction(getState, e){
   //console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
-  //switch(getState().input_mode){
   return function(dispatch){
     const state_fcd = getState();
     const state = state_fcd.state_core;

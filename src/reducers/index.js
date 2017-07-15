@@ -487,11 +487,16 @@ const toggleItemSelect = (state) => {
   const line_cur = page.get('line_cur');
   const id_map = page.get('id_map');
   const id = id_map.get(line_cur);
+  const items = page.get('items');
 
-  const is_selected = page.get('is_selected');
-  const is_selected_new = is_selected.set(id, !is_selected.get(id));
+  if(items.getIn([id, 'name']) === '..'){
+    return state;
+  }else{
+    const is_selected = page.get('is_selected');
+    const is_selected_new = is_selected.set(id, !is_selected.get(id));
 
-  return state.setIn(['pages', dir, 'is_selected'], is_selected_new);
+    return state.setIn(['pages', dir, 'is_selected'], is_selected_new);
+  }
 }
 
 const syncDirFcd = (state_fcd, idx_mdf, idx_ref) => {

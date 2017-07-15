@@ -134,6 +134,11 @@ export const _checkKeyNormal = (state_fcd, e) => {
         type: 'CHANGE_DRIVE',
         dlist: ret
       };
+    case 'c':
+      return {
+        type: 'COPY_ITEMS'
+      }
+      break;
     default:
       /* Do Nothing.. */
       //break;
