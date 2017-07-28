@@ -2,9 +2,11 @@
 
 import fs from 'fs';
 import im from 'immutable';
+import path from 'path';
 import { ipcRenderer } from 'electron'
 import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex } from '../util/item_list_pages';
-import { KEY_INPUT_MODE, ITEM_TYPE_KIND, SORT_TYPE } from '../util/item_type';
+import { KEY_INPUT_MODE, ITEM_TYPE_KIND /*, SORT_TYPE */ } from '../util/item_type';
+import { sortItems, sortItemsCore } from '../util/item_list';
 
 const rootReducer = (state_fcd, action) => {
   //console.log('reducer <> state_fcd.input_mode: ', state_fcd.input_mode);
@@ -146,7 +148,10 @@ const rootReducer = (state_fcd, action) => {
       {
         const dir = state.getIn(['dirs', 0]);
         const page = state.getIn(['pages', dir]);
-        const id_map = im.List(im.Range(0, page.get('items').size));
+        //const id_map = im.List(im.Range(0, page.get('items').size));
+        const items = page.get('items');
+        const sort_type = state.get('sort_type');
+        const id_map = sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type );
         const page_new = page.set('id_map', id_map);
         const state_new = state.withMutations(s => s.set('msg_cmd', '')
                                                     .setIn(['pages', dir], page_new));
@@ -200,7 +205,12 @@ const rootReducer = (state_fcd, action) => {
         const dir_cur = state.getIn(['dirs', 0]);
         const page = state.getIn(['pages', dir_cur]);
 
-        const page_new = page.set('id_map', im.List(action.ids));
+        //const page_new = page.set('id_map', im.List(action.ids));
+
+        const items = page.get('items');
+        const sort_type = state.get('sort_type');
+        const page_new = page.set('id_map', sortItemsCore( im.List(action.ids), items, sort_type ));
+
         const state_new = state.setIn(['pages', dir_cur], page_new);
         return Object.assign(
                  {},
@@ -209,7 +219,6 @@ const rootReducer = (state_fcd, action) => {
                    state_core: state_fcd.state_core.set(id, state_new)
                  }
                );
-
       }
     case 'UPDATE_PANE_CMD':
       //console.log('UPDATE_PANE_CMD');
@@ -254,7 +263,8 @@ const rootReducer = (state_fcd, action) => {
         //const state_new = state.withMutations(s => s.set('msg_cmd', action.msg_cmd)
         //                                            .setIn(['pages', dir, 'line_cur'], 0));
 
-        const state_new = sortItemList(state, action.sort_type);
+        //const state_new = sortItemList(state, action.sort_type);
+        const state_new = sortItems(state, action.sort_type);
         return Object.assign(
                  {},
                  state_fcd,
@@ -274,6 +284,18 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+    case 'COPY_ITEMS':
+      {
+        //return state;
+        return copyItems(state_fcd);
+        //return Object.assign(
+        //  {},
+        //  state_fcd,
+        //  {
+        //    state_core: state_fcd.set(id, copyItems(state_fcd))
+        //  }
+        //);
+      }
     case 'TEST_SEND_MSG':
       console.log('TEST_SEND_MSG');
       return state_fcd;
@@ -286,173 +308,227 @@ const rootReducer = (state_fcd, action) => {
 
 }
 
-const sortItemList = (state, sort_type) => {
-  const dir = state.getIn(['dirs', 0]);
-  const page = state.getIn(['pages', dir]);
-  const id_map = page.get('id_map');
-  const items = page.get('items');
-  let id_map_new;
+const copyItems = (state_fcd) => {
+  const id_cur = state_fcd.active_pane_id;
+  const id_other = (id_cur + 1) % 2;
+  console.log('id_cur: ' + id_cur + ', id_other: ' + id_other);
+  const state_core = state_fcd.state_core;
+  const state_cur = state_core.get(id_cur);
+  const state_other = state_core.get(id_other);
 
-  //console.log('Before <> id_map: ' + id_map);
-  switch(sort_type){
-    //case 'name_asc':
-    case SORT_TYPE.NAME_ASC:
-      //id_map_new = sortByName(items, id_map, true);
-      id_map_new = sort(items, id_map, filterName, true);
-      break;
-    //case 'name_des':
-    case SORT_TYPE.NAME_DES:
-      //id_map_new = sortByName(items, id_map, false);
-      id_map_new = sort(items, id_map, filterName, false);
-      break;
-    case SORT_TYPE.TIME_ASC:
-      //id_map_new = sortByName(items, id_map, true);
-      id_map_new = sort(items, id_map, filterTime, true);
-      break;
-    //case 'name_des':
-    case SORT_TYPE.TIME_DES:
-      //id_map_new = sortByName(items, id_map, false);
-      id_map_new = sort(items, id_map, filterTime, false);
-      break;
-    case SORT_TYPE.EXT_ASC:
-      //id_map_new = sortByName(items, id_map, true);
-      id_map_new = sort(items, id_map, filterExt, true);
-      break;
-    //case 'name_des':
-    case SORT_TYPE.EXT_DES:
-      //id_map_new = sortByName(items, id_map, false);
-      id_map_new = sort(items, id_map, filterExt, false);
-      break;
-    case SORT_TYPE.SIZE_ASC:
-      //id_map_new = sortByName(items, id_map, true);
-      id_map_new = sort(items, id_map, filterSize, true);
-      break;
-    //case 'name_des':
-    case SORT_TYPE.SIZE_DES:
-      //id_map_new = sortByName(items, id_map, false);
-      id_map_new = sort(items, id_map, filterSize, false);
-      break;
-    case SORT_TYPE.CANCEL:
-      id_map_new = id_map;
-      break;
-    default:
-      /* Do Nothing.. */
-      console.log('Sort Error!!');
-      break;
-  }
-  //console.log('After <> id_map: ' + id_map_new);
+  
 
-  //console.log('sortItemList() <> id_map: ' + id_map);
+  const path_cur = state_cur.getIn(['dirs', 0]);
+  const path_other = state_other.getIn(['dirs', 0]);
 
-  return state.setIn(['pages', dir, 'id_map'], id_map_new);
-}
+  console.log('path_cur: ' + path_cur);
+  const pages_cur = state_cur.getIn(['pages', path_cur]);
+  const ids_selected = pages_cur.get('is_selected');
+  console.log('ids_selected: ' + ids_selected);
+  //console.log('pages: ', state_cur.getIn(['pages', path_cur]));
+  console.log('---------------------------------')
+  const items = state_cur.getIn(['pages', path_cur, 'items'])
+                  .filter( (e) => {
+                    const ret = e.get('is_selected') === true;
+                    console.log(e.get('name') + ', ' + ret);
+                    return e.get('is_selected') === true;
+                  })
+                  //.map( (e) =>{
+                  //  return e.get('name');
+                  //});
+  //console.log('items: ', items);
+  console.log('---------------------------------');
+  console.log('items[0]: ', items[0]);
+  //const ret = ipcRenderer.sendSync('copy', path_other, path_cur, items);
 
-const sort = (items, id_map, filter, is_asc) => {
-  const id_head = id_map.get(0);
-  const id_tail = id_map.get(id_map.size - 1);
-
-  const coef = is_asc === true
-               ? 1
-               : -1;
-
-  let id_parent;
-  let id_map_sort;
-
-  /* Parent Directory '..' always must be the head or tail of the item list. */
-  if( items.getIn([id_head, 'basename']) === '..'){
-    id_map_sort = id_map.slice(1, id_map.size);
-    id_parent = id_head;
-  }else if( items.getIn([id_tail, 'basename']) === '..' ){
-    id_map_sort = id_map.slice(0, id_map.size - 1);
-    id_parent = id_tail;
-  }else{
-    id_map_sort = id_map;
-    id_parent = -1;
-  }
-
-  //const id_map_sorted = id_map_sort.sort(
-  //  (a, b) => {
-  //    return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
-  //  });
-
-  const id_map_sorted = filter(items, id_map_sort, coef);
-
-  if(id_parent === -1){
-    return id_map_sorted;
-  }else{
-    if(is_asc === true){
-      return id_map_sorted.unshift(id_parent);
-    }else if(is_asc === false){
-      return id_map_sorted.push(id_parent);
-    }else{
-      console.log('Sort Error!!');
+  const state_core_new = state_core.withMutations(s => s.set(id_cur, updatePage(state_cur))
+                                                        .set(id_other, updatePage(state_other)));
+  return Object.assign(
+    {},
+    state_fcd,
+    {
+      state_core: state_core_new
     }
-  }
+  );
+
+  //return state;
 }
 
-const filterName = (items, id_map, coef) => {
-  return id_map.sort(
-    (a, b) => {
-      return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
-    });
+const updatePage = (state) => {
+  //console.log('HERE!!');
+  const dir = state.getIn(['dirs', 0]); 
+  //console.log('dir: ' + dir);
+  return updatePageCur(state, dir, false);
+
 }
 
-const filterTime = (items, id_map, coef) => {
-  return id_map.sort(
-    (a, b) => {
-      const ret_date = coef * items.getIn([a, 'date']).localeCompare(items.getIn([b, 'date']));
-      const ret_time = ret_date === 0
-                         ? coef * items.getIn([a, 'time']).localeCompare(items.getIn([b, 'time']))
-                         : ret_date;
-      const ret = ret_time === 0
-                    ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-                    : ret_time;
-      return ret;
-    });
-}
+//const sortItemList = (state, sort_type) => {
+//  const dir = state.getIn(['dirs', 0]);
+//  const page = state.getIn(['pages', dir]);
+//  const id_map = page.get('id_map');
+//  const items = page.get('items');
+//  let id_map_new;
+//
+//  //console.log('Before <> id_map: ' + id_map);
+//  switch(sort_type){
+//    //case 'name_asc':
+//    case SORT_TYPE.NAME_ASC:
+//      //id_map_new = sortByName(items, id_map, true);
+//      id_map_new = sort(items, id_map, filterName, true);
+//      break;
+//    //case 'name_des':
+//    case SORT_TYPE.NAME_DES:
+//      //id_map_new = sortByName(items, id_map, false);
+//      id_map_new = sort(items, id_map, filterName, false);
+//      break;
+//    case SORT_TYPE.TIME_ASC:
+//      //id_map_new = sortByName(items, id_map, true);
+//      id_map_new = sort(items, id_map, filterTime, true);
+//      break;
+//    //case 'name_des':
+//    case SORT_TYPE.TIME_DES:
+//      //id_map_new = sortByName(items, id_map, false);
+//      id_map_new = sort(items, id_map, filterTime, false);
+//      break;
+//    case SORT_TYPE.EXT_ASC:
+//      //id_map_new = sortByName(items, id_map, true);
+//      id_map_new = sort(items, id_map, filterExt, true);
+//      break;
+//    //case 'name_des':
+//    case SORT_TYPE.EXT_DES:
+//      //id_map_new = sortByName(items, id_map, false);
+//      id_map_new = sort(items, id_map, filterExt, false);
+//      break;
+//    case SORT_TYPE.SIZE_ASC:
+//      //id_map_new = sortByName(items, id_map, true);
+//      id_map_new = sort(items, id_map, filterSize, true);
+//      break;
+//    //case 'name_des':
+//    case SORT_TYPE.SIZE_DES:
+//      //id_map_new = sortByName(items, id_map, false);
+//      id_map_new = sort(items, id_map, filterSize, false);
+//      break;
+//    case SORT_TYPE.CANCEL:
+//      id_map_new = id_map;
+//      break;
+//    default:
+//      /* Do Nothing.. */
+//      console.log('Sort Error!!');
+//      break;
+//  }
+//  //console.log('After <> id_map: ' + id_map_new);
+//
+//  //console.log('sortItemList() <> id_map: ' + id_map);
+//
+//  return state.setIn(['pages', dir, 'id_map'], id_map_new);
+//}
 
-const filterSize = (items, id_map, coef) => {
-  return id_map.sort(
-    (a, b) => {
-      const sa = items.getIn([a, 'fsize'])
-      const sb = items.getIn([b, 'fsize'])
-
-      if( (typeof sa === 'string') && (typeof sb === 'string') ){
-        if( ( (sa === 'DIR') && (sb === 'DIR') ) ||
-            ( (sa === '???') && (sb === '???') ) ){
-          return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-        }else if( sa === 'DIR' ){
-          return -coef;
-        }else if( sb === 'DIR' ){
-          return coef;
-        }else{
-          console.log('filterSize Error!!');
-        }
-      }else if( typeof sa === 'string' ){
-        return -coef;
-      }else if( typeof sb === 'string' ){
-        return coef;
-      }else{
-        return sa === sb
-                  ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-                  : sa < sb
-                       ? -coef
-                       : coef
-      }
-    });
-}
-
-const filterExt = (items, id_map, coef) => {
-  return id_map.sort(
-    (a, b) => {
-      //return coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
-      const ret_size = coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
-      const ret = ret_size === 0
-                  ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-                  : ret_size;
-      return ret;
-    });
-}
+//const sort = (items, id_map, filter, is_asc) => {
+//  const id_head = id_map.get(0);
+//  const id_tail = id_map.get(id_map.size - 1);
+//
+//  const coef = is_asc === true
+//               ? 1
+//               : -1;
+//
+//  let id_parent;
+//  let id_map_sort;
+//
+//  /* Parent Directory '..' always must be the head or tail of the item list. */
+//  if( items.getIn([id_head, 'basename']) === '..'){
+//    id_map_sort = id_map.slice(1, id_map.size);
+//    id_parent = id_head;
+//  }else if( items.getIn([id_tail, 'basename']) === '..' ){
+//    id_map_sort = id_map.slice(0, id_map.size - 1);
+//    id_parent = id_tail;
+//  }else{
+//    id_map_sort = id_map;
+//    id_parent = -1;
+//  }
+//
+//  //const id_map_sorted = id_map_sort.sort(
+//  //  (a, b) => {
+//  //    return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
+//  //  });
+//
+//  const id_map_sorted = filter(items, id_map_sort, coef);
+//
+//  if(id_parent === -1){
+//    return id_map_sorted;
+//  }else{
+//    if(is_asc === true){
+//      return id_map_sorted.unshift(id_parent);
+//    }else if(is_asc === false){
+//      return id_map_sorted.push(id_parent);
+//    }else{
+//      console.log('Sort Error!!');
+//    }
+//  }
+//}
+//
+//const filterName = (items, id_map, coef) => {
+//  return id_map.sort(
+//    (a, b) => {
+//      return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
+//    });
+//}
+//
+//const filterTime = (items, id_map, coef) => {
+//  return id_map.sort(
+//    (a, b) => {
+//      const ret_date = coef * items.getIn([a, 'date']).localeCompare(items.getIn([b, 'date']));
+//      const ret_time = ret_date === 0
+//                         ? coef * items.getIn([a, 'time']).localeCompare(items.getIn([b, 'time']))
+//                         : ret_date;
+//      const ret = ret_time === 0
+//                    ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
+//                    : ret_time;
+//      return ret;
+//    });
+//}
+//
+//const filterSize = (items, id_map, coef) => {
+//  return id_map.sort(
+//    (a, b) => {
+//      const sa = items.getIn([a, 'fsize'])
+//      const sb = items.getIn([b, 'fsize'])
+//
+//      if( (typeof sa === 'string') && (typeof sb === 'string') ){
+//        if( ( (sa === 'DIR') && (sb === 'DIR') ) ||
+//            ( (sa === '???') && (sb === '???') ) ){
+//          return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
+//        }else if( sa === 'DIR' ){
+//          return -coef;
+//        }else if( sb === 'DIR' ){
+//          return coef;
+//        }else{
+//          console.log('filterSize Error!!');
+//        }
+//      }else if( typeof sa === 'string' ){
+//        return -coef;
+//      }else if( typeof sb === 'string' ){
+//        return coef;
+//      }else{
+//        return sa === sb
+//                  ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
+//                  : sa < sb
+//                       ? -coef
+//                       : coef
+//      }
+//    });
+//}
+//
+//const filterExt = (items, id_map, coef) => {
+//  return id_map.sort(
+//    (a, b) => {
+//      //return coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
+//      const ret_size = coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
+//      const ret = ret_size === 0
+//                  ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
+//                  : ret_size;
+//      return ret;
+//    });
+//}
 
 const moveCursor = (state, delta) => {
   const dir = state.getIn(['dirs', 0]);
@@ -558,7 +634,7 @@ const syncDir = (state_mdf, state_ref) => {
 
 
 const switchInputModeNarrowDownItems = (state, c) => {
-  //console.log('switchInputModeNarrowDownItems() <> input_mode: ' + state.get('input_mode'));
+  //console.log('switchInputModeNarrowDownItems() <> sort_type: ' + state.get('sort_type'));
   const msg = state.get('msg_cmd');
   if(msg.length > 0){
     return state;

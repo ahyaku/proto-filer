@@ -4,8 +4,10 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import im from 'immutable';
-import { updateItemsAsDiskDrive, updateItems, DISK_DRIVE } from './item_list';
+import { updateItemsAsDiskDrive, DISK_DRIVE } from './item_list';
 import { initAsItem, initAsDiskDrive } from './item';
+import { SORT_TYPE } from './item_type';
+import { sortItemsCore } from './item_list';
 
 
 export function getDirIndex(dirs, dir_cur){
@@ -78,12 +80,16 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
              'dirs': im.List.of(dir_cur),
              'pages': im.Map({[dir_cur]: page}),
              'item_names': updateItemNames(items),
-             'msg_cmd': ''
+             'msg_cmd': '',
+             'sort_type': SORT_TYPE.NAME_ASC
            });
 
   }else{
+
+    const sort_type = state.get("sort_type");
     const dirs = state.get('dirs');
     const idx_dir = getDirIndex(dirs, dir_cur);
+
     if( idx_dir !== -1 ){
       const dirs_new = dirs.withMutations(s => s.delete(idx_dir)
                                                 .unshift(dir_cur));
@@ -99,11 +105,16 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
 
       let page_new;
       if(line_cur_zero === true){
-        page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
+        //page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
+        //                                    .set('is_selected', is_selected)
+        //                                    .set('line_cur', 0));
+        page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
                                             .set('is_selected', is_selected)
                                             .set('line_cur', 0));
       }else{
-        page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
+        //page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
+        //                                    .set('is_selected', is_selected));
+        page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
                                             .set('is_selected', is_selected));
 
       }
@@ -115,6 +126,7 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
                                        .set('msg_cmd', ''));
 
     }else{
+
       const items = _updateItems(dir_cur);
       const dirs_new = dirs.unshift(dir_cur);
       const is_selected = im.List(im.Range(0, items.size))
@@ -122,10 +134,17 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
                               return false;
                             });
 
+      //const page = im.Map({
+      //               'items': items,
+      //               'line_cur': 0,
+      //               'id_map': im.List(im.Range(0, items.size)),
+      //               'is_selected': is_selected
+      //             });
+
       const page = im.Map({
                      'items': items,
                      'line_cur': 0,
-                     'id_map': im.List(im.Range(0, items.size)),
+                     'id_map': sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ),
                      'is_selected': is_selected
                    });
 
@@ -135,7 +154,9 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
                                        .setIn(['pages', dir_cur], page)
                                        .set('item_names', item_names)
                                        .set('msg_cmd', ''));
+
     }
+
   }
 }
 

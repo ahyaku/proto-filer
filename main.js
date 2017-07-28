@@ -166,17 +166,31 @@ electron.ipcMain.on('fs.isDirectory', (event, arg) => {
   }
 });
 
-electron.ipcMain.on('copy', (event, item_dst, item_src) => {
-  console.log('HERE!!!');
-  console.log(item_src);
-  console.log(item_dst);
+//electron.ipcMain.on('copy', (event, item_dst, item_src) => {
+//  console.log('HERE!!!');
+//  console.log(item_src);
+//  console.log(item_dst);
+//
+//  try{
+//    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
+//  }catch(e){
+//    console.log('catch: ' + e);
+//    event.returnValue = false;
+//  }
+//
+//});
 
-  try{
-    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
-  }catch(e){
-    console.log('catch: ' + e);
-    event.returnValue = false;
-  }
+electron.ipcMain.on('copy', (event, path_dst, path_src, item_names) => {
+  console.log('HERE!!!');
+//  console.log(item_src);
+//  console.log(item_dst);
+
+//  try{
+//    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
+//  }catch(e){
+//    console.log('catch: ' + e);
+//    event.returnValue = false;
+//  }
 
 });
 
