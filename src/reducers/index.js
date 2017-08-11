@@ -286,15 +286,11 @@ const rootReducer = (state_fcd, action) => {
       }
     case 'COPY_ITEMS':
       {
-        //return state;
-        return copyItems(state_fcd);
-        //return Object.assign(
-        //  {},
-        //  state_fcd,
-        //  {
-        //    state_core: state_fcd.set(id, copyItems(state_fcd))
-        //  }
-        //);
+        return handleItems(state_fcd, 'copy');
+      }
+    case 'MOVE_ITEMS':
+      {
+        return handleItems(state_fcd, 'move');
       }
     case 'TEST_SEND_MSG':
       console.log('TEST_SEND_MSG');
@@ -308,10 +304,10 @@ const rootReducer = (state_fcd, action) => {
 
 }
 
-const copyItems = (state_fcd) => {
+const handleItems = (state_fcd, operation) => {
   const id_cur = state_fcd.active_pane_id;
   const id_other = (id_cur + 1) % 2;
-  console.log('id_cur: ' + id_cur + ', id_other: ' + id_other);
+  //console.log('id_cur: ' + id_cur + ', id_other: ' + id_other);
   const state_core = state_fcd.state_core;
   const state_cur = state_core.get(id_cur);
   const state_other = state_core.get(id_other);
@@ -321,33 +317,22 @@ const copyItems = (state_fcd) => {
   const path_cur = state_cur.getIn(['dirs', 0]);
   const path_other = state_other.getIn(['dirs', 0]);
 
-  console.log('path_cur: ' + path_cur);
+  //console.log('path_cur: ' + path_cur);
   const pages_cur = state_cur.getIn(['pages', path_cur]);
   const ids_selected = pages_cur.get('is_selected');
-  console.log('ids_selected: ' + ids_selected);
-  //console.log('pages: ', state_cur.getIn(['pages', path_cur]));
-  console.log('---------------------------------');
+  //console.log('ids_selected: ' + ids_selected);
   const items = pages_cur.get('items');
 
-  //const items_selected = items
-  //                       .filter( (e, i) => {
-  //                         return ids_selected.get(i) === true;
-  //                       })
-  //                       .map( (e, i) => {
-  //                         console.log('e: ' + e + ', i: ' + i);
-  //                         return e.get('name');
-  //                       });
-
   let names_selected = [];
-  console.log('size: ' + ids_selected.size);
+  //console.log('size: ' + ids_selected.size);
   for(let i=0; i<ids_selected.size; i++){
     if(ids_selected.get(i) === true){
       names_selected.push(items.getIn([i, 'name']));
     }
   }
-  console.log('names_selected: ', names_selected);
+  //console.log('names_selected: ', names_selected);
 
-  const ret = ipcRenderer.sendSync('copy', path_other, path_cur, names_selected);
+  const ret = ipcRenderer.sendSync(operation, path_other, path_cur, names_selected);
 
   const state_core_new = state_core.withMutations(s => s.set(id_cur, updatePage(state_cur))
                                                         .set(id_other, updatePage(state_other)));
@@ -358,8 +343,6 @@ const copyItems = (state_fcd) => {
       state_core: state_core_new
     }
   );
-
-  //return state;
 }
 
 const updatePage = (state) => {

@@ -23,6 +23,10 @@ export const _checkKeyNormal = (state_fcd, e) => {
   //console.log('checkKeyNormal <> e.key: ' + e.key + ', e.keyCode: ' + e.keyCode + ', shift: ' + event.shiftKey);
 
   switch(e.key){
+    case 'c': /* 'c' */
+      return {
+        type: 'COPY_ITEMS'
+      }
     case 'j': /* 'j' */
       //this.cursorDown();
       //break;
@@ -51,6 +55,10 @@ export const _checkKeyNormal = (state_fcd, e) => {
       return {
         type: 'CHANGE_DIR_LOWER'
       };
+    case 'm': /* 'm' */
+      return {
+        type: 'MOVE_ITEMS'
+      }
     case 'Tab': /* 'tab' */
       //this.switchPane();
       //break;
@@ -134,11 +142,6 @@ export const _checkKeyNormal = (state_fcd, e) => {
         type: 'CHANGE_DRIVE',
         dlist: ret
       };
-    case 'c':
-      return {
-        type: 'COPY_ITEMS'
-      }
-      break;
     default:
       /* Do Nothing.. */
       //break;

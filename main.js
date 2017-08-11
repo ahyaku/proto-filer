@@ -214,6 +214,40 @@ electron.ipcMain.on('copy', (event, path_dst, path_src, item_names) => {
 
 });
 
+electron.ipcMain.on('move', (event, path_dst, path_src, item_names) => {
+  console.log('HERE!!!');
+  console.log('path_dst: ' + path_dst);
+  console.log('path_src: ' + path_src);
+  console.log('item_names: ' + item_names);
+  console.log('item_names.length: ' + item_names.length);
+
+  for(let i=0; i<item_names.length; i++){
+    let item_src = path.join(path_src, item_names[i]);
+    let item_dst = path.join(path_dst, item_names[i]);
+    console.log('item_src[' + i + ']: ' + item_src);
+    console.log('item_dst[' + i + ']: ' + item_dst);
+
+    //let rstream = fs.createReadStream(item_src);
+    //let wstream = fs.createWriteStream(item_dst);
+    //rstream.pipe(wstream);
+
+    fs.moveSync(item_src, item_dst, {overwrite: true});
+    //let ret = fs.copySync(item_src, item_dst, {errorOnExist: true});
+    //console.log('ret: ' + ret);
+  }
+
+
+//  try{
+//    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
+//  }catch(e){
+//    console.log('catch: ' + e);
+//    event.returnValue = false;
+//  }
+
+  event.returnValue = true;
+
+});
+
 electron.ipcMain.on('delete', (event) => {
   for(let key in g_items_seleted){
     let target = path.join(g_dir_cur, key);
