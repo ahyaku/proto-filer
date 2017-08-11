@@ -79,18 +79,24 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
     return im.Map({
              'dirs': im.List.of(dir_cur),
              'pages': im.Map({[dir_cur]: page}),
-             'item_names': updateItemNames(items),
+             'item_names': _updateItemNames(items),
              'msg_cmd': '',
              'sort_type': SORT_TYPE.NAME_ASC
            });
 
   }else{
 
-    const sort_type = state.get("sort_type");
+    //const sort_type = state.get("sort_type");
     const dirs = state.get('dirs');
     const idx_dir = getDirIndex(dirs, dir_cur);
 
-    if( idx_dir !== -1 ){
+    if( idx_dir === 0 ){ /* "dir_cur" is the current directory. */
+
+      return _loadPage(state, dir_cur); /* reload page to reflesh the displayed item lists as the latest one. */
+
+    }else if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
+
+      const sort_type = state.get("sort_type");
       const dirs_new = dirs.withMutations(s => s.delete(idx_dir)
                                                 .unshift(dir_cur));
 
@@ -119,41 +125,15 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
 
       }
 
-      const item_names = updateItemNames(items);
+      const item_names = _updateItemNames(items);
       return state.withMutations(s => s.set('dirs', dirs_new)
                                        .setIn(['pages', dir_cur], page_new)
                                        .set('item_names', item_names)
                                        .set('msg_cmd', ''));
 
-    }else{
+    }else{ /* "dir_cur" is not yet registered in "dirs" */
 
-      const items = _updateItems(dir_cur);
-      const dirs_new = dirs.unshift(dir_cur);
-      const is_selected = im.List(im.Range(0, items.size))
-                            .map((e, i) => {
-                              return false;
-                            });
-
-      //const page = im.Map({
-      //               'items': items,
-      //               'line_cur': 0,
-      //               'id_map': im.List(im.Range(0, items.size)),
-      //               'is_selected': is_selected
-      //             });
-
-      const page = im.Map({
-                     'items': items,
-                     'line_cur': 0,
-                     'id_map': sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ),
-                     'is_selected': is_selected
-                   });
-
-      const item_names = updateItemNames(items);
-
-      return state.withMutations(s => s.set('dirs', dirs_new)
-                                       .setIn(['pages', dir_cur], page)
-                                       .set('item_names', item_names)
-                                       .set('msg_cmd', ''));
+      return _loadPage(state, dir_cur).set('dirs', dirs.unshift(dir_cur));
 
     }
 
@@ -225,7 +205,7 @@ const _updateItems = (dir_cur) => {
   return items;
 }
 
-const updateItemNames = (items) => {
+const _updateItemNames = (items) => {
   let array = [];
   //console.log('items: ' + items.get(3));
   for(let i=0; i<items.size; i++){
@@ -233,6 +213,30 @@ const updateItemNames = (items) => {
     //console.log('array[' + i + ']: ' + array[i]);
   }
   return array;
+}
+
+const _loadPage = (state, dir_cur) => {
+  const sort_type = state.get("sort_type");
+  const items = _updateItems(dir_cur);
+  const is_selected = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return false;
+                        });
+
+  const page = im.Map({
+                 'items': items,
+                 'line_cur': 0,
+                 'id_map': sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ),
+                 'is_selected': is_selected
+               });
+
+  const item_names = _updateItemNames(items);
+
+  return state.withMutations(s => s.setIn(['pages', dir_cur], page)
+                                   .set('item_names', item_names)
+                                   .set('msg_cmd', ''));
+
+
 }
 
 

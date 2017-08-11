@@ -1,6 +1,6 @@
 //const ipc = require('ipc');
 //const {ipcMain} = require('electron');
-const fs = require('fs');
+const fs = require('fs-extra');
 const util = require('util');
 const path = require('path');
 const electron = require('electron');
@@ -182,8 +182,26 @@ electron.ipcMain.on('fs.isDirectory', (event, arg) => {
 
 electron.ipcMain.on('copy', (event, path_dst, path_src, item_names) => {
   console.log('HERE!!!');
-//  console.log(item_src);
-//  console.log(item_dst);
+  console.log('path_dst: ' + path_dst);
+  console.log('path_src: ' + path_src);
+  console.log('item_names: ' + item_names);
+  console.log('item_names.length: ' + item_names.length);
+
+  for(let i=0; i<item_names.length; i++){
+    let item_src = path.join(path_src, item_names[i]);
+    let item_dst = path.join(path_dst, item_names[i]);
+    console.log('item_src[' + i + ']: ' + item_src);
+    console.log('item_dst[' + i + ']: ' + item_dst);
+
+    //let rstream = fs.createReadStream(item_src);
+    //let wstream = fs.createWriteStream(item_dst);
+    //rstream.pipe(wstream);
+
+    fs.copySync(item_src, item_dst);
+    //let ret = fs.copySync(item_src, item_dst, {errorOnExist: true});
+    //console.log('ret: ' + ret);
+  }
+
 
 //  try{
 //    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
@@ -191,6 +209,8 @@ electron.ipcMain.on('copy', (event, path_dst, path_src, item_names) => {
 //    console.log('catch: ' + e);
 //    event.returnValue = false;
 //  }
+
+  event.returnValue = true;
 
 });
 

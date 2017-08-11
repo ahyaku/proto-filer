@@ -326,20 +326,28 @@ const copyItems = (state_fcd) => {
   const ids_selected = pages_cur.get('is_selected');
   console.log('ids_selected: ' + ids_selected);
   //console.log('pages: ', state_cur.getIn(['pages', path_cur]));
-  console.log('---------------------------------')
-  const items = state_cur.getIn(['pages', path_cur, 'items'])
-                  .filter( (e) => {
-                    const ret = e.get('is_selected') === true;
-                    console.log(e.get('name') + ', ' + ret);
-                    return e.get('is_selected') === true;
-                  })
-                  //.map( (e) =>{
-                  //  return e.get('name');
-                  //});
-  //console.log('items: ', items);
   console.log('---------------------------------');
-  console.log('items[0]: ', items[0]);
-  //const ret = ipcRenderer.sendSync('copy', path_other, path_cur, items);
+  const items = pages_cur.get('items');
+
+  //const items_selected = items
+  //                       .filter( (e, i) => {
+  //                         return ids_selected.get(i) === true;
+  //                       })
+  //                       .map( (e, i) => {
+  //                         console.log('e: ' + e + ', i: ' + i);
+  //                         return e.get('name');
+  //                       });
+
+  let names_selected = [];
+  console.log('size: ' + ids_selected.size);
+  for(let i=0; i<ids_selected.size; i++){
+    if(ids_selected.get(i) === true){
+      names_selected.push(items.getIn([i, 'name']));
+    }
+  }
+  console.log('names_selected: ', names_selected);
+
+  const ret = ipcRenderer.sendSync('copy', path_other, path_cur, names_selected);
 
   const state_core_new = state_core.withMutations(s => s.set(id_cur, updatePage(state_cur))
                                                         .set(id_other, updatePage(state_other)));
