@@ -141,9 +141,34 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
 }
 
 export function changeDirUpper(state){
-  const dir = path.parse(state.getIn(['dirs', 0])).dir; 
-  //console.log('changeDirUpper() <> dir: ' + dir);
-  return updatePageCur(state, dir, false);
+  const dir_cur = state.getIn(['dirs', 0]); 
+  const name = path.basename(dir_cur);
+  const dir_new = path.parse(dir_cur).dir; 
+
+  /* If 'dir_cur' is the root directory, do not change the current directory. */
+  if(dir_cur === dir_new){
+    return state;
+  }
+
+  //console.log('dir_new: ' + dir_new);
+  //console.log('name: ' + name);
+
+  const state_new = updatePageCur(state, dir_new, false);
+  return _moveLineByName(state_new, name);
+}
+
+const _moveLineByName = (state, name) => {
+  const dir = state.getIn(['dirs', 0]);
+  const page = state.getIn(['pages', dir]);
+  const items = page.get('items');
+  const line_cur = page.get('id_map').findKey(
+                     (e) => {
+                       return items.getIn([e, 'name']) === name;
+                     }
+                   );
+  //console.log('line_cur: ' + line_cur);
+
+  return state.setIn(['pages', dir, 'line_cur'], line_cur);
 }
 
 export function changeDirLower(state){
