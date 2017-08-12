@@ -4,8 +4,8 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import im from 'immutable';
-import { updateItemsAsDiskDrive, DISK_DRIVE } from './item_list';
-import { initAsItem, initAsDiskDrive } from './item';
+import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK } from './item_list';
+import { initAsItem, initAsDiskDrive, initAsBookmark } from './item';
 import { SORT_TYPE } from './item_type';
 import { sortItemsCore } from './item_list';
 
@@ -49,6 +49,70 @@ export function changeDrive(state, drive_list){
                  'is_selected': is_selected
                });
   return state.withMutations(s => s.setIn(['pages', DISK_DRIVE], page)
+                                   .set('dirs', dirs_new));
+}
+
+export function showBookmark(state){
+  const dirs = state.get('dirs');
+  const idx_dir = getDirIndex(dirs, BOOKMARK);
+  let dirs_new;
+  if( idx_dir !== -1 ){
+    dirs_new = dirs.withMutations(s => s.delete(idx_dir)
+                                        .unshift(BOOKMARK));
+  }else{
+    dirs_new = dirs.unshift(BOOKMARK);
+  }
+
+  //console.log('changeDrive <> drive_list.length: ' + drive_list.length);
+
+  const tmp = fs.realpathSync('C:\\Users\\mydata');
+
+  //const list_bookmark = {
+  //  'mydata': fs.realpathSync('C:\\Users\\mydata'),
+  //  'tmp': fs.realpathSync('C:\\tmp'),
+  //  'git_repo': fs.realpathSync('C:\\git_repo'),
+  //  'Go': fs.realpathSync('C:\\Go')
+  //}
+
+  const list_bookmark = {
+    0: {
+      'name': 'mydata',
+      'path_body': fs.realpathSync('C:\\Users\\mydata'),
+    },
+    1: {
+      'name': 'tmp',
+      'path_body': fs.realpathSync('C:\\tmp'),
+    },
+    2: {
+      'name': 'git_repo',
+      'path_body': fs.realpathSync('C:\\git_repo'), 
+    },
+    3: {
+      'name': 'Go',
+      'path_body': fs.realpathSync('C:\\Go')
+    }
+  }
+
+  //console.log('list_bookmark[0]: ', list_bookmark[0]);
+  //console.log('list_bookmark.length: ', Object.keys(list_bookmark).length);
+  
+  const items = im.List(im.Range(0, Object.keys(list_bookmark).length))
+                  .map((e, i) => {
+                    return initAsBookmark(i, list_bookmark[i]['name'], list_bookmark[i]['path_body']);
+                  });
+
+  const is_selected = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return false;
+                        });
+
+  const page = im.Map({
+                 'items': items,
+                 'line_cur': 0,
+                 'id_map': im.List(im.Range(0, items.size)),
+                 'is_selected': is_selected
+               });
+  return state.withMutations(s => s.setIn(['pages', BOOKMARK], page)
                                    .set('dirs', dirs_new));
 }
 
@@ -145,9 +209,14 @@ export function changeDirUpper(state){
   const name = path.basename(dir_cur);
   const dir_new = path.parse(dir_cur).dir; 
 
-  /* If 'dir_cur' is the root directory, do not change the current directory. */
-  if(dir_cur === dir_new){
-    return state;
+  switch(dir_cur){
+    case DISK_DRIVE:
+    case BOOKMARK:
+    case dir_new: /* If 'dir_cur' is the root directory, do not change the current directory. */
+      return state;
+    default:
+      /* Do Nothing.. */
+      break;
   }
 
   //console.log('dir_new: ' + dir_new);
@@ -191,6 +260,9 @@ export function changeDirLower(state){
   switch(dir){
     case DISK_DRIVE:
       dir_new = item_name;
+      break;
+    case BOOKMARK:
+      dir_new = page.getIn(['items', id_map.get(line_cur), 'path_body']);
       break;
     default:
       dir_new = path.join(dir, item_name);

@@ -79,6 +79,23 @@ export function initAsDiskDrive(id, name){
          });
 }
 
+export function initAsBookmark(id, name, path_body){
+  const basename = name;
+
+  return im.Map({
+           'id': id,
+           'name': name,
+           'basename': basename,
+           'ext': '',
+           'kind': '',
+           'fsize': '',
+           'date': '',
+           'time': '',
+           'selected': false,
+           'path_body': path_body
+         });
+}
+
 function getItemTypeKind(ext){
   const opt = {sensitivity: 'base'};
 

@@ -4,7 +4,7 @@ import fs from 'fs';
 import im from 'immutable';
 import path from 'path';
 import { ipcRenderer } from 'electron'
-import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex } from '../util/item_list_pages';
+import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex, showBookmark } from '../util/item_list_pages';
 import { KEY_INPUT_MODE, ITEM_TYPE_KIND /*, SORT_TYPE */ } from '../util/item_type';
 import { sortItems, sortItemsCore } from '../util/item_list';
 
@@ -35,6 +35,19 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  {
                    state_core: state_core_new
+                 }
+               );
+      }
+    case 'OPEN_BOOKMARK':
+      {
+        const state_new = showBookmark(state, action.dlist);
+        const dir = state_new.getIn(['dirs', 0]);
+        const im_items = state_new.getIn(['pages', dir, 'items']);
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   state_core: state_fcd.state_core.set(id, state_new),
                  }
                );
       }

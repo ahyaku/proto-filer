@@ -23,6 +23,17 @@ export const _checkKeyNormal = (state_fcd, e) => {
   //console.log('checkKeyNormal <> e.key: ' + e.key + ', e.keyCode: ' + e.keyCode + ', shift: ' + event.shiftKey);
 
   switch(e.key){
+    case 'b': /* 'b' */
+      event.preventDefault();
+      if(event.ctrlKey == true){
+        return {
+          type: 'OPEN_BOOKMARK'
+        }
+      }else{
+        return {
+          type: 'DO_NOTHING'
+        };
+      }
     case 'c': /* 'c' */
       return {
         type: 'COPY_ITEMS'
