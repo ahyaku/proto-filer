@@ -1,6 +1,7 @@
 //const ipc = require('ipc');
 //const {ipcMain} = require('electron');
 const fs = require('fs-extra');
+const trash = require('trash');
 const util = require('util');
 const path = require('path');
 const electron = require('electron');
@@ -22,7 +23,6 @@ const POPUP_POS_MARGIN = 10;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
-
 let confWindow
 let sortWindow
 
@@ -232,31 +232,41 @@ electron.ipcMain.on('move', (event, path_dst, path_src, item_names) => {
     //rstream.pipe(wstream);
 
     fs.moveSync(item_src, item_dst, {overwrite: true});
-    //let ret = fs.copySync(item_src, item_dst, {errorOnExist: true});
-    //console.log('ret: ' + ret);
   }
 
+  event.returnValue = true;
 
-//  try{
-//    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
-//  }catch(e){
-//    console.log('catch: ' + e);
-//    event.returnValue = false;
+});
+
+electron.ipcMain.on('trash', (event, path_src, item_names) => {
+  console.log('trash!!!');
+  console.log('path_src: ' + path_src);
+  console.log('item_names: ' + item_names);
+  console.log('item_names.length: ' + item_names.length);
+
+  let items = [];
+  for(let i=0; i<item_names.length; i++){
+    items.push(path.join(path_src, item_names[i]));
+    console.log('items[' + i + ']: ' + items[i]);
+
+  }
+
+  trash(items).then(() => {
+    console.log('Done!!');
+    event.returnValue = true;
+  });
+
+});
+
+//electron.ipcMain.on('delete', (event) => {
+//  for(let key in g_items_seleted){
+//    let target = path.join(g_dir_cur, key);
+//    let ret = shell.moveItemToTrash(target);
+//    console.log('target: ' + target + ', ret: ' + ret);
 //  }
-
-  event.returnValue = true;
-
-});
-
-electron.ipcMain.on('delete', (event) => {
-  for(let key in g_items_seleted){
-    let target = path.join(g_dir_cur, key);
-    let ret = shell.moveItemToTrash(target);
-    console.log('target: ' + target + ', ret: ' + ret);
-  }
-  mainWindow.webContents.send('updatePane');
-  event.returnValue = true;
-});
+//  mainWindow.webContents.send('updatePane');
+//  event.returnValue = true;
+//});
 
 electron.ipcMain.on('popup', (event, mode, params) => {
 

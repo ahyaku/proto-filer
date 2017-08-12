@@ -292,6 +292,10 @@ const rootReducer = (state_fcd, action) => {
       {
         return handleItems(state_fcd, 'move');
       }
+    case 'DELETE_ITEMS':
+      {
+        return deleteItems(state_fcd);
+      }
     case 'TEST_SEND_MSG':
       console.log('TEST_SEND_MSG');
       return state_fcd;
@@ -336,6 +340,41 @@ const handleItems = (state_fcd, operation) => {
 
   const state_core_new = state_core.withMutations(s => s.set(id_cur, updatePage(state_cur))
                                                         .set(id_other, updatePage(state_other)));
+  return Object.assign(
+    {},
+    state_fcd,
+    {
+      state_core: state_core_new
+    }
+  );
+}
+
+const deleteItems = (state_fcd) => {
+  const id_cur = state_fcd.active_pane_id;
+  //console.log('id_cur: ' + id_cur + ', id_other: ' + id_other);
+  const state_core = state_fcd.state_core;
+  const state_cur = state_core.get(id_cur);
+  const path_cur = state_cur.getIn(['dirs', 0]);
+
+  //console.log('path_cur: ' + path_cur);
+  const pages_cur = state_cur.getIn(['pages', path_cur]);
+  const ids_selected = pages_cur.get('is_selected');
+  //console.log('ids_selected: ' + ids_selected);
+  const items = pages_cur.get('items');
+
+  let names_selected = [];
+  //console.log('size: ' + ids_selected.size);
+  for(let i=0; i<ids_selected.size; i++){
+    if(ids_selected.get(i) === true){
+      names_selected.push(items.getIn([i, 'name']));
+    }
+  }
+  //console.log('names_selected: ', names_selected);
+
+  const ret = ipcRenderer.sendSync('trash', path_cur, names_selected);
+
+  const state_core_new = state_core.set(id_cur, updatePage(state_cur));
+                                                        
   return Object.assign(
     {},
     state_fcd,

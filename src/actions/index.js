@@ -94,9 +94,10 @@ export const _checkKeyNormal = (state_fcd, e) => {
     //case 'c': /* 'c' */
     //  //this.copyItems();
     //  //break;           
-    //case 'd': /* 'd' */
-    //  //this.deleteItems();
-    //  //break;           
+    case 'd': /* 'd' */
+      return {
+        type: 'DELETE_ITEMS'
+      };
     //case 'm': /* 'm' */
     //  //break;           
     case 'q': /* 'q' */
