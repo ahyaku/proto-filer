@@ -1,7 +1,6 @@
 //const ipc = require('ipc');
 //const {ipcMain} = require('electron');
 const fs = require('fs-extra');
-const trash = require('trash');
 const util = require('util');
 const path = require('path');
 const electron = require('electron');
@@ -244,29 +243,14 @@ electron.ipcMain.on('trash', (event, path_src, item_names) => {
   console.log('item_names: ' + item_names);
   console.log('item_names.length: ' + item_names.length);
 
-  let items = [];
   for(let i=0; i<item_names.length; i++){
-    items.push(path.join(path_src, item_names[i]));
-    console.log('items[' + i + ']: ' + items[i]);
-
+    const item_src = path.join(path_src, item_names[i]);
+    console.log(i + ': ' + item_src);
+    shell.moveItemToTrash(item_src);
   }
 
-  trash(items).then(() => {
-    console.log('Done!!');
-    event.returnValue = true;
-  });
-
+  event.returnValue = true;
 });
-
-//electron.ipcMain.on('delete', (event) => {
-//  for(let key in g_items_seleted){
-//    let target = path.join(g_dir_cur, key);
-//    let ret = shell.moveItemToTrash(target);
-//    console.log('target: ' + target + ', ret: ' + ret);
-//  }
-//  mainWindow.webContents.send('updatePane');
-//  event.returnValue = true;
-//});
 
 electron.ipcMain.on('popup', (event, mode, params) => {
 
