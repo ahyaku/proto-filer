@@ -148,8 +148,19 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
 
   }else{
 
-    //const sort_type = state.get("sort_type");
-    const dirs = state.get('dirs');
+    /* Remove DISK_DRIVE and BOOKMARK from history. */
+    const dirs_tmp = state.get('dirs');
+    let dirs;
+    switch(dirs_tmp.get(0)){
+      case DISK_DRIVE:
+      case BOOKMARK:
+        dirs = dirs_tmp.delete(0);
+        break;
+      default:
+        dirs = dirs_tmp;
+        break;
+    }
+
     const idx_dir = getDirIndex(dirs, dir_cur);
 
     if( idx_dir === 0 ){ /* "dir_cur" is the current directory. */
