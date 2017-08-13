@@ -252,6 +252,21 @@ electron.ipcMain.on('trash', (event, path_src, item_names) => {
   event.returnValue = true;
 });
 
+electron.ipcMain.on('open_item', (event, path_src, item_names) => {
+  console.log('open_item!!!');
+  console.log('path_src: ' + path_src);
+  console.log('item_names: ' + item_names);
+  console.log('item_names.length: ' + item_names.length);
+
+  for(let i=0; i<item_names.length; i++){
+    const item_src = path.join(path_src, item_names[i]);
+    console.log(i + ': ' + item_src);
+    shell.openItem(item_src);
+  }
+
+  event.returnValue = true;
+});
+
 electron.ipcMain.on('popup', (event, mode, params) => {
 
   switch(mode){

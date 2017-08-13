@@ -23,6 +23,10 @@ export const _checkKeyNormal = (state_fcd, e) => {
   //console.log('checkKeyNormal <> e.key: ' + e.key + ', e.keyCode: ' + e.keyCode + ', shift: ' + event.shiftKey);
 
   switch(e.key){
+    case 'Enter':
+      return {
+        type: 'OPEN_ITEM'
+      };
     case 'b': /* 'b' */
       event.preventDefault();
       if(event.ctrlKey == true){
@@ -88,11 +92,11 @@ export const _checkKeyNormal = (state_fcd, e) => {
       if(event.shiftKey == true){
         return {
           type: 'TOGGLE_ITEM_SELECT_UP'
-        }
+        };
       }else{
         return {
           type: 'TOGGLE_ITEM_SELECT_DOWN'
-        }
+        };
       }
 
     //  //if(event.shiftKey == true){
@@ -145,7 +149,7 @@ export const _checkKeyNormal = (state_fcd, e) => {
       event.preventDefault();
       return {
         type: 'WILL_DISP_POPUP_FOR_SORT_ITEM_LIST'
-      }
+      };
       //return {
       //  type: 'DISP_POPUP_FOR_SORT_ITEM_LIST'
       //}

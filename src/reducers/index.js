@@ -16,6 +16,10 @@ const rootReducer = (state_fcd, action) => {
   const state = state_fcd.state_core.get(id);
 
   switch(action.type){
+    case 'OPEN_ITEM':
+      {
+        return openItem(state_fcd);
+      }
     case 'MOVE_CURSOR_UP':
       {
         const state_core_new = state_fcd.state_core.set(id, moveCursor(state, -1));
@@ -424,6 +428,34 @@ const deleteItems = (state_fcd) => {
       state_core: state_core_new
     }
   );
+}
+
+const openItem = (state_fcd) => {
+  const id_cur = state_fcd.active_pane_id;
+  const state_core = state_fcd.state_core;
+  const state_cur = state_core.get(id_cur);
+  const path_cur = state_cur.getIn(['dirs', 0]);
+
+  const page_cur = state_cur.getIn(['pages', path_cur]);
+  const line_cur = page_cur.get('line_cur');
+  const id_map = page_cur.get('id_map');
+  const item_name = page_cur.getIn(['items', id_map.get(line_cur), 'name']);
+  console.log('item_name: ' + item_name);
+
+  let item_names = [];
+  item_names.push(item_name);
+
+  //const ids_selected = page_cur.get('is_selected');
+  //const items = page_cur.get('items');
+  //let names_selected = [];
+  //for(let i=0; i<ids_selected.size; i++){
+  //  if(ids_selected.get(i) === true){
+  //    names_selected.push(items.getIn([i, 'name']));
+  //  }
+  //}
+
+  const ret = ipcRenderer.sendSync('open_item', path_cur, item_names);
+  return state_fcd;
 }
 
 const updatePage = (state) => {
