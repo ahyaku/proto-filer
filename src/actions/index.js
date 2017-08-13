@@ -53,9 +53,16 @@ export const _checkKeyNormal = (state_fcd, e) => {
     case 'h': /* 'h' */
       //this.changeDirUpper();
       //break;
-      return {
-        type: 'CHANGE_DIR_UPPER'
-      };
+      event.preventDefault();
+      if(event.ctrlKey){
+        return {
+          type: 'OPEN_HISTORY'
+        };
+      }else{
+        return {
+          type: 'CHANGE_DIR_UPPER'
+        };
+      }
     case 'l': /* 'l' */
       //if(event.ctrlKey == true){
       //  this.updatePane();
@@ -154,6 +161,11 @@ export const _checkKeyNormal = (state_fcd, e) => {
         type: 'CHANGE_DRIVE',
         dlist: ret
       };
+    //case 'gg':
+    //  console.log('gg');
+    //  return {
+    //    type: 'DO_NOTHING'
+    //  };
     default:
       /* Do Nothing.. */
       //break;

@@ -96,6 +96,22 @@ export function initAsBookmark(id, name, path_body){
          });
 }
 
+export function initAsHistory(id, path_dir){
+  const basename = name;
+
+  return im.Map({
+           'id': id,
+           'name': path_dir,
+           'basename': path_dir,
+           'ext': '',
+           'kind': '',
+           'fsize': '',
+           'date': '',
+           'time': '',
+           'selected': false,
+         });
+}
+
 function getItemTypeKind(ext){
   const opt = {sensitivity: 'base'};
 

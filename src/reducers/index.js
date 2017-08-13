@@ -4,7 +4,7 @@ import fs from 'fs';
 import im from 'immutable';
 import path from 'path';
 import { ipcRenderer } from 'electron'
-import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex, showBookmark } from '../util/item_list_pages';
+import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex, showBookmark, showHistory } from '../util/item_list_pages';
 import { KEY_INPUT_MODE, ITEM_TYPE_KIND /*, SORT_TYPE */ } from '../util/item_type';
 import { sortItems, sortItemsCore } from '../util/item_list';
 
@@ -51,6 +51,19 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+    case 'OPEN_HISTORY':
+      {
+        const state_new = showHistory(state);
+        const dir = state_new.getIn(['dirs', 0]);
+        const im_items = state_new.getIn(['pages', dir, 'items']);
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   state_core: state_fcd.state_core.set(id, state_new),
+                 }
+               );
+      }
     case 'CHANGE_DRIVE':
       {
         const state_new = changeDrive(state, action.dlist);
@@ -68,6 +81,14 @@ const rootReducer = (state_fcd, action) => {
       {
         const state_new = changeDirUpper(state);
         const dir = state_new.getIn(['dirs', 0]);
+        //{
+        //  console.log('----------------------------------------');
+        //  const dirs = state_new.get('dirs');
+        //  dirs.forEach((e) => {
+        //    console.log(e);
+        //  });
+        //  console.log('----------------------------------------');
+        //}
         const page = state_new.getIn(['pages', dir]);
         const im_items = page.get('items');
         return Object.assign(
@@ -86,6 +107,14 @@ const rootReducer = (state_fcd, action) => {
         }
 
         const dir = state_new.getIn(['dirs', 0]);
+        //{
+        //  console.log('----------------------------------------');
+        //  const dirs = state_new.get('dirs');
+        //  dirs.forEach((e) => {
+        //    console.log(e);
+        //  });
+        //  console.log('----------------------------------------');
+        //}
         const page = state_new.getIn(['pages', dir]);
         const im_items = page.get('items');
         return Object.assign(

@@ -4,8 +4,8 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import im from 'immutable';
-import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK } from './item_list';
-import { initAsItem, initAsDiskDrive, initAsBookmark } from './item';
+import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK, HISTORY } from './item_list';
+import { initAsItem, initAsDiskDrive, initAsBookmark, initAsHistory } from './item';
 import { SORT_TYPE } from './item_type';
 import { sortItemsCore } from './item_list';
 
@@ -114,7 +114,41 @@ export function showBookmark(state){
                                    .set('dirs', dirs_new));
 }
 
+export function showHistory(state){
+  const dirs = state.get('dirs');
+  const idx_dir = getDirIndex(dirs, HISTORY);
+  let dirs_new;
+  if( idx_dir !== -1 ){
+    dirs_new = dirs.withMutations(s => s.delete(idx_dir)
+                                        .unshift(HISTORY));
+  }else{
+    dirs_new = dirs.unshift(HISTORY);
+  }
 
+  //console.log('changeDrive <> drive_list.length: ' + drive_list.length);
+
+  //console.log('list_bookmark[0]: ', list_bookmark[0]);
+  //console.log('list_bookmark.length: ', Object.keys(list_bookmark).length);
+  
+  const items = im.List(im.Range(0, dirs.size))
+                  .map((e, i) => {
+                    return initAsHistory(i, dirs.get(i));
+                  });
+
+  const is_selected = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return false;
+                        });
+
+  const page = im.Map({
+                 'items': items,
+                 'line_cur': 0,
+                 'id_map': im.List(im.Range(0, items.size)),
+                 'is_selected': is_selected
+               });
+  return state.withMutations(s => s.setIn(['pages', HISTORY], page)
+                                   .set('dirs', dirs_new));
+}
 
 /* Need to rename this function. */
 export function updatePageCur(state, _dir_cur, line_cur_zero){
@@ -122,38 +156,19 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
   //console.log('updatePageCur <> dir_cur: ' + dir_cur + ', _dir_cur: ' + _dir_cur);
 
   if(state === null){
-
-    const items = _updateItems(dir_cur);
-    //console.log('updatePageCur <> items.getIn(1, name) ' + items.getIn([1, 'name']));
-
-    const is_selected = im.List(im.Range(0, items.size))
-                          .map((e, i) => {
-                            return false;
-                          });
-
-    const page = im.Map({
-                   'items': items,
-                   'line_cur': 0,
-                   'id_map': im.List(im.Range(0, items.size)),
-                   'is_selected': is_selected
-                 });
-
-    return im.Map({
-             'dirs': im.List.of(dir_cur),
-             'pages': im.Map({[dir_cur]: page}),
-             'item_names': _updateItemNames(items),
-             'msg_cmd': '',
-             'sort_type': SORT_TYPE.NAME_ASC
-           });
-
+    return _constructNewPage(dir_cur);
   }else{
-
-    /* Remove DISK_DRIVE and BOOKMARK from history. */
     const dirs_tmp = state.get('dirs');
     let dirs;
+
     switch(dirs_tmp.get(0)){
+      case dir_cur: /* "dir_cur" is the current directory. */
+        return _loadPage(state, dir_cur); /* reload page to reflesh the displayed item lists as the latest one. */
+
+      /* Remove DISK_DRIVE and BOOKMARK from history. */
       case DISK_DRIVE:
       case BOOKMARK:
+      case HISTORY:
         dirs = dirs_tmp.delete(0);
         break;
       default:
@@ -162,78 +177,93 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
     }
 
     const idx_dir = getDirIndex(dirs, dir_cur);
-
-    if( idx_dir === 0 ){ /* "dir_cur" is the current directory. */
-
-      return _loadPage(state, dir_cur); /* reload page to reflesh the displayed item lists as the latest one. */
-
-    }else if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
-
-      //console.log('HERE!!');
-      const sort_type = state.get("sort_type");
-
-      //{
-      //  console.log('----------------------------------------');
-      //  dirs.forEach((e) => {
-      //    console.log('Before: ' + e);
-      //  });
-      //  console.log('----------------------------------------');
-      //  console.log('idx_dir: ' + idx_dir);
-      //}
-
-      //const dirs_new = dirs.withMutations(s => s.delete(idx_dir)
-      //                                          .unshift(dir_cur));
-
-      const dirs_new = dirs.delete(idx_dir)
-                           .unshift(dir_cur);
-
-      //{
-      //  console.log('----------------------------------------');
-      //  dirs_new.forEach((e) => {
-      //    console.log('After: ' + e);
-      //  });
-      //  console.log('----------------------------------------');
-      //}
-
-      const page = state.getIn(['pages', dirs_new.get(0)]);
-      const items = page.get('items');
-
-      const is_selected = im.List(im.Range(0, items.size))
-                            .map((e, i) => {
-                              return false;
-                            });
-
-
-      let page_new;
-      if(line_cur_zero === true){
-        //page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
-        //                                    .set('is_selected', is_selected)
-        //                                    .set('line_cur', 0));
-        page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
-                                            .set('is_selected', is_selected)
-                                            .set('line_cur', 0));
-      }else{
-        //page_new = page.withMutations(s => s.set('id_map', im.List(im.Range(0, items.size)))
-        //                                    .set('is_selected', is_selected));
-        page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
-                                            .set('is_selected', is_selected));
-
-      }
-
-      const item_names = _updateItemNames(items);
-      return state.withMutations(s => s.set('dirs', dirs_new)
-                                       .setIn(['pages', dir_cur], page_new)
-                                       .set('item_names', item_names)
-                                       .set('msg_cmd', ''));
-
+    if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
+      return _makeRegisteredPageAsCurrent(state, dirs, idx_dir, line_cur_zero);
     }else{ /* "dir_cur" is not yet registered in "dirs" */
-
       return _loadPage(state, dir_cur).set('dirs', dirs.unshift(dir_cur));
-
     }
+  }
+
+}
+
+const _constructNewPage = (dir_cur) => {
+  const items = _updateItems(dir_cur);
+  //console.log('updatePageCur <> items.getIn(1, name) ' + items.getIn([1, 'name']));
+
+  const is_selected = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return false;
+                        });
+
+  const page = im.Map({
+                 'items': items,
+                 'line_cur': 0,
+                 'id_map': im.List(im.Range(0, items.size)),
+                 'is_selected': is_selected
+               });
+
+  return im.Map({
+           'dirs': im.List.of(dir_cur),
+           'pages': im.Map({[dir_cur]: page}),
+           'item_names': _updateItemNames(items),
+           'msg_cmd': '',
+           'sort_type': SORT_TYPE.NAME_ASC
+         });
+}
+
+const _makeRegisteredPageAsCurrent = (state, dirs, idx_dir, line_cur_zero) => {
+  const dir_cur = dirs.get(idx_dir);
+  const sort_type = state.get("sort_type");
+
+  //{
+  //  console.log('----------------------------------------');
+  //  dirs.forEach((e) => {
+  //    console.log('Before: ' + e);
+  //  });
+  //  console.log('----------------------------------------');
+  //  console.log('idx_dir: ' + idx_dir);
+  //}
+
+  const dirs_new = dirs.delete(idx_dir)
+                       .unshift(dir_cur);
+
+
+  //{
+  //  console.log('----------------------------------------');
+  //  dirs_new.forEach((e) => {
+  //    console.log('After: ' + e);
+  //  });
+  //  console.log('----------------------------------------');
+  //}
+
+  const page = state.getIn(['pages', dirs_new.get(0)]);
+  const items = page.get('items');
+
+  const is_selected = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return false;
+                        });
+
+
+  let page_new;
+  if(line_cur_zero === true){
+    page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
+                                        .set('is_selected', is_selected)
+                                        .set('line_cur', 0));
+  }else{
+    page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
+                                        .set('is_selected', is_selected));
 
   }
+
+  const item_names = _updateItemNames(items);
+  return state.withMutations(s => s.set('dirs', dirs_new)
+                                   .setIn(['pages', dir_cur], page_new)
+                                   .set('item_names', item_names)
+                                   .set('msg_cmd', ''));
+
 }
+
 
 export function changeDirUpper(state){
   const dir_cur = state.getIn(['dirs', 0]); 
@@ -243,6 +273,7 @@ export function changeDirUpper(state){
   switch(dir_cur){
     case DISK_DRIVE:
     case BOOKMARK:
+    case HISTORY:
     case dir_new: /* If 'dir_cur' is the root directory, do not change the current directory. */
       return state;
     default:
@@ -294,6 +325,10 @@ export function changeDirLower(state){
       break;
     case BOOKMARK:
       dir_new = page.getIn(['items', id_map.get(line_cur), 'path_body']);
+      break;
+    case HISTORY:
+      dir_new = page.getIn(['items', id_map.get(line_cur), 'name']);
+      //console.log('line_cur: ' + line_cur + ', dir_new: ' + dir_new);
       break;
     default:
       dir_new = path.join(dir, item_name);

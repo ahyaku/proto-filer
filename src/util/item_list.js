@@ -9,6 +9,7 @@ import { ITEM_TYPE_KIND, SORT_TYPE } from './item_type';
 
 export const DISK_DRIVE = 'Disk Drives';
 export const BOOKMARK = 'Bookmark';
+export const HISTORY = 'History';
 
 //export function updateItemsAsDiskDrive(drive_list){
 export const updateItemsAsDiskDrive = (drive_list) => {
