@@ -65,8 +65,6 @@ export function showBookmark(state){
 
   //console.log('changeDrive <> drive_list.length: ' + drive_list.length);
 
-  const tmp = fs.realpathSync('C:\\Users\\mydata');
-
   //const list_bookmark = {
   //  'mydata': fs.realpathSync('C:\\Users\\mydata'),
   //  'tmp': fs.realpathSync('C:\\tmp'),
@@ -160,9 +158,31 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
 
     }else if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
 
+      //console.log('HERE!!');
       const sort_type = state.get("sort_type");
-      const dirs_new = dirs.withMutations(s => s.delete(idx_dir)
-                                                .unshift(dir_cur));
+
+      //{
+      //  console.log('----------------------------------------');
+      //  dirs.forEach((e) => {
+      //    console.log('Before: ' + e);
+      //  });
+      //  console.log('----------------------------------------');
+      //  console.log('idx_dir: ' + idx_dir);
+      //}
+
+      //const dirs_new = dirs.withMutations(s => s.delete(idx_dir)
+      //                                          .unshift(dir_cur));
+
+      const dirs_new = dirs.delete(idx_dir)
+                           .unshift(dir_cur);
+
+      //{
+      //  console.log('----------------------------------------');
+      //  dirs_new.forEach((e) => {
+      //    console.log('After: ' + e);
+      //  });
+      //  console.log('----------------------------------------');
+      //}
 
       const page = state.getIn(['pages', dirs_new.get(0)]);
       const items = page.get('items');
