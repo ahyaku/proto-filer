@@ -97,7 +97,9 @@ class ItemList extends React.Component {
 //      console.log('item-list <> im_items.get(0): ', im_items.get(0));
 //    }
 
-    //console.log('ItemList <> pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
+    //if(this.props.id === 0){
+    //  console.log('ItemList <> pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
+    //}
 
     return React.createElement(
       AutoSizer,

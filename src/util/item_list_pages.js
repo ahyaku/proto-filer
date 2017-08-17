@@ -7,10 +7,10 @@ import im from 'immutable';
 import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK, HISTORY } from './item_list';
 import { initAsItem, initAsDiskDrive, initAsBookmark, initAsHistory } from './item';
 import { SORT_TYPE } from './item_type';
-import { sortItemsCore } from './item_list';
+import { sortItemsInPage } from './item_list';
 
 
-export function getDirIndex(dirs, dir_cur){
+export const getDirIndex = (dirs, dir_cur) => {
   const ret = dirs.findIndex((dir)=>{
                     return (dir === dir_cur);
                   },
@@ -19,7 +19,7 @@ export function getDirIndex(dirs, dir_cur){
   return ret;
 }
 
-export function changeDrive(state, drive_list){
+export const changeDrive = (state, drive_list) => {
   const dirs = state.get('dirs');
   const idx_dir = getDirIndex(dirs, DISK_DRIVE);
   let dirs_new;
@@ -52,7 +52,7 @@ export function changeDrive(state, drive_list){
                                    .set('dirs', dirs_new));
 }
 
-export function showBookmark(state){
+export const showBookmark = (state) => {
   const dirs = state.get('dirs');
   const idx_dir = getDirIndex(dirs, BOOKMARK);
   let dirs_new;
@@ -114,7 +114,7 @@ export function showBookmark(state){
                                    .set('dirs', dirs_new));
 }
 
-export function showHistory(state){
+export const showHistory = (state) => {
   const dirs = state.get('dirs');
   const idx_dir = getDirIndex(dirs, HISTORY);
   let dirs_new;
@@ -151,7 +151,7 @@ export function showHistory(state){
 }
 
 /* Need to rename this function. */
-export function updatePageCur(state, _dir_cur, line_cur_zero){
+export const updatePageCur = (state, _dir_cur, line_cur_zero) => {
   const dir_cur = fs.realpathSync(_dir_cur);
   //console.log('updatePageCur <> dir_cur: ' + dir_cur + ', _dir_cur: ' + _dir_cur);
 
@@ -183,7 +183,6 @@ export function updatePageCur(state, _dir_cur, line_cur_zero){
       return _loadPage(state, dir_cur).set('dirs', dirs.unshift(dir_cur));
     }
   }
-
 }
 
 const _constructNewPage = (dir_cur) => {
@@ -236,24 +235,20 @@ const _makeRegisteredPageAsCurrent = (state, dirs, idx_dir, line_cur_zero) => {
   //  console.log('----------------------------------------');
   //}
 
-  const page = state.getIn(['pages', dirs_new.get(0)]);
-  const items = page.get('items');
-
-  const is_selected = im.List(im.Range(0, items.size))
-                        .map((e, i) => {
-                          return false;
-                        });
-
+  const items = state.getIn(['pages', dirs_new.get(0), 'items']);
+  const id_map = im.List(im.Range(0, items.size));
+  const is_selected = id_map.map((e, i) => {
+                              return false;
+                            });
+  const page = state.getIn(['pages', dirs_new.get(0)])
+                    .withMutations((s) => s.set('id_map', id_map)
+                                           .set('is_selected', is_selected));
 
   let page_new;
   if(line_cur_zero === true){
-    page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
-                                        .set('is_selected', is_selected)
-                                        .set('line_cur', 0));
+    page_new = sortItemsInPage(page, sort_type).set('line_cur', 0);
   }else{
-    page_new = page.withMutations(s => s.set('id_map', sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ))
-                                        .set('is_selected', is_selected));
-
+    page_new = sortItemsInPage(page, sort_type);
   }
 
   const item_names = _updateItemNames(items);
@@ -264,8 +259,7 @@ const _makeRegisteredPageAsCurrent = (state, dirs, idx_dir, line_cur_zero) => {
 
 }
 
-
-export function changeDirUpper(state){
+export const changeDirUpper = (state) => {
   const dir_cur = state.getIn(['dirs', 0]); 
   const name = path.basename(dir_cur);
   const dir_new = path.parse(dir_cur).dir; 
@@ -302,7 +296,7 @@ const _moveLineByName = (state, name) => {
   return state.setIn(['pages', dir, 'line_cur'], line_cur);
 }
 
-export function changeDirLower(state){
+export const changeDirLower = (state) => {
   //if(state.get('pages').size <= 0){
   //  return state;
   //}
@@ -381,25 +375,25 @@ const _updateItemNames = (items) => {
 const _loadPage = (state, dir_cur) => {
   const sort_type = state.get("sort_type");
   const items = _updateItems(dir_cur);
-  const is_selected = im.List(im.Range(0, items.size))
-                        .map((e, i) => {
-                          return false;
-                        });
+  const id_map = im.List(im.Range(0, items.size));
+  const is_selected = id_map.map((e, i) => {
+                               return false;
+                             });
 
-  const page = im.Map({
-                 'items': items,
-                 'line_cur': 0,
-                 'id_map': sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type ),
-                 'is_selected': is_selected
-               });
+  const page = sortItemsInPage( im.Map({
+                                'items': items,
+                                'line_cur': 0,
+                                'id_map': id_map,
+                                'is_selected': is_selected}),
+                                sort_type );
+          
+  //page.get('id_map').forEach((e, i) => {
+  //  console.log('_loadPage <> i: ' + i + ', e: ' + e);
+  //});
 
   const item_names = _updateItemNames(items);
 
   return state.withMutations(s => s.setIn(['pages', dir_cur], page)
                                    .set('item_names', item_names)
                                    .set('msg_cmd', ''));
-
-
 }
-
-

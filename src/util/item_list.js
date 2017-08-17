@@ -11,7 +11,6 @@ export const DISK_DRIVE = 'Disk Drives';
 export const BOOKMARK = 'Bookmark';
 export const HISTORY = 'History';
 
-//export function updateItemsAsDiskDrive(drive_list){
 export const updateItemsAsDiskDrive = (drive_list) => {
 //  const items = im.Seq(im.Range(0, drive_list.length))
 //                  .map((e, i) => {
@@ -60,107 +59,74 @@ export const updateItems = (dir_cur) => {
 
 }
 
-
-/* ORG */
-//export const sortItems = (state, sort_type) => {
-//  const dir = state.getIn(['dirs', 0]);
-//  const page = state.getIn(['pages', dir]);
-//  const id_map = page.get('id_map');
-//  const items = page.get('items');
-//  let id_map_new;
-//
-//  //console.log('Before <> id_map: ' + id_map);
-//  switch(sort_type){
-//    //case 'name_asc':
-//    case SORT_TYPE.NAME_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterName, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.NAME_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterName, false);
-//      break;
-//    case SORT_TYPE.TIME_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterTime, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.TIME_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterTime, false);
-//      break;
-//    case SORT_TYPE.EXT_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterExt, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.EXT_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterExt, false);
-//      break;
-//    case SORT_TYPE.SIZE_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterSize, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.SIZE_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterSize, false);
-//      break;
-//    case SORT_TYPE.CANCEL:
-//      id_map_new = id_map;
-//      break;
-//    default:
-//      /* Do Nothing.. */
-//      console.log('Sort Error!!');
-//      break;
-//  }
-//  //console.log('After <> id_map: ' + id_map_new);
-//
-//  //console.log('sortItemList() <> id_map: ' + id_map);
-//
-//  return state.setIn(['pages', dir, 'id_map'], id_map_new);
-//}
-
-export const sortItems = (state, sort_type) => {
+export const sortItemsInState = (state, sort_type) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
-  const id_map = page.get('id_map');
-  const items = page.get('items');
-
-  //return state.setIn(['pages', dir, 'id_map'], sortItemsCore(id_map, items, sort_type));
-
-  return state.withMutations(s => s.setIn(['pages', dir, 'id_map'], sortItemsCore(id_map, items, sort_type))
+  
+  return state.withMutations(s => s.setIn(['pages', dir], sortItemsInPage(page, sort_type))
                                    .set('sort_type', sort_type));
 }
 
-export const sortItemsCore = (id_map, items, sort_type) => {
+export const sortItemsInPage = (page, sort_type) => {
   //console.log('Before <> id_map: ' + id_map);
+
+  const id_map = page.get('id_map');
+  const items = page.get('items');
+  const line_cur = page.get('line_cur');
+  const id_cursor = page.getIn(['id_map', line_cur]);
+  
+  let id_map_sorted;
+
   switch(sort_type){
     case SORT_TYPE.NAME_ASC:
-      return sort(items, id_map, filterName, true);
+      id_map_sorted = sort(items, id_map, filterName, true);
+      break;
     case SORT_TYPE.NAME_DES:
-      return sort(items, id_map, filterName, false);
+      id_map_sorted = sort(items, id_map, filterName, false);
+      break;
     case SORT_TYPE.TIME_ASC:
-      return sort(items, id_map, filterTime, true);
+      id_map_sorted = sort(items, id_map, filterTime, true);
+      break;
     case SORT_TYPE.TIME_DES:
-      return sort(items, id_map, filterTime, false);
+      id_map_sorted = sort(items, id_map, filterTime, false);
+      break;
     case SORT_TYPE.EXT_ASC:
-      return sort(items, id_map, filterExt, true);
+      id_map_sorted = sort(items, id_map, filterExt, true);
+      break;
     case SORT_TYPE.EXT_DES:
-      return sort(items, id_map, filterExt, false);
+      id_map_sorted = sort(items, id_map, filterExt, false);
+      break;
     case SORT_TYPE.SIZE_ASC:
-      return sort(items, id_map, filterSize, true);
+      id_map_sorted = sort(items, id_map, filterSize, true);
+      break;
     case SORT_TYPE.SIZE_DES:
-      return sort(items, id_map, filterSize, false);
+      id_map_sorted = sort(items, id_map, filterSize, false);
+      break;
     case SORT_TYPE.CANCEL:
-      return id_map;
+      id_map_sorted = id_map;
+      break;
     default:
       /* Do Nothing.. */
       console.log('Sort Error!!');
-      return null;
+      break;
   }
+
+  //const line_new = id_map_sorted.findKey((e) => {
+  //                   return e === id_cursor;
+  //                 });
+
+  //for(let i=0; i<id_map.size; i++){
+  //  console.log('i: ' + i + ', id_map: ' + id_map.get(i) + ', id_map_sorted: ' + id_map_sorted.get(i) + ', name: ' + items.getIn([id_map_sorted.get(i), 'name']));
+  //}
+
+  const line_new = id_map_sorted.findKey((e, i) => {
+                     const ret = e === id_cursor;
+                     //console.log('i: ' + i + ', e: ' + e);
+                     return ret;
+                   });
+
+  return page.withMutations(s => s.set('id_map', id_map_sorted)
+                                  .set('line_cur', line_new));
 }
 
 const sort = (items, id_map, filter, is_asc) => {
@@ -185,11 +151,6 @@ const sort = (items, id_map, filter, is_asc) => {
     id_map_sort = id_map;
     id_parent = -1;
   }
-
-  //const id_map_sorted = id_map_sort.sort(
-  //  (a, b) => {
-  //    return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
-  //  });
 
   const id_map_sorted = filter(items, id_map_sort, coef);
 
@@ -261,7 +222,6 @@ const filterSize = (items, id_map, coef) => {
 const filterExt = (items, id_map, coef) => {
   return id_map.sort(
     (a, b) => {
-      //return coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
       const ret_size = coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
       const ret = ret_size === 0
                   ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))

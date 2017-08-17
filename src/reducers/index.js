@@ -6,7 +6,7 @@ import path from 'path';
 import { ipcRenderer } from 'electron'
 import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex, showBookmark, showHistory } from '../util/item_list_pages';
 import { KEY_INPUT_MODE, ITEM_TYPE_KIND /*, SORT_TYPE */ } from '../util/item_type';
-import { sortItems, sortItemsCore } from '../util/item_list';
+import { sortItemsInState, sortItemsInPage } from '../util/item_list';
 
 const rootReducer = (state_fcd, action) => {
   //console.log('reducer <> state_fcd.input_mode: ', state_fcd.input_mode);
@@ -85,6 +85,10 @@ const rootReducer = (state_fcd, action) => {
       {
         const state_new = changeDirUpper(state);
         const dir = state_new.getIn(['dirs', 0]);
+        //state_new.getIn(['pages', dir, 'id_map']).forEach((e, i) => {
+        //  console.log('CHANGE_DIR_UPPER <> i: ' + i + ', e: ' + e);
+        //});
+
         //{
         //  console.log('----------------------------------------');
         //  const dirs = state_new.get('dirs');
@@ -93,8 +97,9 @@ const rootReducer = (state_fcd, action) => {
         //  });
         //  console.log('----------------------------------------');
         //}
-        const page = state_new.getIn(['pages', dir]);
-        const im_items = page.get('items');
+
+        //const page = state_new.getIn(['pages', dir]);
+        //const im_items = page.get('items');
         return Object.assign(
                  {},
                  state_fcd,
@@ -193,12 +198,12 @@ const rootReducer = (state_fcd, action) => {
     case 'SWITCH_INPUT_MODE_NORMAL_WITH_CLEAR':
       {
         const dir = state.getIn(['dirs', 0]);
-        const page = state.getIn(['pages', dir]);
-        //const id_map = im.List(im.Range(0, page.get('items').size));
-        const items = page.get('items');
+        const items = state.getIn(['pages', dir, 'items']);
+        const id_map = im.List(im.Range(0, items.size));
+        const page = state.getIn(['pages', dir])
+                          .set('id_map', id_map);
         const sort_type = state.get('sort_type');
-        const id_map = sortItemsCore( im.List(im.Range(0, items.size)), items, sort_type );
-        const page_new = page.set('id_map', id_map);
+        const page_new = sortItemsInPage(page, sort_type);
         const state_new = state.withMutations(s => s.set('msg_cmd', '')
                                                     .setIn(['pages', dir], page_new));
 
@@ -249,14 +254,10 @@ const rootReducer = (state_fcd, action) => {
     case 'END_NARROW_DOWN_ITEMS':
       {
         const dir_cur = state.getIn(['dirs', 0]);
-        const page = state.getIn(['pages', dir_cur]);
-
-        //const page_new = page.set('id_map', im.List(action.ids));
-
-        const items = page.get('items');
+        const page = state.getIn(['pages', dir_cur])
+                          .set('id_map', im.List(action.ids));
         const sort_type = state.get('sort_type');
-        const page_new = page.set('id_map', sortItemsCore( im.List(action.ids), items, sort_type ));
-
+        const page_new = sortItemsInPage(page, sort_type);
         const state_new = state.setIn(['pages', dir_cur], page_new);
         return Object.assign(
                  {},
@@ -305,12 +306,7 @@ const rootReducer = (state_fcd, action) => {
     //  }
     case 'SORT_ITEM_LIST':
       {
-        //const dir = state.getIn(['dirs', 0]);
-        //const state_new = state.withMutations(s => s.set('msg_cmd', action.msg_cmd)
-        //                                            .setIn(['pages', dir, 'line_cur'], 0));
-
-        //const state_new = sortItemList(state, action.sort_type);
-        const state_new = sortItems(state, action.sort_type);
+        const state_new = sortItemsInState(state, action.sort_type);
         return Object.assign(
                  {},
                  state_fcd,
@@ -738,13 +734,11 @@ const syncDir = (state_mdf, state_ref) => {
 
 
 const switchInputModeNarrowDownItems = (state, c) => {
-  //console.log('switchInputModeNarrowDownItems() <> sort_type: ' + state.get('sort_type'));
   const msg = state.get('msg_cmd');
   if(msg.length > 0){
     return state;
   }else{
-    return state.withMutations(s => s.set('msg_cmd', msg + c)
-                                     .set('line_cur', 0));
+    return state.set('msg_cmd', msg + c);
   }
 }
 
