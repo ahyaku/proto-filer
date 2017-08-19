@@ -354,17 +354,16 @@ electron.ipcMain.on('test_message', (event, arg_msg) => {
   event.sender.send('test_message_reply', ret_msg);
 });
 
-electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
-  let ids = [];
-  let names = [];
+electron.ipcMain.on('narrow_down_items', (event, item_names, msg) => {
+  let is_matched = [];
 
   if(msg.length <= 0){
     for(let i=0; i<item_names.length; i++){
-      ids.push(i);
+      is_matched.push(true);
     }
     event.sender.send(
       'narrow_down_items_cb',
-      ids,
+      is_matched,
       '',
       0 /* KEY_INPUT_MODE.NORMAL */
     );
@@ -378,22 +377,20 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
     const reg = new RegExp(pattern);
 
     for(let i=0; i<item_names.length; i++){
-      if(reg.test(item_names[i])){
-        //console.log('match <> ' + e.name);
-        names.push(item_names[i]);
-        ids.push(i);
-      }
+      is_matched.push(reg.test(item_names[i]));
     }
   }else{
     for(let i=0; i<item_names.length; i++){
-      ids.push(i);
+      is_matched.push(true);
     }
-
   }
+
+  //console.log('item_names.length: ' + item_names.length);
+  //console.log('is_matched: ' + is_matched);
 
   event.sender.send(
     'narrow_down_items_cb',
-    ids,
+    is_matched,
     msg,
     1 /* KEY_INPUT_MODE.SEARCH */
   );
@@ -404,7 +401,7 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, id, msg) => {
   //    console.log('HERE!!!!!!!!!!!!');
   //    event.sender.send(
   //      'narrow_down_items_cb',
-  //      ids,
+  //      is_matched,
   //      msg,
   //      1 /* KEY_INPUT_MODE.SEARCH */
   //    );

@@ -71,7 +71,10 @@ export const sortItemsInPage = (page, sort_type) => {
   //console.log('Before <> id_map: ' + id_map);
 
   const id_map = page.get('id_map');
+  const id_map_nrw = page.get('id_map_nrw');
   const items = page.get('items');
+  const is_matched = page.get('is_matched');
+
   const line_cur = page.get('line_cur');
   const id_cursor = page.getIn(['id_map', line_cur]);
   
@@ -111,22 +114,36 @@ export const sortItemsInPage = (page, sort_type) => {
       break;
   }
 
-  //const line_new = id_map_sorted.findKey((e) => {
-  //                   return e === id_cursor;
-  //                 });
-
   //for(let i=0; i<id_map.size; i++){
   //  console.log('i: ' + i + ', id_map: ' + id_map.get(i) + ', id_map_sorted: ' + id_map_sorted.get(i) + ', name: ' + items.getIn([id_map_sorted.get(i), 'name']));
   //}
 
-  const line_new = id_map_sorted.findKey((e, i) => {
-                     const ret = e === id_cursor;
-                     //console.log('i: ' + i + ', e: ' + e);
-                     return ret;
-                   });
+  let id_map_nrw_sorted;
+  if(id_map === id_map_nrw){
+    id_map_nrw_sorted = id_map_sorted;
+  }else{
+    id_map_nrw_sorted = id_map_sorted.filter((e) => {
+                                        return is_matched.get(e);
+                                      });
+  }
+
+
+  const _line_new = id_map_nrw_sorted.findKey((e, i) => {
+                      const ret = e === id_cursor;
+                      //console.log('i: ' + i + ', e: ' + e);
+                      return ret;
+                    });
+
+  const line_new = typeof _line_new === 'undefined'
+                     ? 0
+                     : _line_new;
+
+  //console.log('line_new: ' + line_new);
 
   return page.withMutations(s => s.set('id_map', id_map_sorted)
+                                  .set('id_map_nrw', id_map_nrw_sorted)
                                   .set('line_cur', line_new));
+
 }
 
 const sort = (items, id_map, filter, is_asc) => {

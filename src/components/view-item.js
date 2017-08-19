@@ -169,7 +169,7 @@ class ViewItem extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState){
     /* Displayed items are changed by Narrow Down. */
-    if(this.props.id_map !== nextProps.id_map){
+    if(this.props.id_map_nrw !== nextProps.id_map_nrw){
       return true;
     }
 

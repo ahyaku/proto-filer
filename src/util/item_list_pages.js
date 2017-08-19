@@ -37,15 +37,23 @@ export const changeDrive = (state, drive_list) => {
                     return initAsDiskDrive(i, drive_list[i]);
                   });
 
+  const is_matched = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return true;
+                        });
+
   const is_selected = im.List(im.Range(0, items.size))
                         .map((e, i) => {
                           return false;
                         });
 
+  const id_map = im.List(im.Range(0, items.size));
   const page = im.Map({
                  'items': items,
                  'line_cur': 0,
-                 'id_map': im.List(im.Range(0, items.size)),
+                 'id_map': id_map,
+                 'id_map_nrw': id_map,
+                 'is_matched': is_matched,
                  'is_selected': is_selected
                });
   return state.withMutations(s => s.setIn(['pages', DISK_DRIVE], page)
@@ -99,15 +107,24 @@ export const showBookmark = (state) => {
                     return initAsBookmark(i, list_bookmark[i]['name'], list_bookmark[i]['path_body']);
                   });
 
+  const is_matched = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return true;
+                        });
+
   const is_selected = im.List(im.Range(0, items.size))
                         .map((e, i) => {
                           return false;
                         });
 
+  const id_map = im.List(im.Range(0, items.size));
+
   const page = im.Map({
                  'items': items,
                  'line_cur': 0,
-                 'id_map': im.List(im.Range(0, items.size)),
+                 'id_map': id_map,
+                 'id_map_nrw': id_map,
+                 'is_matched': is_matched,
                  'is_selected': is_selected
                });
   return state.withMutations(s => s.setIn(['pages', BOOKMARK], page)
@@ -135,15 +152,23 @@ export const showHistory = (state) => {
                     return initAsHistory(i, dirs.get(i));
                   });
 
+  const is_matched = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return true;
+                        });
+
   const is_selected = im.List(im.Range(0, items.size))
                         .map((e, i) => {
                           return false;
                         });
 
+  const id_map = im.List(im.Range(0, items.size));
   const page = im.Map({
                  'items': items,
                  'line_cur': 0,
-                 'id_map': im.List(im.Range(0, items.size)),
+                 'id_map': id_map,
+                 'id_map_nrw': id_map,
+                 'is_matched': is_matched,
                  'is_selected': is_selected
                });
   return state.withMutations(s => s.setIn(['pages', HISTORY], page)
@@ -189,15 +214,24 @@ const _constructNewPage = (dir_cur) => {
   const items = _updateItems(dir_cur);
   //console.log('updatePageCur <> items.getIn(1, name) ' + items.getIn([1, 'name']));
 
+  const is_matched = im.List(im.Range(0, items.size))
+                        .map((e, i) => {
+                          return true;
+                        });
+
   const is_selected = im.List(im.Range(0, items.size))
                         .map((e, i) => {
                           return false;
                         });
 
+  const id_map = im.List(im.Range(0, items.size));
+
   const page = im.Map({
                  'items': items,
                  'line_cur': 0,
-                 'id_map': im.List(im.Range(0, items.size)),
+                 'id_map': id_map,
+                 'id_map_nrw': id_map,
+                 'is_matched': is_matched,
                  'is_selected': is_selected
                });
 
@@ -237,11 +271,16 @@ const _makeRegisteredPageAsCurrent = (state, dirs, idx_dir, line_cur_zero) => {
 
   const items = state.getIn(['pages', dirs_new.get(0), 'items']);
   const id_map = im.List(im.Range(0, items.size));
+  const is_matched = id_map.map((e, i) => {
+                              return true;
+                            });
   const is_selected = id_map.map((e, i) => {
                               return false;
                             });
   const page = state.getIn(['pages', dirs_new.get(0)])
                     .withMutations((s) => s.set('id_map', id_map)
+                                           .set('id_map_nrw', id_map)
+                                           .set('is_matched', is_matched)
                                            .set('is_selected', is_selected));
 
   let page_new;
@@ -286,7 +325,7 @@ const _moveLineByName = (state, name) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
   const items = page.get('items');
-  const line_cur = page.get('id_map').findKey(
+  const line_cur = page.get('id_map_nrw').findKey(
                      (e) => {
                        return items.getIn([e, 'name']) === name;
                      }
@@ -304,8 +343,8 @@ export const changeDirLower = (state) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
   const line_cur = page.get('line_cur');
-  const id_map = page.get('id_map');
-  const item_name = page.getIn(['items', id_map.get(line_cur), 'name']);
+  const id_map_nrw = page.get('id_map_nrw');
+  const item_name = page.getIn(['items', id_map_nrw.get(line_cur), 'name']);
 
   //console.log('item_name: ' + item_name);
   if(typeof item_name === 'undefined'){
@@ -318,10 +357,10 @@ export const changeDirLower = (state) => {
       dir_new = item_name;
       break;
     case BOOKMARK:
-      dir_new = page.getIn(['items', id_map.get(line_cur), 'path_body']);
+      dir_new = page.getIn(['items', id_map_nrw.get(line_cur), 'path_body']);
       break;
     case HISTORY:
-      dir_new = page.getIn(['items', id_map.get(line_cur), 'name']);
+      dir_new = page.getIn(['items', id_map_nrw.get(line_cur), 'name']);
       //console.log('line_cur: ' + line_cur + ', dir_new: ' + dir_new);
       break;
     default:
@@ -376,6 +415,9 @@ const _loadPage = (state, dir_cur) => {
   const sort_type = state.get("sort_type");
   const items = _updateItems(dir_cur);
   const id_map = im.List(im.Range(0, items.size));
+  const is_matched = id_map.map((e, i) => {
+                               return true;
+                             });
   const is_selected = id_map.map((e, i) => {
                                return false;
                              });
@@ -384,6 +426,8 @@ const _loadPage = (state, dir_cur) => {
                                 'items': items,
                                 'line_cur': 0,
                                 'id_map': id_map,
+                                'id_map_nrw': id_map,
+                                'is_matched': is_matched,
                                 'is_selected': is_selected}),
                                 sort_type );
           

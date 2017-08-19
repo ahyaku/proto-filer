@@ -78,30 +78,6 @@ class CmdView extends React.Component{
     );
   }
 
-  /* Before */
-//  componentDidUpdate(prevProps, prevState){
-//    //console.log('CmdView <> componentDidUpdate()');
-//
-//    const { dispatch } = this.props;
-//
-//    const state_fcd = this.props.state_fcd;
-//    const state = state_fcd.state_core;
-//    //const state = this.props.state;
-//
-//    const id = this.props.id;
-//    const msg_cmd = state.getIn(['arr_pages', id, 'msg_cmd']);
-//    const msg_cmd_prev = prevProps.state_fcd.state_core.getIn(['arr_pages', id, 'msg_cmd']);
-//    //const msg_cmd_prev = prevProps.state.getIn(['arr_pages', id, 'msg_cmd']);
-//
-//    if( msg_cmd === msg_cmd_prev ){
-//      return;
-//    }
-//
-//    dispatch(NarrowDownItems(state_fcd, id, msg_cmd));
-//    //dispatch(NarrowDownItems(state, id, msg_cmd));
-//
-//  }
-
   componentDidUpdate(prevProps, prevState){
     //console.log('CmdView <> componentDidUpdate()');
 
@@ -122,7 +98,6 @@ class CmdView extends React.Component{
     }
 
     dispatch(NarrowDownItems(state_fcd, id, msg_cmd));
-    //dispatch(NarrowDownItems(state, id, msg_cmd));
 
   }
 

@@ -343,72 +343,38 @@ const updatePaneCmd = (msg) => {
 //}
 ///* ORG (END) @ 2017.02.26 */
 
-
-/* Before */
-/* ToDo; Need to find better way to set callback only one time.. */
-//let is_initialized = false
-//export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
-//  const state = state_fcd.state_core;
-//
-//  if(is_initialized === false){
-//    ipcRenderer.on('narrow_down_items_cb', (event, ids, msg, input_mode) => {
-//      //console.log('ids: ' + ids);
-//      //console.log('NarrowDownItems() <> ids.length: ' + ids.length);
-//      if(msg.length <= 0){
-//        dispatch(switchInputModeNormalWithClear());
-//      }else{
-//        dispatch({
-//          type: 'END_NARROW_DOWN_ITEMS',
-//          ids: ids,
-//          //msg_cmd: msg,
-//          input_mode: input_mode
-//        });
-//      }
-//    });
-//    is_initialized = true;
-//  }
-//
-//  const item_names = state.getIn(['arr_item_name_lists', id]);
-//  //console.log('item_names.length: ' + item_names.length);
-//
-//  ipcRenderer.send('narrow_down_items', state.getIn(['arr_item_name_lists', id]), id, msg);
-//  //ipcRenderer.send('narrow_down_items', state.get('name_list_left'), id, msg);
-//
-//  return {
-//    type: 'START_NARROW_DOWN_ITEMS'
-//  }
-//}
-
 /* ToDo; Need to find better way to set callback only one time.. */
 let is_initialized = false
 export const NarrowDownItems = (state_fcd, id, msg) => (dispatch) => {
   //const state = state_fcd.state_core;
   const state = state_fcd.state_core.get(id);
+  const dir = state.getIn(['dirs', 0]);
 
   if(is_initialized === false){
-    ipcRenderer.on('narrow_down_items_cb', (event, ids, msg, input_mode) => {
-      //console.log('NarrowDownItems() <> ids: ' + ids);
-      //console.log('NarrowDownItems() <> ids.length: ' + ids.length);
+    ipcRenderer.on('narrow_down_items_cb', (event, is_matched, msg, input_mode) => {
+      //console.log('NarrowDownItems() <> is_matched: ' + is_matched);
+      //console.log('NarrowDownItems() <> is_matched.length: ' + is_matched.length);
       if(msg.length <= 0){
         dispatch(switchInputModeNormalWithClear());
       }else{
         dispatch({
           type: 'END_NARROW_DOWN_ITEMS',
-          ids: ids,
+          is_matched: is_matched,
           input_mode: input_mode
         });
       }
     });
+
     is_initialized = true;
   }
 
   //const item_names = state_fcd.arr_item_name_lists.get(id);
 
-  const item_names = state.get('item_names');
+  //const item_names = state.get('item_names');
   //console.log('NarrowDownItems <> item_names: ', item_names);
   //console.log('NarrowDownItems <> item_names.length: ' + item_names.length);
 
-  ipcRenderer.send('narrow_down_items', item_names, id, msg);
+  ipcRenderer.send('narrow_down_items', state.get('item_names'), msg);
   //ipcRenderer.send('narrow_down_items', state.get('name_list_left'), id, msg);
 
   return {

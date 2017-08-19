@@ -55,7 +55,7 @@ class ItemList extends React.Component {
     //this.im_items = null;
 
     //this.dir_cur = null;
-    this.id_map = null
+    this.id_map_nrw = null
 
     this._rowRenderer = this._rowRenderer.bind(this);
     
@@ -73,14 +73,14 @@ class ItemList extends React.Component {
     const id = this.props.id;
     const dir_cur = this.props.dir;
     const page = this.props.page;
-    const id_map = page.get('id_map');
+    const id_map_nrw = page.get('id_map_nrw');
     const active_pane_id = this.props.active_pane_id;
 
-    this.id_map = id_map;
+    this.id_map_nrw = id_map_nrw;
 
-    //console.log('ItemList() <> this.id_map: ' + this.id_map);
+    //console.log('ItemList() <> this.id_map_nrw: ' + this.id_map_nrw);
 
-    if(this.id_map.size <= 0){
+    if(this.id_map_nrw.size <= 0){
       return (
         <div ref="item_list" style={this._style_list}>
         </div>
@@ -111,7 +111,7 @@ class ItemList extends React.Component {
           {
             width: width,
             height: height,
-            rowCount: this.id_map.size,
+            rowCount: this.id_map_nrw.size,
             rowHeight: ROW_HEIGHT,
             scrollToAlignment: 'auto',
             scrollToIndex: this.props.line_cur/* this.props.line_cur */,
@@ -121,7 +121,7 @@ class ItemList extends React.Component {
             id: id,
             active_pane_id: active_pane_id,
             dir_cur: dir_cur,
-            id_map: id_map,
+            id_map_nrw: id_map_nrw,
             //is_dir_changed: is_dir_changed,
             ref: 'ListClass',
             style: {overflowY: 'scroll'},
@@ -231,7 +231,7 @@ class ItemList extends React.Component {
         dir_cur={parent.props.dir_cur}
         line_cur={parent.props.line_cur}
         active_pane_id={parent.props.active_pane_id}
-        id_map={parent.props.id_map}
+        id_map_nrw={parent.props.id_map_nrw}
         //is_dir_changed={parent.props.is_dir_changed}
         index={index}
         />
@@ -240,10 +240,10 @@ class ItemList extends React.Component {
   }
 
   _getItemsByMap(page){
-    //console.log('getItemsByMap <> id_map: ', page.get('id_map'));
+    //console.log('getItemsByMap <> id_map_nrw: ', page.get('id_map_nrw'));
     //console.log('getItemsByMap <> items: ', page.get('items'));
     
-    const items = page.get('id_map').map(
+    const items = page.get('id_map_nrw').map(
                     (e, i) => {
                       //console.log('getItemsByMap <> items[' + i + '].name: ' + page.getIn(['items', e, 'name']));
                       return page.getIn(['items', e]);
@@ -256,10 +256,10 @@ class ItemList extends React.Component {
   }
 
   _getIsSelectedByMap(page){
-    //console.log('getItemsByMap <> id_map: ', page.get('id_map'));
+    //console.log('getItemsByMap <> id_map_nrw: ', page.get('id_map_nrw'));
     //console.log('getItemsByMap <> items: ', page.get('items'));
     
-    const is_selected = page.get('id_map').map(
+    const is_selected = page.get('id_map_nrw').map(
                           (e, i) => {
                             //console.log('getItemsByMap <> items[' + i + '].name: ' + page.getIn(['items', e, 'name']));
                             return page.getIn(['is_selected', e]);

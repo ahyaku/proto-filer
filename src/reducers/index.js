@@ -201,7 +201,8 @@ const rootReducer = (state_fcd, action) => {
         const items = state.getIn(['pages', dir, 'items']);
         const id_map = im.List(im.Range(0, items.size));
         const page = state.getIn(['pages', dir])
-                          .set('id_map', id_map);
+                          .withMutations(s => s.set('id_map', id_map)
+                                               .set('id_map_nrw', id_map));
         const sort_type = state.get('sort_type');
         const page_new = sortItemsInPage(page, sort_type);
         const state_new = state.withMutations(s => s.set('msg_cmd', '')
@@ -254,8 +255,18 @@ const rootReducer = (state_fcd, action) => {
     case 'END_NARROW_DOWN_ITEMS':
       {
         const dir_cur = state.getIn(['dirs', 0]);
+        const items = state.getIn(['pages', dir_cur, 'items']);
+        const id_map_nrw = state.getIn(['pages', dir_cur, 'id_map'])
+                                .filter((e) => {
+                                   return action.is_matched[e];
+                                 });
+        const is_matched = im.List(im.Range(0, items.size))
+                             .map( (e, i) => {
+                                return action.is_matched[i];
+                              });
         const page = state.getIn(['pages', dir_cur])
-                          .set('id_map', im.List(action.ids));
+                          .withMutations(s => s.set('id_map_nrw', id_map_nrw)
+                                               .set('is_matched', is_matched));
         const sort_type = state.get('sort_type');
         const page_new = sortItemsInPage(page, sort_type);
         const state_new = state.setIn(['pages', dir_cur], page_new);
@@ -434,8 +445,8 @@ const openItem = (state_fcd) => {
 
   const page_cur = state_cur.getIn(['pages', path_cur]);
   const line_cur = page_cur.get('line_cur');
-  const id_map = page_cur.get('id_map');
-  const item_name = page_cur.getIn(['items', id_map.get(line_cur), 'name']);
+  const id_map_nrw = page_cur.get('id_map_nrw');
+  const item_name = page_cur.getIn(['items', id_map_nrw.get(line_cur), 'name']);
   console.log('item_name: ' + item_name);
 
   let item_names = [];
@@ -462,178 +473,10 @@ const updatePage = (state) => {
 
 }
 
-//const sortItemList = (state, sort_type) => {
-//  const dir = state.getIn(['dirs', 0]);
-//  const page = state.getIn(['pages', dir]);
-//  const id_map = page.get('id_map');
-//  const items = page.get('items');
-//  let id_map_new;
-//
-//  //console.log('Before <> id_map: ' + id_map);
-//  switch(sort_type){
-//    //case 'name_asc':
-//    case SORT_TYPE.NAME_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterName, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.NAME_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterName, false);
-//      break;
-//    case SORT_TYPE.TIME_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterTime, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.TIME_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterTime, false);
-//      break;
-//    case SORT_TYPE.EXT_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterExt, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.EXT_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterExt, false);
-//      break;
-//    case SORT_TYPE.SIZE_ASC:
-//      //id_map_new = sortByName(items, id_map, true);
-//      id_map_new = sort(items, id_map, filterSize, true);
-//      break;
-//    //case 'name_des':
-//    case SORT_TYPE.SIZE_DES:
-//      //id_map_new = sortByName(items, id_map, false);
-//      id_map_new = sort(items, id_map, filterSize, false);
-//      break;
-//    case SORT_TYPE.CANCEL:
-//      id_map_new = id_map;
-//      break;
-//    default:
-//      /* Do Nothing.. */
-//      console.log('Sort Error!!');
-//      break;
-//  }
-//  //console.log('After <> id_map: ' + id_map_new);
-//
-//  //console.log('sortItemList() <> id_map: ' + id_map);
-//
-//  return state.setIn(['pages', dir, 'id_map'], id_map_new);
-//}
-
-//const sort = (items, id_map, filter, is_asc) => {
-//  const id_head = id_map.get(0);
-//  const id_tail = id_map.get(id_map.size - 1);
-//
-//  const coef = is_asc === true
-//               ? 1
-//               : -1;
-//
-//  let id_parent;
-//  let id_map_sort;
-//
-//  /* Parent Directory '..' always must be the head or tail of the item list. */
-//  if( items.getIn([id_head, 'basename']) === '..'){
-//    id_map_sort = id_map.slice(1, id_map.size);
-//    id_parent = id_head;
-//  }else if( items.getIn([id_tail, 'basename']) === '..' ){
-//    id_map_sort = id_map.slice(0, id_map.size - 1);
-//    id_parent = id_tail;
-//  }else{
-//    id_map_sort = id_map;
-//    id_parent = -1;
-//  }
-//
-//  //const id_map_sorted = id_map_sort.sort(
-//  //  (a, b) => {
-//  //    return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
-//  //  });
-//
-//  const id_map_sorted = filter(items, id_map_sort, coef);
-//
-//  if(id_parent === -1){
-//    return id_map_sorted;
-//  }else{
-//    if(is_asc === true){
-//      return id_map_sorted.unshift(id_parent);
-//    }else if(is_asc === false){
-//      return id_map_sorted.push(id_parent);
-//    }else{
-//      console.log('Sort Error!!');
-//    }
-//  }
-//}
-//
-//const filterName = (items, id_map, coef) => {
-//  return id_map.sort(
-//    (a, b) => {
-//      return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']));
-//    });
-//}
-//
-//const filterTime = (items, id_map, coef) => {
-//  return id_map.sort(
-//    (a, b) => {
-//      const ret_date = coef * items.getIn([a, 'date']).localeCompare(items.getIn([b, 'date']));
-//      const ret_time = ret_date === 0
-//                         ? coef * items.getIn([a, 'time']).localeCompare(items.getIn([b, 'time']))
-//                         : ret_date;
-//      const ret = ret_time === 0
-//                    ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-//                    : ret_time;
-//      return ret;
-//    });
-//}
-//
-//const filterSize = (items, id_map, coef) => {
-//  return id_map.sort(
-//    (a, b) => {
-//      const sa = items.getIn([a, 'fsize'])
-//      const sb = items.getIn([b, 'fsize'])
-//
-//      if( (typeof sa === 'string') && (typeof sb === 'string') ){
-//        if( ( (sa === 'DIR') && (sb === 'DIR') ) ||
-//            ( (sa === '???') && (sb === '???') ) ){
-//          return coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-//        }else if( sa === 'DIR' ){
-//          return -coef;
-//        }else if( sb === 'DIR' ){
-//          return coef;
-//        }else{
-//          console.log('filterSize Error!!');
-//        }
-//      }else if( typeof sa === 'string' ){
-//        return -coef;
-//      }else if( typeof sb === 'string' ){
-//        return coef;
-//      }else{
-//        return sa === sb
-//                  ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-//                  : sa < sb
-//                       ? -coef
-//                       : coef
-//      }
-//    });
-//}
-//
-//const filterExt = (items, id_map, coef) => {
-//  return id_map.sort(
-//    (a, b) => {
-//      //return coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
-//      const ret_size = coef * items.getIn([a, 'ext']).localeCompare(items.getIn([b, 'ext']));
-//      const ret = ret_size === 0
-//                  ? coef * items.getIn([a, 'basename']).localeCompare(items.getIn([b, 'basename']))
-//                  : ret_size;
-//      return ret;
-//    });
-//}
-
 const moveCursor = (state, delta) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
-  const len = page.get('id_map').size;
+  const len = page.get('id_map_nrw').size;
   const line_cur = page.get('line_cur');
 
   let vv = line_cur + delta;
@@ -661,8 +504,8 @@ const toggleItemSelect = (state) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);
   const line_cur = page.get('line_cur');
-  const id_map = page.get('id_map');
-  const id = id_map.get(line_cur);
+  const id_map_nrw = page.get('id_map_nrw');
+  const id = id_map_nrw.get(line_cur);
   const items = page.get('items');
 
   if(items.getIn([id, 'name']) === '..'){
@@ -714,15 +557,23 @@ const syncDir = (state_mdf, state_ref) => {
     dirs_new = dirs.unshift(dir_ref);
   }
 
+  const is_matched = im.List(im.Range(0, items_ref.size))
+                        .map((e, i) => {
+                          return true;
+                        });
+
   const is_selected = im.List(im.Range(0, items_ref.size))
                         .map((e, i) => {
                           return false;
                         });
 
+  const id_map = im.List(im.Range(0, items_ref.size));
   const page_mdf_new = im.Map({
                                'items': items_ref,
                                'line_cur': 0,
-                               'id_map': im.List(im.Range(0, items_ref.size)),
+                               'id_map': id_map,
+                               'id_map_nrw': id_map,
+                               'is_matched': is_matched,
                                'is_selected': is_selected
                              });
 
