@@ -39,7 +39,8 @@
     "immutable": "^3.8.1",
     "electron-devtools-installer": "^2.0.1",
     "react-virtualized": "^9.7.6",
-    "fs-extra": "^4.0.1"
+    "fs-extra": "^4.0.1",
+    "chokidar": "^1.7.0"
   },
   "babel":{
     "sourceMaps": "inline",

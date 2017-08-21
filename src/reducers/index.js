@@ -4,7 +4,7 @@ import fs from 'fs';
 import im from 'immutable';
 import path from 'path';
 import { ipcRenderer } from 'electron'
-import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex, showBookmark, showHistory } from '../util/item_list_pages';
+import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex, showBookmark, showHistory, loadPage } from '../util/item_list_pages';
 import { KEY_INPUT_MODE, ITEM_TYPE_KIND /*, SORT_TYPE */ } from '../util/item_type';
 import { sortItemsInState, sortItemsInPage } from '../util/item_list';
 
@@ -82,55 +82,56 @@ const rootReducer = (state_fcd, action) => {
                );
       }
     case 'CHANGE_DIR_UPPER':
+      /* ORG */
+      //{
+      //  const state_new = changeDirUpper(state);
+      //  const dir = state_new.getIn(['dirs', 0]);
+      //  return Object.assign(
+      //           {},
+      //           state_fcd,
+      //           { 
+      //             state_core: state_fcd.state_core.set(id, state_new),
+      //           }
+      //         );
+      //}
+
+      /* MDF */
       {
-        const state_new = changeDirUpper(state);
-        const dir = state_new.getIn(['dirs', 0]);
-        //state_new.getIn(['pages', dir, 'id_map']).forEach((e, i) => {
-        //  console.log('CHANGE_DIR_UPPER <> i: ' + i + ', e: ' + e);
-        //});
-
-        //{
-        //  console.log('----------------------------------------');
-        //  const dirs = state_new.get('dirs');
-        //  dirs.forEach((e) => {
-        //    console.log(e);
-        //  });
-        //  console.log('----------------------------------------');
-        //}
-
-        //const page = state_new.getIn(['pages', dir]);
-        //const im_items = page.get('items');
         return Object.assign(
                  {},
                  state_fcd,
                  { 
-                   state_core: state_fcd.state_core.set(id, state_new),
+                   state_core: state_fcd.state_core.set(action.id, action.state_new),
                  }
                );
       }
     case 'CHANGE_DIR_LOWER':
-      {
-        const state_new = changeDirLower(state);
-        if(state === state_new){
-          return state_fcd;
-        }
+      /* ORG */
+      //{
+      //  const state_new = changeDirLower(state);
+      //  if(state === state_new){
+      //    return state_fcd;
+      //  }
 
-        const dir = state_new.getIn(['dirs', 0]);
-        //{
-        //  console.log('----------------------------------------');
-        //  const dirs = state_new.get('dirs');
-        //  dirs.forEach((e) => {
-        //    console.log(e);
-        //  });
-        //  console.log('----------------------------------------');
-        //}
-        const page = state_new.getIn(['pages', dir]);
-        const im_items = page.get('items');
+      //  const dir = state_new.getIn(['dirs', 0]);
+      //  const page = state_new.getIn(['pages', dir]);
+      //  const im_items = page.get('items');
+      //  return Object.assign(
+      //           {},
+      //           state_fcd,
+      //           { 
+      //             state_core: state_fcd.state_core.set(id, state_new),
+      //           }
+      //         );
+      //}
+
+      /* MDF */
+      {
         return Object.assign(
                  {},
                  state_fcd,
                  { 
-                   state_core: state_fcd.state_core.set(id, state_new),
+                   state_core: state_fcd.state_core.set(action.id, action.state_new),
                  }
                );
       }
@@ -348,6 +349,23 @@ const rootReducer = (state_fcd, action) => {
     case 'DELETE_ITEMS':
       {
         return deleteItems(state_fcd);
+      }
+    case 'DIR_CUR_IS_UPDATED':
+      {
+        const id = state_fcd.active_pane_id;
+        const state = state_fcd.state_core.get(id);
+
+        const dir_cur = state.getIn(['dirs', 0]);
+        console.log('DIR_CUR_IS_UPDATED <> dir_cur: ', dir_cur);
+        const state_new = loadPage(state, dir_cur);
+
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   state_core: state_fcd.state_core.set(id, state_new)
+                 }
+               );
       }
     case 'TEST_SEND_MSG':
       console.log('TEST_SEND_MSG');

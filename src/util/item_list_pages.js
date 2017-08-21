@@ -4,11 +4,11 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import im from 'immutable';
+import chokidar from 'chokidar';
 import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK, HISTORY } from './item_list';
 import { initAsItem, initAsDiskDrive, initAsBookmark, initAsHistory } from './item';
 import { SORT_TYPE } from './item_type';
 import { sortItemsInPage } from './item_list';
-
 
 export const getDirIndex = (dirs, dir_cur) => {
   const ret = dirs.findIndex((dir)=>{
@@ -188,7 +188,7 @@ export const updatePageCur = (state, _dir_cur, line_cur_zero) => {
 
     switch(dirs_tmp.get(0)){
       case dir_cur: /* "dir_cur" is the current directory. */
-        return _loadPage(state, dir_cur); /* reload page to reflesh the displayed item lists as the latest one. */
+        return loadPage(state, dir_cur); /* reload page to reflesh the displayed item lists as the latest one. */
 
       /* Remove DISK_DRIVE and BOOKMARK from history. */
       case DISK_DRIVE:
@@ -205,7 +205,7 @@ export const updatePageCur = (state, _dir_cur, line_cur_zero) => {
     if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
       return _makeRegisteredPageAsCurrent(state, dirs, idx_dir, line_cur_zero);
     }else{ /* "dir_cur" is not yet registered in "dirs" */
-      return _loadPage(state, dir_cur).set('dirs', dirs.unshift(dir_cur));
+      return loadPage(state, dir_cur).set('dirs', dirs.unshift(dir_cur));
     }
   }
 }
@@ -235,12 +235,20 @@ const _constructNewPage = (dir_cur) => {
                  'is_selected': is_selected
                });
 
+  const dir_watcher = chokidar.watch(fs.realpathSync(dir_cur),
+                                    {
+                                      ignoreInitial: true,
+                                      depth: 0
+                                    });
+
+  
   return im.Map({
            'dirs': im.List.of(dir_cur),
            'pages': im.Map({[dir_cur]: page}),
            'item_names': _updateItemNames(items),
            'msg_cmd': '',
-           'sort_type': SORT_TYPE.NAME_ASC
+           'sort_type': SORT_TYPE.NAME_ASC,
+           'dir_watcher': dir_watcher
          });
 }
 
@@ -411,7 +419,7 @@ const _updateItemNames = (items) => {
   return array;
 }
 
-const _loadPage = (state, dir_cur) => {
+export const loadPage = (state, dir_cur) => {
   const sort_type = state.get("sort_type");
   const items = _updateItems(dir_cur);
   const id_map = im.List(im.Range(0, items.size));
@@ -432,7 +440,7 @@ const _loadPage = (state, dir_cur) => {
                                 sort_type );
           
   //page.get('id_map').forEach((e, i) => {
-  //  console.log('_loadPage <> i: ' + i + ', e: ' + e);
+  //  console.log('loadPage <> i: ' + i + ', e: ' + e);
   //});
 
   const item_names = _updateItemNames(items);

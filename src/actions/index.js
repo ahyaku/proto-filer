@@ -2,7 +2,9 @@
 
 import { ipcRenderer } from 'electron';
 import cp from 'child_process';
+import chokidar from 'chokidar';
 import { KEY_INPUT_MODE } from '../util/item_type';
+import { changeDirUpper, changeDirLower } from '../util/item_list_pages';
 
 import im from 'immutable';
 
@@ -63,19 +65,89 @@ export const _checkKeyNormal = (state_fcd, e) => {
           type: 'OPEN_HISTORY'
         };
       }else{
-        return {
-          type: 'CHANGE_DIR_UPPER'
+        /* ORG */
+        //return {
+        //  type: 'CHANGE_DIR_UPPER'
+        //};
+
+        /* NG */
+        //return dispatch({
+        //  type: 'CHANGE_DIR_UPPER'
+        //});
+
+        /* OK */
+        //return (dispatch) => {
+        //  return dispatch({
+        //    type: 'CHANGE_DIR_UPPER'
+        //  });
+        //  //return dispatch({
+        //  //  type: 'CHANGE_DIR_UPPER'
+        //  //});
+        //};
+
+        return (dispatch, getState) => {
+          const state_fcd = getState();
+          const id = state_fcd.active_pane_id;
+          const state = state_fcd.state_core.get(id);
+          const state_new = changeDirUpper(state);
+
+          if(state === state_new){
+            return dispatch({
+              type: 'CHANGE_DIR_UPPER',
+              state_new: state,
+              id: id
+            });
+          }
+
+          state_new.get('dir_watcher').close();
+          const dir_new = state_new.getIn(['dirs', 0]);
+          const watcher_new = chokidar.watch(dir_new,
+                                            {
+                                              ignoreInitial: true,
+                                              depth: 0
+                                            });
+          dispatch(initDirWatcher(watcher_new, dir_new));
+          dispatch({
+            type: 'CHANGE_DIR_UPPER',
+            state_new: state_new.set('dir_watcher', watcher_new),
+            id: id
+          });
         };
+
       }
     case 'l': /* 'l' */
-      //if(event.ctrlKey == true){
-      //  this.updatePane();
-      //}else{
-      //  this.changeDirLower();
-      //}
-      //break;
-      return {
-        type: 'CHANGE_DIR_LOWER'
+      /* ORG */
+      //return {
+      //  type: 'CHANGE_DIR_LOWER'
+      //};
+      return (dispatch, getState) => {
+        const state_fcd = getState();
+        const id = state_fcd.active_pane_id;
+        const state = state_fcd.state_core.get(id);
+        const state_new = changeDirLower(state);
+
+        if(state === state_new){
+          return dispatch({
+            type: 'CHANGE_DIR_LOWER',
+            state_new: state,
+            id: id
+          });
+        }
+
+        state_new.get('dir_watcher').close();
+        const dir_new = state_new.getIn(['dirs', 0]);
+        const watcher_new = chokidar.watch(dir_new,
+                                          {
+                                            ignoreInitial: true,
+                                            depth: 0
+                                          });
+        dispatch(initDirWatcher(watcher_new, dir_new));
+        dispatch({
+          type: 'CHANGE_DIR_LOWER',
+          state_new: state_new.set('dir_watcher', watcher_new),
+          id: id
+        });
+
       };
     case 'm': /* 'm' */
       return {
@@ -492,6 +564,37 @@ const switchInputModeNormalWithClear = () => {
 //  });
 //}
 
+const INTERVAL_WATCH = 1000;
+export const initDirWatcher = (watcher, dir_cur) => {
+  let timer = null;
+
+  return (dispatch) => {
+    /* Do not use 'all' because it leads to 'unlinkdir' of 'C:/' when dir_cur is changed to 'C:/'
+     * Not sure the reason why..
+     * */
+    /*
+    watcher.on('all', (event, path) => {
+      console.log('watcher: ', event, path);
+    */
+    watcher.on('raw', (event, path, details) => {
+      //console.log('watcher: ', event, path, details);
+      if(timer !== null){
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        //console.log('watcher: ', event, path);
+        timer = null;
+        dispatch({
+          type: 'DIR_CUR_IS_UPDATED'
+        });
+        //console.log('dir_cur: ' + dir_cur + ', getWatched: ', watcher.getWatched());
+      },
+      INTERVAL_WATCH);
+    });
+
+    //console.log('dir_cur: ' + dir_cur + ', getWatched: ', watcher.getWatched());
+  }
+}
 
 const TestSendMsg = () => (dispatch) => {
   console.log('TestSendMsg');

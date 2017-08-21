@@ -15,10 +15,11 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import im from 'immutable';
 import { ipcRenderer } from 'electron';
-import cp from 'child_process';
+import chokidar from 'chokidar';
+//import cp from 'child_process';
 
 import App from './components/app';
-import { checkKeyNormal, checkKeySearch } from './actions';
+import { checkKeyNormal, checkKeySearch, initDirWatcher } from './actions';
 import { updatePageCur } from './util/item_list_pages';
 import reducer from './reducers';
 import { KEY_INPUT_MODE } from './util/item_type';
@@ -46,9 +47,11 @@ const state_init = {
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
 
-function ListenKeydown(mapEventToAction){
-  return function(dispatch, getState){
-    function handleEvent(e){
+const ListenKeydown = (mapEventToAction) => {
+
+  return (dispatch, getState) => {
+
+    const handleEvent = (e) => {
       //console.log('handleEvent()!! <> e.key: ' + e.key);
       //console.log('key: ' + e);
       //console.log('e.keyCode: ' + e.keyCode);
@@ -61,17 +64,18 @@ function ListenKeydown(mapEventToAction){
       //dispatch(mapEventToAction(e, getState));
       //dispatch(mapEventToAction(dispatch, getState, e));
       dispatch(mapEventToAction(getState, e));
-    }
+    } /* handleEvent */
 
     document.addEventListener('keydown', handleEvent);
     return () => document.removeEventListener('keydown', handleEvent);
+
   };
 
 }
 
-function mapKeydownToAction(getState, e){
+const mapKeydownToAction = (getState, e) => {
   //console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
-  return function(dispatch){
+  return (dispatch) => {
     const state_fcd = getState();
     const state = state_fcd.state_core;
 
@@ -82,9 +86,11 @@ function mapKeydownToAction(getState, e){
       case KEY_INPUT_MODE.NORMAL:
         //console.log('HERE??');
         return dispatch(checkKeyNormal(state_fcd, e));
+        //return checkKeyNormal(state_fcd, e);
         //return dispatch(checkKeyNormal(state, e));
       case KEY_INPUT_MODE.SEARCH:
         return dispatch(checkKeySearch(state_fcd, e));
+        //return checkKeySearch(state_fcd, e);
         //return dispatch(checkKeySearch(state, e));
     }
   }
@@ -96,6 +102,9 @@ const unlistenKeydown = store.dispatch(ListenKeydown(mapKeydownToAction));
 //  console.log('ret_msg: ' + ret_msg);
 //});
 //ipcRenderer.send('test_message', 'Here it!!');
+
+store.dispatch(initDirWatcher(state_core_left.get('dir_watcher'), state_core_left.getIn(['dirs', 0])));
+store.dispatch(initDirWatcher(state_core_right.get('dir_watcher'), state_core_right.getIn(['dirs', 0])));
 
 const style = {
   overflowY: 'hidden'
