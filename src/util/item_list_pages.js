@@ -188,7 +188,7 @@ export const updatePageCur = (state, _dir_cur, line_cur_zero) => {
 
     switch(dirs_tmp.get(0)){
       case dir_cur: /* "dir_cur" is the current directory. */
-        return loadPage(state, dir_cur); /* reload page to reflesh the displayed item lists as the latest one. */
+        return loadPage(state, dir_cur, 0); /* reload page to reflesh the displayed item lists as the latest one. */
 
       /* Remove DISK_DRIVE and BOOKMARK from history. */
       case DISK_DRIVE:
@@ -205,7 +205,7 @@ export const updatePageCur = (state, _dir_cur, line_cur_zero) => {
     if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
       return _makeRegisteredPageAsCurrent(state, dirs, idx_dir, line_cur_zero);
     }else{ /* "dir_cur" is not yet registered in "dirs" */
-      return loadPage(state, dir_cur).set('dirs', dirs.unshift(dir_cur));
+      return loadPage(state, dir_cur, 0).set('dirs', dirs.unshift(dir_cur));
     }
   }
 }
@@ -419,7 +419,7 @@ const _updateItemNames = (items) => {
   return array;
 }
 
-export const loadPage = (state, dir_cur) => {
+export const loadPage = (state, dir_cur, line_cur) => {
   const sort_type = state.get("sort_type");
   const items = _updateItems(dir_cur);
   const id_map = im.List(im.Range(0, items.size));
@@ -432,7 +432,7 @@ export const loadPage = (state, dir_cur) => {
 
   const page = sortItemsInPage( im.Map({
                                 'items': items,
-                                'line_cur': 0,
+                                'line_cur': line_cur,
                                 'id_map': id_map,
                                 'id_map_nrw': id_map,
                                 'is_matched': is_matched,

@@ -144,7 +144,7 @@ class ViewItem extends React.Component {
                          );
 
     if(this.props.c === line_cur){
-      //style = Object.assign({}, style, {zIndex: '1'});
+      //console.log('view-item <> render(), name: ' + item.get('name'));
 
       /* ToDo: Need to judge the currently acive pane. */
       if(id === active_pane_id){
@@ -191,7 +191,18 @@ class ViewItem extends React.Component {
     /* Render only current line and previous line items. */
     if( id === this.props.line_cur ||
         id === nextProps.line_cur  ){
-        //console.log('name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
+
+      if( this.props.active_pane_id !== nextProps.active_pane_id){
+        return true;
+      }else if(this.props.line_cur === nextProps.line_cur){
+        /* Not sure the reason why but this happens with line_cur change.
+         * react-virtualized list does this??
+         * */
+        return false;
+      }
+
+      //console.log('view-item should <> c: ' + this.props.c + ', line_cur: ' + this.props.line_cur + ', nextProps.line_cur: ' + nextProps.line_cur);
+
       return true;
     }else{
       //const item = this._cbGetItem(this.props.items, id);
@@ -217,64 +228,75 @@ class ViewItem extends React.Component {
 
   componentDidUpdate(prevProps, prevState){
 
+    //if(this.props.c === this.props.line_cur){
+    //  //console.time('componentDidUpdate1');
+    //  let scrollTop;
+
+    //  let ref_item_list = ReactDOM.findDOMNode(this).parentNode;
+    //  //console.log('ref_item_list: ' + ref_item_list);
+    //  let ref_item_cur = ReactDOM.findDOMNode(this);
+
+    //  if(ref_item_cur == null){
+    //    return;
+    //  }
+
+    //  let id = this.props.id;
+    //  let dir_cur = this.props.dir_cur;
+
+    //  switch(this.props.action_type){
+    //    case 'CHANGE_DIR_UPPER':
+    //    case 'CHANGE_DIR_LOWER':
+    //      ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
+    //      return;
+    //    default:
+    //      {
+    //        let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
+    //        let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
+    //        let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
+    //        let delta = 5;
+
+    //        //console.log('list <> offsetTop: ' + ref_item_list.offsetTop + ', clientHeight: ' + ref_item_list.clientHeight + ', scrollHeight: ' + ref_item_list.scrollHeight);
+    //        //console.log('line <> offsetTop: ' + ref_item_cur.offsetTop + ', clientHeight: ' + ref_item_cur.clientHeight + ', scrollHeight: ' + ref_item_cur.scrollHeight);
+    //        //console.log('scrollTop_abs: ' + scrollTop_abs + ', scrollBottom_abs: ' + scrollBottom_abs + ', line_pos: ' + line_pos);
+
+    //        if(ref_item_cur.offsetTop < scrollTop_abs){
+    //          //console.log('scroll: under');
+    //          scrollTop_abs = ref_item_cur.offsetTop;
+    //          scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
+    //          ref_item_list.scrollTop = scrollTop;
+    //        }else if(line_pos > scrollBottom_abs){
+    //          //console.log('scroll: over');
+    //          scrollTop_abs = line_pos - ref_item_list.clientHeight;
+    //          scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
+    //          ref_item_list.scrollTop = scrollTop;
+    //        }else{
+    //          //console.log('scroll: between');
+    //          scrollTop = ref_item_list.scrollTop;
+    //        }
+    //        this._arr_pos[id][dir_cur] = scrollTop;
+    //        //console.timeEnd('componentDidUpdate2');
+    //      }
+
+    //      return;
+    //  }
+
+    //  if(this.didupdate === true){
+    //    this.didupdate = false;
+    //    this.setState(this.props);
+    //  }
+    //}
+
     if(this.props.c === this.props.line_cur){
-      //console.time('componentDidUpdate1');
-      let scrollTop;
-
-      let ref_item_list = ReactDOM.findDOMNode(this).parentNode;
-      //console.log('ref_item_list: ' + ref_item_list);
-      let ref_item_cur = ReactDOM.findDOMNode(this);
-
-      if(ref_item_cur == null){
-        return;
-      }
-
-      let id = this.props.id;
-      let dir_cur = this.props.dir_cur;
-
-      switch(this.props.action_type){
-        case 'CHANGE_DIR_UPPER':
-        case 'CHANGE_DIR_LOWER':
-          ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
-          return;
-        default:
-          {
-            let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
-            let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
-            let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
-            let delta = 5;
-
-            //console.log('list <> offsetTop: ' + ref_item_list.offsetTop + ', clientHeight: ' + ref_item_list.clientHeight + ', scrollHeight: ' + ref_item_list.scrollHeight);
-            //console.log('line <> offsetTop: ' + ref_item_cur.offsetTop + ', clientHeight: ' + ref_item_cur.clientHeight + ', scrollHeight: ' + ref_item_cur.scrollHeight);
-            //console.log('scrollTop_abs: ' + scrollTop_abs + ', scrollBottom_abs: ' + scrollBottom_abs + ', line_pos: ' + line_pos);
-
-            if(ref_item_cur.offsetTop < scrollTop_abs){
-              //console.log('scroll: under');
-              scrollTop_abs = ref_item_cur.offsetTop;
-              scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-              ref_item_list.scrollTop = scrollTop;
-            }else if(line_pos > scrollBottom_abs){
-              //console.log('scroll: over');
-              scrollTop_abs = line_pos - ref_item_list.clientHeight;
-              scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-              ref_item_list.scrollTop = scrollTop;
-            }else{
-              //console.log('scroll: between');
-              scrollTop = ref_item_list.scrollTop;
-            }
-            this._arr_pos[id][dir_cur] = scrollTop;
-            //console.timeEnd('componentDidUpdate2');
-          }
-
-          return;
-      }
-
-      if(this.didupdate === true){
-        this.didupdate = false;
-        this.setState(this.props);
-      }
+      //console.log('view-item did <> c: ' + this.props.c + ', prevProps.line_cur: ' + prevProps.line_cur + ', line_cur: ' + this.props.line_cur);
+      const node = ReactDOM.findDOMNode(this);
+      //const rect = node.getBounds();
+      //const crect = node.getContentBounds();
+      const offsetTop = node.offsetTop;
+      const clientHeight = node.clientHeight;
+      //console.log('view-item did <> offsetTop: ' + offsetTop + ', clientHeight: ' + clientHeight);
     }
 
+    return;
   }
 
 }

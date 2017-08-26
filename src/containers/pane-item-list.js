@@ -12,9 +12,10 @@ const mapStateToProps = (state, props) => {
   const line_cur = state.state_core.getIn([props.id, 'pages', dir, 'line_cur']);
   //console.log('pane-item-list <> pane_id: ' + props.id + ', line_cur: ' + line_cur);
 
-//  if(props.id === active_pane_id){
-//    console.log('pane-item-list <> id: ' + props.id + ', dir: ' + dir);
-//  }
+  //if(props.id === active_pane_id){
+  //  //console.log('pane-item-list <> id: ' + props.id + ', dir: ' + dir);
+  //  console.log('pane-item-list <> line_cur: ' + line_cur);
+  //}
 
   return {
     active_pane_id: active_pane_id,
@@ -22,7 +23,8 @@ const mapStateToProps = (state, props) => {
     page: page,
     id: props.id,
     line_cur: line_cur,
-    input_mode: state.input_mode
+    input_mode: state.input_mode,
+    action_type: state.action_type
   };
 }
 

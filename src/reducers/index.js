@@ -27,7 +27,8 @@ const rootReducer = (state_fcd, action) => {
                  {},
                  state_fcd,
                  {
-                   state_core: state_core_new
+                   state_core: state_core_new,
+                   action_type: action.type
                  }
                );
       }
@@ -38,7 +39,8 @@ const rootReducer = (state_fcd, action) => {
                  {},
                  state_fcd,
                  {
-                   state_core: state_core_new
+                   state_core: state_core_new,
+                   action_type: action.type
                  }
                );
       }
@@ -102,6 +104,7 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  { 
                    state_core: state_fcd.state_core.set(action.id, action.state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -132,6 +135,7 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  { 
                    state_core: state_fcd.state_core.set(action.id, action.state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -357,13 +361,21 @@ const rootReducer = (state_fcd, action) => {
 
         const dir_cur = state.getIn(['dirs', 0]);
         console.log('DIR_CUR_IS_UPDATED <> dir_cur: ', dir_cur);
-        const state_new = loadPage(state, dir_cur);
+
+        //const state_new = loadPage(state, dir_cur, state.getIn(['pages', dir_cur, 'line_cur']));
+
+        const state_tmp = loadPage(state, dir_cur, state.getIn(['pages', dir_cur, 'line_cur']));
+        const sort_type = state_tmp.get('sort_type');
+        const page_tmp = state_tmp.getIn(['pages', state_tmp.getIn(['dirs', 0])]);
+        const page_new = sortItemsInPage(page_tmp, sort_type);
+        const state_new = state_tmp.setIn(['pages', dir_cur], page_new);
 
         return Object.assign(
                  {},
                  state_fcd,
                  {
-                   state_core: state_fcd.state_core.set(id, state_new)
+                   state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -503,6 +515,7 @@ const moveCursor = (state, delta) => {
   }else if(vv >= len){
     vv =  0;
   }
+
   //console.log('moveCursor() <> vv: ' + vv + ', line_cur: ' + line_cur);
 
   return state.setIn(['pages', dir, 'line_cur'], vv);

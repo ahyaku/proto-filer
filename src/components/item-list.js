@@ -58,6 +58,11 @@ class ItemList extends React.Component {
     this.id_map_nrw = null
 
     this._rowRenderer = this._rowRenderer.bind(this);
+    this._onRowsRendered = this._onRowsRendered.bind(this);
+
+    this.state = {
+      scroll_to_index: 0
+    }
     
     //this.mynode = findDOMNode(this);
     //console.log('this.node: ', this.mynode);
@@ -70,6 +75,7 @@ class ItemList extends React.Component {
   render(){
     //console.log('ItemList <> render()');
     const rowRenderer = this._rowRenderer;
+    const onRowsRendered = this._onRowsRendered;
     const id = this.props.id;
     const dir_cur = this.props.dir;
     const page = this.props.page;
@@ -101,6 +107,28 @@ class ItemList extends React.Component {
     //  console.log('ItemList <> pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
     //}
 
+    //console.log('item-list render <> this.scroll_to_index: ' + this.scroll_to_index);
+    //const scroll_to_index = this.props.action_type === 'DIR_CUR_IS_UPDATED'
+    //                          ? this.scroll_to_index
+    //                          : this.props.line_cur;
+
+    //let scroll_to_index;
+    //if( this.props.action_type === 'DIR_CUR_IS_UPDATED' ){
+    //  scroll_to_index = this.scroll_to_index;
+    //}else{
+    //  scroll_to_index = this.props.line_cur;
+    //}
+
+    //console.log('item-list render <> scroll_to_index: ' + scroll_to_index + ', this.scroll_to_index: ' + this.scrill_to_index);
+    //console.log('item-list render <> this.state.scroll_to_index: ' + this.state.scroll_to_index);
+
+    //const onRowsRendered = ({overscanStartIndex, overscanStopIndex, startIndex, stopIndex}) => {
+    //  //console.log('item-list render <> ostart: ' + overscanStartIndex + ', ostop: ' + overscanStopIndex + ', start: ' + startIndex + ', stop: ' + stopIndex);
+    //  this.scroll_to_index = stopIndex - 1;
+    //  //this.setState();
+    //  //this.setState({scroll_to_index: stopIndex - 1});
+    //}
+
     return React.createElement(
       AutoSizer,
       null,
@@ -114,7 +142,8 @@ class ItemList extends React.Component {
             rowCount: this.id_map_nrw.size,
             rowHeight: ROW_HEIGHT,
             scrollToAlignment: 'auto',
-            scrollToIndex: this.props.line_cur/* this.props.line_cur */,
+            //scrollToIndex: this.props.line_cur/* this.props.line_cur */,
+            scrollToIndex: this.state.scroll_to_index/* this.props.line_cur */,
             line_cur: this.props.line_cur/* this.props.line_cur */,
             im_items: im_items,
             is_selected: is_selected,
@@ -126,6 +155,8 @@ class ItemList extends React.Component {
             ref: 'ListClass',
             style: {overflowY: 'scroll'},
             rowRenderer: rowRenderer,
+            onRowsRendered: onRowsRendered,
+            action_type: this.props.action_type
           }
         );
       }
@@ -239,6 +270,14 @@ class ItemList extends React.Component {
 
   }
 
+  _onRowsRendered({overscanStartIndex, overscanStopIndex, startIndex, stopIndex}){
+    //console.log('item-list render <> ostart: ' + overscanStartIndex + ', ostop: ' + overscanStopIndex + ', start: ' + startIndex + ', stop: ' + stopIndex);
+    //this.scroll_to_index = stopIndex - 1;
+    this.state.scroll_to_index = stopIndex;
+    //this.setState();
+    ////this.setState({scroll_to_index: stopIndex - 1});
+  }
+
   _getItemsByMap(page){
     //console.log('getItemsByMap <> id_map_nrw: ', page.get('id_map_nrw'));
     //console.log('getItemsByMap <> items: ', page.get('items'));
@@ -271,6 +310,15 @@ class ItemList extends React.Component {
     return is_selected;
   }
 
+  componentWillReceiveProps(nextProps){
+    const scroll_to_index = nextProps.action_type === 'DIR_CUR_IS_UPDATED'
+                              ? this.state.scroll_to_index
+                              : nextProps.line_cur;
+    //console.log('item-list will <> nextProps.line_cur: '+ nextProps.line_cur + ', scroll_to_index: ' + scroll_to_index);
+    this.setState({
+      scroll_to_index: scroll_to_index
+    });
+  }
 
   shouldComponentUpdate(nextState, nextProps){
     //const node = findDOMNode(this);
@@ -304,33 +352,67 @@ class ListClass extends List {
     }
   }
 
+  /* ORG */
+//  componentDidUpdate(prevProps, prevState){
+//    //console.log('ListClass componentDidUpdate()');
+//
+//    let offset = this.getOffsetForRow('auto', this.props.line_cur);
+//    this.forceUpdateGrid();
+//
+//    //console.log('ListClass componentDidUpdate <> offset: ' + offset +  ', prevState.offset: ' + prevState.offset);
+//
+//    let ref = findDOMNode(this);
+//    let offset_top = ref.offsetTop;
+//    let client_height = ref.clientHeight;
+//    let client_width = ref.clientWidth;
+//
+//    if( (prevProps.line_cur === 0) &&
+//        (this.props.line_cur === (this.props.rowCount - 1)) ){
+//      this.scrollToPosition(offset + OFFSET_DELTA);
+//    }else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
+//              (this.props.line_cur === 0) ){
+//    }else if(this.props.line_cur > prevProps.line_cur){
+//      if(offset > prevState.offset){
+//        this.scrollToPosition(offset + OFFSET_DELTA);
+//      }
+//    }else if(this.props.line_cur < prevProps.line_cur){
+//    }else{
+//    }
+//
+//    this.state.offset = offset;
+//
+//    return true;
+//  }
+
   componentDidUpdate(prevProps, prevState){
     //console.log('ListClass componentDidUpdate()');
 
-    let offset = this.getOffsetForRow('auto', this.props.line_cur);
-    this.forceUpdateGrid();
+    if(this.props.action_type !== 'DIR_CUR_IS_UPDATED'){
+      let offset = this.getOffsetForRow('auto', this.props.line_cur);
+      this.forceUpdateGrid();
 
-    //console.log('ListClass componentDidUpdate <> offset: ' + offset +  ', prevState.offset: ' + prevState.offset);
+      //console.log('ListClass componentDidUpdate <> offset: ' + offset +  ', prevState.offset: ' + prevState.offset);
 
-    let ref = findDOMNode(this);
-    let offset_top = ref.offsetTop;
-    let client_height = ref.clientHeight;
-    let client_width = ref.clientWidth;
+      let ref = findDOMNode(this);
+      let offset_top = ref.offsetTop;
+      let client_height = ref.clientHeight;
+      let client_width = ref.clientWidth;
 
-    if( (prevProps.line_cur === 0) &&
-        (this.props.line_cur === (this.props.rowCount - 1)) ){
-      this.scrollToPosition(offset + OFFSET_DELTA);
-    }else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
-              (this.props.line_cur === 0) ){
-    }else if(this.props.line_cur > prevProps.line_cur){
-      if(offset > prevState.offset){
+      if( (prevProps.line_cur === 0) &&
+          (this.props.line_cur === (this.props.rowCount - 1)) ){
         this.scrollToPosition(offset + OFFSET_DELTA);
+      }else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
+                (this.props.line_cur === 0) ){
+      }else if(this.props.line_cur > prevProps.line_cur){
+        if(offset > prevState.offset){
+          this.scrollToPosition(offset + OFFSET_DELTA);
+        }
+      }else if(this.props.line_cur < prevProps.line_cur){
+      }else{
       }
-    }else if(this.props.line_cur < prevProps.line_cur){
-    }else{
-    }
 
-    this.state.offset = offset;
+      this.state.offset = offset;
+    }
 
     return true;
   }
