@@ -60,6 +60,7 @@ export const changeDrive = (state, drive_list) => {
                                    .set('dirs', dirs_new));
 }
 
+/* ORG */
 export const showBookmark = (state) => {
   const dirs = state.get('dirs');
   const idx_dir = getDirIndex(dirs, BOOKMARK);
@@ -131,6 +132,79 @@ export const showBookmark = (state) => {
                                    .set('dirs', dirs_new));
 }
 
+/* MDF */
+//export const showBookmark = (pages_sc) => {
+//  //const dirs = state.get('dirs');
+//  //const idx_dir = getDirIndex(dirs, BOOKMARK);
+//  //let dirs_new;
+//  //if( idx_dir !== -1 ){
+//  //  dirs_new = dirs.withMutations(s => s.delete(idx_dir)
+//  //                                      .unshift(BOOKMARK));
+//  //}else{
+//  //  dirs_new = dirs.unshift(BOOKMARK);
+//  //}
+//
+//  //console.log('changeDrive <> drive_list.length: ' + drive_list.length);
+//
+//  //const list_bookmark = {
+//  //  'mydata': fs.realpathSync('C:\\Users\\mydata'),
+//  //  'tmp': fs.realpathSync('C:\\tmp'),
+//  //  'git_repo': fs.realpathSync('C:\\git_repo'),
+//  //  'Go': fs.realpathSync('C:\\Go')
+//  //}
+//
+//  const list_bookmark = {
+//    0: {
+//      'name': 'mydata',
+//      'path_body': fs.realpathSync('C:\\Users\\mydata'),
+//    },
+//    1: {
+//      'name': 'tmp',
+//      'path_body': fs.realpathSync('C:\\tmp'),
+//    },
+//    2: {
+//      'name': 'git_repo',
+//      'path_body': fs.realpathSync('C:\\git_repo'), 
+//    },
+//    3: {
+//      'name': 'Go',
+//      'path_body': fs.realpathSync('C:\\Go')
+//    }
+//  }
+//
+//  //console.log('list_bookmark[0]: ', list_bookmark[0]);
+//  //console.log('list_bookmark.length: ', Object.keys(list_bookmark).length);
+//  
+//  const items = im.List(im.Range(0, Object.keys(list_bookmark).length))
+//                  .map((e, i) => {
+//                    return initAsBookmark(i, list_bookmark[i]['name'], list_bookmark[i]['path_body']);
+//                  });
+//
+//  const is_matched = im.List(im.Range(0, items.size))
+//                        .map((e, i) => {
+//                          return true;
+//                        });
+//
+//  const is_selected = im.List(im.Range(0, items.size))
+//                        .map((e, i) => {
+//                          return false;
+//                        });
+//
+//  const id_map = im.List(im.Range(0, items.size));
+//
+//  const page = im.Map({
+//                 'items': items,
+//                 'line_cur': 0,
+//                 'id_map': id_map,
+//                 'id_map_nrw': id_map,
+//                 'is_matched': is_matched,
+//                 'is_selected': is_selected
+//               });
+//  return pages_sc.set(BOOKMARK, page);
+//  //return state.withMutations(s => s.setIn(['pages', BOOKMARK], page)
+//  //                                 .set('dirs', dirs_new));
+//}
+
 export const showHistory = (state) => {
   const dirs = state.get('dirs');
   const idx_dir = getDirIndex(dirs, HISTORY);
@@ -147,9 +221,24 @@ export const showHistory = (state) => {
   //console.log('list_bookmark[0]: ', list_bookmark[0]);
   //console.log('list_bookmark.length: ', Object.keys(list_bookmark).length);
   
+  //const items = im.List(im.Range(0, dirs.size))
+  //                .map((e, i) => {
+  //                  return initAsHistory(i, dirs.get(i));
+  //                });
+
   const items = im.List(im.Range(0, dirs.size))
                   .map((e, i) => {
                     return initAsHistory(i, dirs.get(i));
+                  })
+                  .filter((e, i) => {
+                    switch(dirs.get(i)){
+                      case BOOKMARK:
+                      case DISK_DRIVE:
+                      case HISTORY:
+                        return false;
+                      default:
+                        return true;
+                    }
                   });
 
   const is_matched = im.List(im.Range(0, items.size))
@@ -245,6 +334,7 @@ const _constructNewPage = (dir_cur) => {
   return im.Map({
            'dirs': im.List.of(dir_cur),
            'pages': im.Map({[dir_cur]: page}),
+           //'pages_sc': im.Map({}),
            'item_names': _updateItemNames(items),
            'msg_cmd': '',
            'sort_type': SORT_TYPE.NAME_ASC,
