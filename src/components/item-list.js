@@ -11,13 +11,11 @@ import { ITEM_TYPE_KIND } from '../util/item_type';
 import ViewItem from './view-item';
 import PaneViewItem from '../containers/pane-view-item';
 import { KEY_INPUT_MODE } from '../util/item_type';
+import { RES } from '../../res/res';
 
 const LIST_MAX = 10000;
 const FONT_SIZE = '13px';
-const ROW_HEIGHT = 16.0;
-//const ROW_HEIGHT = 17.0;
-//const ROW_HEIGHT = 20.0;
-const OFFSET_DELTA = 5;
+//const OFFSET_DELTA = 5;
 //const OFFSET_DELTA = 0;
 
 class ItemList extends React.Component {
@@ -57,11 +55,17 @@ class ItemList extends React.Component {
     //this.dir_cur = null;
     this.id_map_nrw = null
 
+    this.line_top = 0;
+    this.line_bottom = 0;
+    this.line_num_disp = 0;
+
     this._rowRenderer = this._rowRenderer.bind(this);
     this._onRowsRendered = this._onRowsRendered.bind(this);
 
     this.state = {
-      scroll_to_index: 0
+      scroll_to_index: 0,
+      //line_top: 0,
+      //line_bottom: 0
     }
     
     //this.mynode = findDOMNode(this);
@@ -131,16 +135,18 @@ class ItemList extends React.Component {
 
     return React.createElement(
       AutoSizer,
-      null,
+      {
+        ref: 'AutoSizer'
+      },
       ({height, width}) => {
         //console.log('height: ' + height + ', width: ' + width + ', item_num: ' + im_items.size);
         return React.createElement(
-          ListClass,
+          List,
           {
             width: width,
             height: height,
             rowCount: this.id_map_nrw.size,
-            rowHeight: ROW_HEIGHT,
+            rowHeight: RES.ITEM.HEIGHT,
             scrollToAlignment: 'auto',
             //scrollToIndex: this.props.line_cur/* this.props.line_cur */,
             scrollToIndex: this.state.scroll_to_index/* this.props.line_cur */,
@@ -152,7 +158,8 @@ class ItemList extends React.Component {
             dir_cur: dir_cur,
             id_map_nrw: id_map_nrw,
             //is_dir_changed: is_dir_changed,
-            ref: 'ListClass',
+            //ref: 'ListClass',
+            ref: 'List',
             style: {overflowY: 'scroll'},
             rowRenderer: rowRenderer,
             onRowsRendered: onRowsRendered,
@@ -274,8 +281,13 @@ class ItemList extends React.Component {
     //console.log('item-list render <> ostart: ' + overscanStartIndex + ', ostop: ' + overscanStopIndex + ', start: ' + startIndex + ', stop: ' + stopIndex);
     //this.scroll_to_index = stopIndex - 1;
     this.state.scroll_to_index = stopIndex;
-    //this.setState();
-    ////this.setState({scroll_to_index: stopIndex - 1});
+    this.line_top = startIndex;
+    this.line_bottom = stopIndex;
+    this.line_num_disp = stopIndex - startIndex + 1;
+
+    //console.log('item-list onrows <> line [top, cur, bottom] = [' + startIndex + ', ' + this.state.scroll_to_index + ', ' + stopIndex + ']');
+    //console.log('item-list onrows <> line [top, cur, bottom] = [' + this.line_top + ', ' + this.props.line_cur + ', ' + this.line_bottom + '], num: ' + this.line_num_disp);
+
   }
 
   _getItemsByMap(page){
@@ -311,13 +323,19 @@ class ItemList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
+    //console.log('componentWillReceiveProps()');
     const scroll_to_index = nextProps.action_type === 'DIR_CUR_IS_UPDATED'
                               ? this.state.scroll_to_index
                               : nextProps.line_cur;
     //console.log('item-list will <> nextProps.line_cur: '+ nextProps.line_cur + ', scroll_to_index: ' + scroll_to_index);
+
+    //console.log('item-list will <> line [top, cur, bottom] = [' + this.state.line_top + ', ' + nextProps.line_cur + ', ' + this.state.line_bottom + ']');
+
+
     this.setState({
       scroll_to_index: scroll_to_index
     });
+
   }
 
   shouldComponentUpdate(nextState, nextProps){
@@ -330,104 +348,69 @@ class ItemList extends React.Component {
   }
 
   componentDidUpdate(prevState, prevProps){
+    //console.log('ItemList componentDidUpdate()');
+    this.refs.AutoSizer.refs.List.forceUpdateGrid();
     //console.log('item-list <> componentDidUpdate() input_mode: ' + this.props.input_mode);
-    if( this.props.active_pane_id === this.props.id     &&
-        this.props.input_mode ===  KEY_INPUT_MODE.POPUP ){
-      const node = findDOMNode(this);
-      const rect = node.getBoundingClientRect();
-      //const node_root = this.props.cbGetNodeRoot();
-      //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
-      //console.log('refs: ', this.refs);
-      this.props.dispPopUpForSort(rect.left, rect.top);
-    }
-  }
-
-}
-
-class ListClass extends List {
-  constructor(props){
-    super(props);
-    this.state = {
-      offset: 0,
-    }
-  }
-
-  /* ORG */
-//  componentDidUpdate(prevProps, prevState){
-//    //console.log('ListClass componentDidUpdate()');
-//
-//    let offset = this.getOffsetForRow('auto', this.props.line_cur);
-//    this.forceUpdateGrid();
-//
-//    //console.log('ListClass componentDidUpdate <> offset: ' + offset +  ', prevState.offset: ' + prevState.offset);
-//
-//    let ref = findDOMNode(this);
-//    let offset_top = ref.offsetTop;
-//    let client_height = ref.clientHeight;
-//    let client_width = ref.clientWidth;
-//
-//    if( (prevProps.line_cur === 0) &&
-//        (this.props.line_cur === (this.props.rowCount - 1)) ){
-//      this.scrollToPosition(offset + OFFSET_DELTA);
-//    }else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
-//              (this.props.line_cur === 0) ){
-//    }else if(this.props.line_cur > prevProps.line_cur){
-//      if(offset > prevState.offset){
-//        this.scrollToPosition(offset + OFFSET_DELTA);
-//      }
-//    }else if(this.props.line_cur < prevProps.line_cur){
-//    }else{
-//    }
-//
-//    this.state.offset = offset;
-//
-//    return true;
-//  }
-
-  componentDidUpdate(prevProps, prevState){
-    //console.log('ListClass componentDidUpdate()');
-
-    if(this.props.action_type !== 'DIR_CUR_IS_UPDATED'){
-      let offset = this.getOffsetForRow('auto', this.props.line_cur);
-      this.forceUpdateGrid();
-
-      //console.log('ListClass componentDidUpdate <> offset: ' + offset +  ', prevState.offset: ' + prevState.offset);
-
-      let ref = findDOMNode(this);
-      let offset_top = ref.offsetTop;
-      let client_height = ref.clientHeight;
-      let client_width = ref.clientWidth;
-
-      if( (prevProps.line_cur === 0) &&
-          (this.props.line_cur === (this.props.rowCount - 1)) ){
-        this.scrollToPosition(offset + OFFSET_DELTA);
-      }else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
-                (this.props.line_cur === 0) ){
-      }else if(this.props.line_cur > prevProps.line_cur){
-        if(offset > prevState.offset){
-          this.scrollToPosition(offset + OFFSET_DELTA);
-        }
-      }else if(this.props.line_cur < prevProps.line_cur){
-      }else{
+    if( this.props.active_pane_id === this.props.id ){
+      switch( this.props.action_type ){
+        case 'PAGE_UP_START':
+          this.props.updateOffsetInPage(this.line_top - this.line_num_disp);
+          break;
+        case 'PAGE_DOWN_START':
+          this.props.updateOffsetInPage(this.line_bottom + this.line_num_disp);
+          break;
+        default:
+          /* Do Nothing.. */
+          break;
       }
 
-      this.state.offset = offset;
+      if( this.props.input_mode ===  KEY_INPUT_MODE.POPUP ){
+        const node = findDOMNode(this);
+        const rect = node.getBoundingClientRect();
+        //const node_root = this.props.cbGetNodeRoot();
+        //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
+        //console.log('refs: ', this.refs);
+        this.props.dispPopUpForSort(rect.left, rect.top);
+      }
     }
 
-    return true;
+
+
+
+    //let ref = findDOMNode(this.refs.AutoSizer.refs.List);
+    //let offset_top = ref.offsetTop;
+    //let client_width = ref.clientWidth;
+    //let client_height = ref.clientHeight;
+    //let scroll_top = ref.scrollTop;
+    //let scroll_width = ref.scrollWidth;
+    //let scroll_height = ref.scrollHeight;
+
+    ////let line_disp_top = scroll_top / RES.ITEM.HEIGHT;
+    //let line_disp_top = Math.ceil(scroll_top / RES.ITEM.HEIGHT);
+    //let line_disp_bottom = (scroll_top + client_height) / RES.ITEM.HEIGHT;
+    ////let line_disp_bottom = Math.floor( (scroll_top + client_height) / RES.ITEM.HEIGHT ) - 1;
+    //let line_disp_num = line_disp_bottom - line_disp_top + 1;
+
+    //console.log('ItemList componentDidUpdate <> client [offset_top, w, h] = [' + offset_top +  ', ' + client_width + ', ' + client_height + ']');
+    //console.log('ItemList componentDidUpdate <> scroll [scroll_top, w, h ,line_disp_top, line_cur, line_disp_bottom] = [' + scroll_top +  ', ' + scroll_width + ', ' + scroll_height + ', ' + line_disp_top + ', ' + this.props.line_cur + ', ' + line_disp_bottom + ']');
+
+    //if( (prevProps.line_cur === 0) &&
+    //    (this.props.line_cur === (this.props.rowCount - 1)) ){
+    //  this.scrollToPosition(offset + OFFSET_DELTA);
+    //}else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
+    //          (this.props.line_cur === 0) ){
+    //}else if(this.props.line_cur > prevProps.line_cur){
+    //  if(offset > prevState.offset){
+    //    this.scrollToPosition(offset + OFFSET_DELTA);
+    //  }
+    //}else if(this.props.line_cur < prevProps.line_cur){
+    //}else{
+    //}
+    //this.state.offset = offset;
+
   }
 
-//  shouldComponentUpdate(nextState, nextProps){
-//    if(this.props.id === this.props.active_pane_id){
-//      return true;
-//    }
-//
-//    return false;
-//  }
-
 }
-
-
 
 //ItemList.propTypes = {
 //  //arr_item_list: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,

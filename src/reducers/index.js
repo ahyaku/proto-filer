@@ -44,7 +44,57 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+    case 'MOVE_CURSOR_TO_HEAD':
+      {
+        const state_core_new = state_fcd.state_core.set(id, moveCursorToHead(state));
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   state_core: state_core_new,
+                   action_type: action.type
+                 }
+               );
+      }
+    case 'MOVE_CURSOR_TO_TAIL':
+      {
+        const state_core_new = state_fcd.state_core.set(id, moveCursorToTail(state));
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   state_core: state_core_new,
+                   action_type: action.type
+                 }
+               );
+      }
+    case 'PAGE_UP_START':
+    case 'PAGE_DOWN_START':
+      {
+        //console.log('reducer <> PAGE_DOWN_START');
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   action_type: action.type
+                 }
+               );
+      }
+    case 'UPDATE_OFFSET_IN_PAGE':
+      {
+        //console.log('reducer <> UPDATE_OFFSET_IN_PAGE');
+        const state_new = moveCursorToIndex(state, action.line_new);
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
+                 }
+               );
+      }
     case 'OPEN_BOOKMARK':
+      /* ORG */
       {
         const state_new = showBookmark(state, action.dlist);
         const dir = state_new.getIn(['dirs', 0]);
@@ -57,6 +107,17 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+      /* MDF */
+      //{
+      //  return Object.assign(
+      //           {},
+      //           state_fcd,
+      //           { 
+      //             pages_sc: showBookmark(state_fcd.pages_sc),
+      //             action_type: action.type
+      //           }
+      //         );
+      //}
     case 'OPEN_HISTORY':
       {
         const state_new = showHistory(state);
@@ -67,6 +128,7 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  { 
                    state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -80,6 +142,7 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  { 
                    state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -519,6 +582,35 @@ const moveCursor = (state, delta) => {
   //console.log('moveCursor() <> vv: ' + vv + ', line_cur: ' + line_cur);
 
   return state.setIn(['pages', dir, 'line_cur'], vv);
+}
+
+const moveCursorToIndex = (state, index) => {
+  const dir = state.getIn(['dirs', 0]);
+  const page = state.getIn(['pages', dir]);
+  const len = page.get('id_map_nrw').size;
+  const line_cur = page.get('line_cur');
+
+  const vv = index < 0
+               ? 0
+               : index < len
+                   ? index
+                   : len - 1;
+
+  //console.log('moveCursorToIndex <> line_cur: ' + line_cur + ', index: ' + index);
+  return state.setIn(['pages', dir, 'line_cur'], vv);
+}
+
+const moveCursorToHead = (state) => {
+  const dir = state.getIn(['dirs', 0]);
+  const page = state.getIn(['pages', dir]);
+  return state.setIn(['pages', dir, 'line_cur'], 0);
+}
+
+const moveCursorToTail = (state) => {
+  const dir = state.getIn(['dirs', 0]);
+  const page = state.getIn(['pages', dir]);
+  const len = page.get('id_map_nrw').size;
+  return state.setIn(['pages', dir, 'line_cur'], len - 1);
 }
 
 const dispPopUp = (mode, params) => {

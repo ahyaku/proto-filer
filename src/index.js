@@ -42,7 +42,9 @@ const state_init = {
   state_core: state_core,
   active_pane_id: 0,
   input_mode: KEY_INPUT_MODE.NORMAL,
-  msg_cmd: ''
+  //pages_sc: im.Map(),
+  msg_cmd: '',
+  action_type: ''
 };
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
@@ -73,6 +75,7 @@ const ListenKeydown = (mapEventToAction) => {
 
 }
 
+/* ORG */
 const mapKeydownToAction = (getState, e) => {
   //console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
   return (dispatch) => {
@@ -95,6 +98,51 @@ const mapKeydownToAction = (getState, e) => {
     }
   }
 }
+
+
+/* MDF */
+//let key_str = '';
+//let timer = null;
+//const KEY_INPUT_INTERVAL = 100;
+//
+//const mapKeydownToAction = (getState, e) => {
+//  //console.log('mapKeydownToAction <> getState().action_type: ' + getState().action_type);
+//  return (dispatch) => {
+//    const state_fcd = getState();
+//    const state = state_fcd.state_core;
+//
+//    //const state = getState();
+//
+//    //switch(state.get('input_mode')){
+//    switch(state_fcd.input_mode){
+//      case KEY_INPUT_MODE.NORMAL:
+//        //console.log('HERE??');
+//        //dispatch(checkKeyNormal(state_fcd, e));
+//
+//        //dispatch(checkKeyNormal(state_fcd, e, key_str));
+//
+//        key_str += e.key;
+//        if(timer !== null){
+//          clearTimeout(timer);
+//        }
+//        timer = setTimeout(() => {
+//            dispatch(checkKeyNormal(state_fcd, e, key_str));
+//            key_str = '';
+//            timer = null;
+//          },
+//          KEY_INPUT_INTERVAL
+//        );
+//        break;
+//        //return checkKeyNormal(state_fcd, e);
+//        //return dispatch(checkKeyNormal(state, e));
+//      case KEY_INPUT_MODE.SEARCH:
+//        dispatch(checkKeySearch(state_fcd, e));
+//        break;
+//        //return checkKeySearch(state_fcd, e);
+//        //return dispatch(checkKeySearch(state, e));
+//    }
+//  }
+//}
 
 const unlistenKeydown = store.dispatch(ListenKeydown(mapKeydownToAction));
 

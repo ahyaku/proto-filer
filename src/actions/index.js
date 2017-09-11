@@ -13,28 +13,48 @@ export const updateItemList = (id) => ({
   id
 });
 
+/* ORG */
 export const checkKeyNormal = (state_fcd, e) => {
   return _checkKeyNormal(state_fcd, e);
 }
 
+/* MDF */
+//export const checkKeyNormal = (state_fcd, e, key_str) => {
+//  return _checkKeyNormal(state_fcd, e, key_str);
+//}
+
 export const _checkKeyNormal = (state_fcd, e) => {
+//export const _checkKeyNormal = (state_fcd, e, key_str) => {
   //console.log(util.format('pane_left: %d, pane_right: %d',
   //                        pane_left.is_focused,
   //                        pane_right.is_focused));
 
   //console.log('checkKeyNormal <> e.key: ' + e.key + ', e.keyCode: ' + e.keyCode + ', shift: ' + event.shiftKey);
 
+  //console.log('_checkKeyNormal <> key_str: ' + key_str);
+
   switch(e.key){
     case 'Enter':
       return {
         type: 'OPEN_ITEM'
       };
+    case 'f': /* 'f' */
+      event.preventDefault();
+      if(event.ctrlKey === true){
+        return {
+          type: 'PAGE_DOWN_START'
+        };
+      }else{
+        return {
+          type: 'DO_NOTHING'
+        };
+      }
     case 'b': /* 'b' */
       event.preventDefault();
       if(event.ctrlKey == true){
         return {
-          type: 'OPEN_BOOKMARK'
-        }
+          type: 'PAGE_UP_START'
+        };
       }else{
         return {
           type: 'DO_NOTHING'
@@ -45,20 +65,30 @@ export const _checkKeyNormal = (state_fcd, e) => {
         type: 'COPY_ITEMS'
       }
     case 'j': /* 'j' */
-      //this.cursorDown();
-      //break;
-      return {
-        type: 'MOVE_CURSOR_DOWN'
-      };
+      event.preventDefault();
+      if(event.ctrlKey == true){
+        //console.log('HERE!');
+        return {
+          type: 'OPEN_BOOKMARK'
+        }
+      }else{
+        return {
+          type: 'MOVE_CURSOR_DOWN'
+        };
+      }
     case 'k': /* 'k' */
-      //this.cursorUp();
-      //break;
       return {
         type: 'MOVE_CURSOR_UP'
       };
+    case 'g': /* 'g' */
+      return {
+        type: 'MOVE_CURSOR_TO_HEAD'
+      };
+    case 'G': /* 'G' */
+      return {
+        type: 'MOVE_CURSOR_TO_TAIL'
+      };
     case 'h': /* 'h' */
-      //this.changeDirUpper();
-      //break;
       event.preventDefault();
       if(event.ctrlKey){
         return {
@@ -154,8 +184,6 @@ export const _checkKeyNormal = (state_fcd, e) => {
         type: 'MOVE_ITEMS'
       }
     case 'Tab': /* 'tab' */
-      //this.switchPane();
-      //break;
       return {
         type: 'SWITCH_ACTIVE_PANE'
       };
@@ -185,15 +213,10 @@ export const _checkKeyNormal = (state_fcd, e) => {
       return {
         type: 'SYNC_DIR_OTHER_TO_CUR'
       };
-    //case 'c': /* 'c' */
-    //  //this.copyItems();
-    //  //break;           
     case 'd': /* 'd' */
       return {
         type: 'DELETE_ITEMS'
       };
-    //case 'm': /* 'm' */
-    //  //break;           
     case 'q': /* 'q' */
       return {
         type: 'DISP_POPUP_FOR_QUIT'
@@ -244,7 +267,6 @@ export const _checkKeyNormal = (state_fcd, e) => {
     //  };
     default:
       /* Do Nothing.. */
-      //break;
       return {
         type: 'DO_NOTHING'
       };
