@@ -68,8 +68,10 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
-    case 'PAGE_UP_START':
-    case 'PAGE_DOWN_START':
+    case 'PAGE_UP':
+    case 'PAGE_DOWN':
+    case 'MOVE_CURSOR_TO_TOP':
+    case 'MOVE_CURSOR_TO_BOTTOM':
       {
         //console.log('reducer <> PAGE_DOWN_START');
         return Object.assign(

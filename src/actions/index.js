@@ -42,7 +42,7 @@ export const _checkKeyNormal = (state_fcd, e) => {
       event.preventDefault();
       if(event.ctrlKey === true){
         return {
-          type: 'PAGE_DOWN_START'
+          type: 'PAGE_DOWN'
         };
       }else{
         return {
@@ -53,7 +53,7 @@ export const _checkKeyNormal = (state_fcd, e) => {
       event.preventDefault();
       if(event.ctrlKey == true){
         return {
-          type: 'PAGE_UP_START'
+          type: 'PAGE_UP'
         };
       }else{
         return {
@@ -95,89 +95,17 @@ export const _checkKeyNormal = (state_fcd, e) => {
           type: 'OPEN_HISTORY'
         };
       }else{
-        /* ORG */
-        //return {
-        //  type: 'CHANGE_DIR_UPPER'
-        //};
-
-        /* NG */
-        //return dispatch({
-        //  type: 'CHANGE_DIR_UPPER'
-        //});
-
-        /* OK */
-        //return (dispatch) => {
-        //  return dispatch({
-        //    type: 'CHANGE_DIR_UPPER'
-        //  });
-        //  //return dispatch({
-        //  //  type: 'CHANGE_DIR_UPPER'
-        //  //});
-        //};
-
-        return (dispatch, getState) => {
-          const state_fcd = getState();
-          const id = state_fcd.active_pane_id;
-          const state = state_fcd.state_core.get(id);
-          const state_new = changeDirUpper(state);
-
-          if(state === state_new){
-            return dispatch({
-              type: 'CHANGE_DIR_UPPER',
-              state_new: state,
-              id: id
-            });
-          }
-
-          state_new.get('dir_watcher').close();
-          const dir_new = state_new.getIn(['dirs', 0]);
-          const watcher_new = chokidar.watch(dir_new,
-                                            {
-                                              ignoreInitial: true,
-                                              depth: 0
-                                            });
-          dispatch(initDirWatcher(watcher_new, dir_new));
-          dispatch({
-            type: 'CHANGE_DIR_UPPER',
-            state_new: state_new.set('dir_watcher', watcher_new),
-            id: id
-          });
-        };
-
+        return _changeDirUpper();
       }
+    case 'H': /* 'H' */
+      return {
+        type: 'MOVE_CURSOR_TO_TOP'
+      };
     case 'l': /* 'l' */
-      /* ORG */
-      //return {
-      //  type: 'CHANGE_DIR_LOWER'
-      //};
-      return (dispatch, getState) => {
-        const state_fcd = getState();
-        const id = state_fcd.active_pane_id;
-        const state = state_fcd.state_core.get(id);
-        const state_new = changeDirLower(state);
-
-        if(state === state_new){
-          return dispatch({
-            type: 'CHANGE_DIR_LOWER',
-            state_new: state,
-            id: id
-          });
-        }
-
-        state_new.get('dir_watcher').close();
-        const dir_new = state_new.getIn(['dirs', 0]);
-        const watcher_new = chokidar.watch(dir_new,
-                                          {
-                                            ignoreInitial: true,
-                                            depth: 0
-                                          });
-        dispatch(initDirWatcher(watcher_new, dir_new));
-        dispatch({
-          type: 'CHANGE_DIR_LOWER',
-          state_new: state_new.set('dir_watcher', watcher_new),
-          id: id
-        });
-
+      return _changeDirLower();
+    case 'L': /* 'L' */
+      return {
+        type: 'MOVE_CURSOR_TO_BOTTOM'
       };
     case 'm': /* 'm' */
       return {
@@ -585,6 +513,96 @@ const switchInputModeNormalWithClear = () => {
 //    );
 //  });
 //}
+
+const _changeDirUpper = () => {
+  /* ORG */
+  //return {
+  //  type: 'CHANGE_DIR_UPPER'
+  //};
+
+  /* NG */
+  //return dispatch({
+  //  type: 'CHANGE_DIR_UPPER'
+  //});
+
+  /* OK */
+  //return (dispatch) => {
+  //  return dispatch({
+  //    type: 'CHANGE_DIR_UPPER'
+  //  });
+  //  //return dispatch({
+  //  //  type: 'CHANGE_DIR_UPPER'
+  //  //});
+  //};
+
+  return (dispatch, getState) => {
+    const state_fcd = getState();
+    const id = state_fcd.active_pane_id;
+    const state = state_fcd.state_core.get(id);
+    const state_new = changeDirUpper(state);
+
+    if(state === state_new){
+      return dispatch({
+        type: 'CHANGE_DIR_UPPER',
+        state_new: state,
+        id: id
+      });
+    }
+
+    state_new.get('dir_watcher').close();
+    const dir_new = state_new.getIn(['dirs', 0]);
+    const watcher_new = chokidar.watch(dir_new,
+                                      {
+                                        ignoreInitial: true,
+                                        depth: 0
+                                      });
+    dispatch(initDirWatcher(watcher_new, dir_new));
+    dispatch({
+      type: 'CHANGE_DIR_UPPER',
+      state_new: state_new.set('dir_watcher', watcher_new),
+      id: id
+    });
+  };
+
+}
+
+const _changeDirLower = () => {
+  /* ORG */
+  //return {
+  //  type: 'CHANGE_DIR_LOWER'
+  //};
+  return (dispatch, getState) => {
+    const state_fcd = getState();
+    const id = state_fcd.active_pane_id;
+    const state = state_fcd.state_core.get(id);
+    const state_new = changeDirLower(state);
+
+    if(state === state_new){
+      return dispatch({
+        type: 'CHANGE_DIR_LOWER',
+        state_new: state,
+        id: id
+      });
+    }
+
+    state_new.get('dir_watcher').close();
+    const dir_new = state_new.getIn(['dirs', 0]);
+    const watcher_new = chokidar.watch(dir_new,
+                                      {
+                                        ignoreInitial: true,
+                                        depth: 0
+                                      });
+    dispatch(initDirWatcher(watcher_new, dir_new));
+    dispatch({
+      type: 'CHANGE_DIR_LOWER',
+      state_new: state_new.set('dir_watcher', watcher_new),
+      id: id
+    });
+
+  };
+
+}
+
 
 const INTERVAL_WATCH = 1000;
 export const initDirWatcher = (watcher, dir_cur) => {

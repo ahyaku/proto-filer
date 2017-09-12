@@ -353,11 +353,17 @@ class ItemList extends React.Component {
     //console.log('item-list <> componentDidUpdate() input_mode: ' + this.props.input_mode);
     if( this.props.active_pane_id === this.props.id ){
       switch( this.props.action_type ){
-        case 'PAGE_UP_START':
+        case 'PAGE_UP':
           this.props.updateOffsetInPage(this.line_top - this.line_num_disp);
           break;
-        case 'PAGE_DOWN_START':
+        case 'PAGE_DOWN':
           this.props.updateOffsetInPage(this.line_bottom + this.line_num_disp);
+          break;
+        case 'MOVE_CURSOR_TO_TOP':
+          this.props.updateOffsetInPage(this.line_top);
+          break;
+        case 'MOVE_CURSOR_TO_BOTTOM':
+          this.props.updateOffsetInPage(this.line_bottom);
           break;
         default:
           /* Do Nothing.. */
