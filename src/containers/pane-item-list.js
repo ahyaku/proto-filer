@@ -108,13 +108,24 @@ const mapDispatchToProps = (dispatch, props) => ({
       top: top
     });
   },
-  updateOffsetInPage: (line_new) => {
-    //console.log('pageDown <> line [top, bottom] = [' + line_top + ', ' + line_bottom + '], num: ' + line_num_disp);
+  updatePageWithCursorJump: (pre_action, line_new) => {
     dispatch({
-      type: 'UPDATE_OFFSET_IN_PAGE',
+      type: 'UPDATE_FOR_' + pre_action,
       line_new: line_new,
     });
   },
+  //updateInfoPaneHeight: (height_delta) => {
+  //  dispatch({
+  //    type: 'UPDATE_INFO_PANE_HEIGHT',
+  //    height_delta: height_delta
+  //  });
+  //},
+  //updateWindowHeight: (height_win) => {
+  //  dispatch({
+  //    type: 'UPDATE_INFO_PANE_HEIGHT',
+  //    height_win: height_win
+  //  });
+  //},
   props
 });
 

@@ -9,8 +9,8 @@ import { findDOMNode } from 'react-dom';
 
 import PanePathCur from '../containers/pane-path-cur';
 import PaneCmd from '../containers/pane-cmd';
-//import ItemList from '../components/item-list';
 import PaneItemList from '../containers/pane-item-list';
+import PaneInfo from '../containers/pane-info';
 
 const Footer = () => {
   const style = {
@@ -227,7 +227,7 @@ class App extends React.Component {
           <PanePathCur id={1} />
         </div>
         <Body cbGetNodeRoot={cbGetNodeRoot} />
-        <Footer />
+        <PaneInfo />
       </div>
     );
 

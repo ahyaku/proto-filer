@@ -38,13 +38,19 @@ const state_core_right = updatePageCur(null, 'C:\\tmp\\many_items', true);
 const state_core = im.List.of(state_core_left, state_core_right);
 //console.log('index <> state_core: ', state_core);
 
+const win_ctxt = im.Map({
+  'height_win': 0.0,
+  'height_delta': 0.0
+});
+
 const state_init = {
   state_core: state_core,
   active_pane_id: 0,
   input_mode: KEY_INPUT_MODE.NORMAL,
   //pages_sc: im.Map(),
   msg_cmd: '',
-  action_type: ''
+  action_type: '',
+  win_ctxt: win_ctxt
 };
 
 let store = createStore(reducer, state_init, applyMiddleware(thunk));
@@ -145,6 +151,81 @@ const mapKeydownToAction = (getState, e) => {
 //}
 
 const unlistenKeydown = store.dispatch(ListenKeydown(mapKeydownToAction));
+
+
+//const createMouseDragEndReceiver = () => {
+//
+//  return (dispatch, getState) => {
+//
+//    const handleEvent = (e) => {
+//      console.log('handleEvent()!! <> ');
+//      //console.log('key: ' + e);
+//      //console.log('e.keyCode: ' + e.keyCode);
+//      //console.log('e.key: ' + e.key);
+//      //console.log('event.shiftKey: ' + event.shiftKey);
+//      //console.log('event.ctrlKey: ' + event.ctrlKey);
+//      //console.log('event.target: ' + event.target);
+//      //console.log('event.target.id: ' + event.target.id);
+//
+//      //dispatch(mapEventToAction(getState, e));
+//      dispatch({
+//        type: 'IS_DRAG_END'
+//      });
+//    } /* handleEvent */
+//
+//    console.log('HERE!!');
+//    //document.addEventListener('dragend', handleEvent);
+//    //return () => document.removeEventListener('dragend', handleEvent);
+//
+//    document.addEventListener('click', handleEvent);
+//    return () => document.removeEventListener('click', handleEvent);
+//
+//  };
+//
+//}
+//store.dispatch(createMouseDragEndReceiver());
+
+
+//document.addEventListener('drag', () => {
+//  console.log('drag!!');
+//});
+//
+//document.addEventListener('dragend', () => {
+//  console.log('dragend!!');
+//});
+//
+//document.addEventListener('mousedown', () => {
+//  console.log('mousedown!!');
+//});
+//
+//document.addEventListener('mouseup', () => {
+//  console.log('mouseup!!');
+//});
+
+
+const createMainWindowSizeReceiver = () => {
+  //console.log('createMainWindowSizeReceiver');
+  return (dispatch) => {
+    const receiveMainWindowSizeCB = (event, win_height) => {
+      console.log('receiveMainWindowSizeCB <> ch: ' + win_height);
+      dispatch({
+        type: 'IS_CHANGED_MAIN_WINDOW_SIZE',
+        win_height: win_height
+      });
+    };
+    ipcRenderer.on('is_changed_main_window_size', receiveMainWindowSizeCB);
+    return () => ipcRenderer.removeListener('is_changed_main_window_size', receiveMainWindowSizeCB);
+  };
+}
+store.dispatch(createMainWindowSizeReceiver());
+
+//const receiveMainWindowSizeCB = (event) => {
+//  console.log('receiveMainWindowSizeCB');
+//  dispatch({
+//    type: 'IS_CHANGED_MAIN_WINDOW_SIZE'
+//  });
+//};
+//ipcRenderer.on('is_changed_main_window_size', receiveMainWindowSizeCB);
 
 //ipcRenderer.on('test_message_reply', (event, ret_msg) => {
 //  console.log('ret_msg: ' + ret_msg);

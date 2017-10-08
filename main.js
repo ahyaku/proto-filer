@@ -7,6 +7,14 @@ const electron = require('electron');
 const shell = electron.shell;
 const execFile = require('child_process').execFile;
 const os = require('os');
+//const RES = require('./res/res').RES;
+
+//const RESIZE_STATE = {
+//  NONE: 0,
+//  SMALLER: 1,
+//  LARGER: 2
+//}
+//const RESIZE_MARGIN = RES.ITEM.HEIGHT / 2;
 
 // Module to control application life.
 const app = electron.app
@@ -27,6 +35,11 @@ let sortWindow
 
 let g_items_selected
 let g_dir_cur;
+
+//let g_height_win;
+//let g_is_resize_first;
+//let g_is_resize_fit;
+//let g_resize_state = RESIZE_STATE.NONE;
 
 function createWindow () {
   console.log(process.versions);
@@ -59,6 +72,149 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  //g_height_win = 0;
+  //g_is_resize_first = true;
+  //mainWindow.on('resize', function (e) {
+  //  //console.log('resize!!');
+  //  //const [w, h] = mainWindow.getSize();
+  //  const [cw, ch] = mainWindow.getContentSize();
+  //  //console.log('resize <> [w, h] = [' + w + ', ' + h + ']');
+  //  console.log('resize <> [cw, ch] = [' + cw + ', ' + ch + '], g_height_win: ' + g_height_win);
+
+  //  //e.preventDefault();
+  //  //mainWindow.setContentSize(cw, g_height_win);
+
+
+  //  //mainWindow.webContents.send('is_changed_main_window_size', ch);
+  //  //if(ch != g_height_win){
+  //  //  mainWindow.setContentSize(cw, g_height_win);
+  //  //}
+
+  //  //if(g_is_resize_first === true){
+  //  //  g_is_resize_first = false;
+  //  //  mainWindow.setContentSize(cw, g_height_win);
+  //  //}else{
+  //  //  g_is_resize_first = true;
+  //  //}
+
+  //  //if(ch > g_height_win){
+  //  //  console.log('here!!');
+  //  //  mainWindow.setContentSize(cw, g_height_win);
+  //  //}
+
+  //  //if(ch > g_height_win &&
+  //  //   g_is_resize_first === true){
+  //  //  console.log('here!!');
+  //  //  g_is_resize_first = false;
+  //  //  mainWindow.setContentSize(cw, g_height_win);
+  //  //}else{
+  //  //  g_is_resize_first = true;
+  //  //}
+
+  //});
+
+  const time_out = 200;
+  let id = null;
+  //g_is_resize_fit = false;
+
+  let ch_ref = 0;
+
+  //mainWindow.on('mousedown', function(e){
+  //  console.log('mousedown!!');
+  //});
+
+  mainWindow.webContents.on('mousedown', function(e){
+    console.log('mousedown!!');
+  });
+
+  //mainWindow.on('dragend', function(e){
+  //  console.log('dragend!!');
+  //});
+
+  //mainWindow.addEventListener('dragend', function(e){
+  //  console.log('dragend!!');
+  //}, true);
+
+
+
+  //mainWindow.on('resize', function (e) {
+  //  //console.log('resize!!');
+  //  //const [w, h] = mainWindow.getSize();
+  //  //const [cw, ch] = mainWindow.getContentSize();
+  //  //console.log('resize <> [w, h] = [' + w + ', ' + h + ']');
+
+  //  if(id !== null){
+  //    clearTimeout(id);
+  //  }
+
+  //  if(g_is_resize_fit === true){
+  //    g_is_resize_fit = false;
+  //  }else{
+  //    id = setTimeout(function () {
+  //      const [cw, ch] = mainWindow.getContentSize();
+  //      console.log('ch_ref: ' + ch_ref + ', ch: ' + ch);
+  //      //height_win_new = RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.ITEM.HEIGHT * this.line_disp_num + RES.INFO.HEIGHT;
+
+  //      //line_disp_num = Math.floor( ( ch - (RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.INFO.HEIGHT) ) / RES.ITEM.HEIGHT );
+
+  //      //if(ch <= ch_ref){
+  //      //  g_height_win = RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.ITEM.HEIGHT * line_disp_num + RES.INFO.HEIGHT;
+  //      //}else{
+  //      //  g_height_win = RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.ITEM.HEIGHT * (line_disp_num + 1) + RES.INFO.HEIGHT;
+  //      //}
+
+  //      switch(g_resize_state){
+  //        case RESIZE_STATE.SMALLER:
+  //          console.log('SMALLER');
+  //          line_disp_num = Math.floor( ( ch - (RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.INFO.HEIGHT) ) / RES.ITEM.HEIGHT );
+  //          g_height_win = RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.ITEM.HEIGHT * line_disp_num + RES.INFO.HEIGHT;
+  //          break;
+  //        case RESIZE_STATE.LARGER:
+  //          console.log('LARGER');
+  //          line_disp_num = Math.ceil( ( ch - (RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.INFO.HEIGHT) ) / RES.ITEM.HEIGHT );
+  //          g_height_win = RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.ITEM.HEIGHT * (line_disp_num + 1) + RES.INFO.HEIGHT;
+  //          break;
+  //        default:
+  //          break;
+  //      }
+
+  //      //console.log('resize <> [cw, ch] = [' + cw + ', ' + ch + '], g_height_win: ' + g_height_win + ', disp_num: ' + line_disp_num);
+  //      g_is_resize_fit = true;
+  //      mainWindow.setContentSize(cw, g_height_win);
+  //      //mainWindow.setContentSize(640, 480);
+  //    },
+  //    time_out);
+  //  }
+
+  //  {
+  //    const ch_tmp = mainWindow.getContentSize()[1];
+  //    console.log('ch_ref: ' + ch_ref + ', ch_tmp: ' + ch_tmp);
+  //    if(ch_tmp < (ch_ref - RESIZE_MARGIN)){
+  //      console.log('tmp: SMALLER');
+  //      g_resize_state = RESIZE_STATE.SMALLER;
+  //    }else if(ch_tmp > (ch_ref + RESIZE_MARGIN)){
+  //      console.log('tmp: LARGER');
+  //      g_resize_state = RESIZE_STATE.LARGER;
+  //    }
+  //    ch_ref = ch_tmp;
+  //  }
+
+  //});
+
+  //mainWindow.on('ready-to-show', function (e) {
+  //  console.log('ready-to-show!!');
+  //});
+
+//  mainWindow.on('dragend', function () {
+//    console.log('dragend!!');
+//    //const [w, h] = mainWindow.getSize();
+//    const [cw, ch] = mainWindow.getContentSize();
+//    //console.log('sort <> [w, h] = [' + w + ', ' + h + ']');
+//    console.log('sort <> [cw, ch] = [' + cw + ', ' + ch + ']');
+//
+//    mainWindow.webContents.send('is_changed_main_window_size', ch);
+//  });
 
   //mainWindow.setMenu(null);
   console.log(webContents);
@@ -296,6 +452,23 @@ electron.ipcMain.on('popup', (event, mode, params) => {
       //console.log('sort rect <> x:' + rect.x + ', y:' + rect.y);
       //console.log('sort crect <> x:' + crect.x + ', y:' + crect.y);
 
+      //const trect = Object.assign(
+      //  {},
+      //  crect,
+      //  {
+      //    width: 200,
+      //    height: 100
+      //  }
+      //);
+      //mainWindow.setContentBounds(trect);
+
+      //{
+      //  const [w, h] = mainWindow.getSize();
+      //  const [cw, ch] = mainWindow.getContentSize();
+      //  console.log('sort <> [w, h] = [' + w + ', ' + h + ']');
+      //  console.log('sort <> [cw, ch] = [' + cw + ', ' + ch + ']');
+      //}
+
       const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
       const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
       sortWindow.setPosition(left, top);
@@ -451,3 +624,26 @@ const detectDiskDriveWin32 = (event) => {
 
   });
 }
+
+//electron.ipcMain.on('update_window_size', (event, height_win) => {
+//  const crect = mainWindow.getContentBounds();
+//
+//  //console.log('update_window_size <> wleft: ' + wpos[0] + ', wtop: ' + wpos[1]);
+//  //console.log('update_window_size <> rect x:' + rect.x + ', y:' + rect.y);
+//
+//  //console.log('update_window_size <> crect x:' + crect.x + ', y:' + crect.y + ', height_win: '+ height_win);
+//
+//  //const trect = Object.assign(
+//  //  {},
+//  //  crect,
+//  //  {
+//  //    height: height_win
+//  //  }
+//  //);
+//  //mainWindow.setContentBounds(trect);
+//
+//  g_height_win = height_win;
+//
+//  event.returnValue = true;
+//
+//});

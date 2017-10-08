@@ -14,7 +14,7 @@ const mapStateToProps = (state_fcd, props) => {
   const dir_cur = state.getIn([id, 'dirs', 0]);
   const active_pane_id = state_fcd.active_pane_id;
   //const active_pane_id = state.get('active_pane_id');
-  return {dir_cur, active_pane_id, props};
+  return {dir_cur, active_pane_id, id};
 }
 
 //const mapStateToProps = (state, props) => {

@@ -82,9 +82,11 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
-    case 'UPDATE_OFFSET_IN_PAGE':
+    case 'UPDATE_FOR_PAGE_UP':
+    case 'UPDATE_FOR_PAGE_DOWN':
+    case 'UPDATE_FOR_MOVE_CURSOR_TO_TOP':
+    case 'UPDATE_FOR_MOVE_CURSOR_TO_BOTTOM':
       {
-        //console.log('reducer <> UPDATE_OFFSET_IN_PAGE');
         const state_new = moveCursorToIndex(state, action.line_new);
         return Object.assign(
                  {},
@@ -444,6 +446,35 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+    //case 'IS_CHANGED_MAIN_WINDOW_SIZE':
+    //  {
+    //    return Object.assign(
+    //             {},
+    //             state_fcd,
+    //             {
+    //               action_type: action.type
+    //             }
+    //           );
+
+    //  }
+    //case 'UPDATE_INFO_PANE_HEIGHT':
+    //  {
+    //    const win_ctxt = state_fcd.win_ctxt;
+    //    const win_ctxt_new = win_ctxt.set('height_win', action.height_win);
+    //    return Object.assign(
+    //             {},
+    //             state_fcd,
+    //             {
+    //               action_type: action.type,
+    //               win_ctxt: win_ctxt_new
+    //             }
+    //           );
+    //  }
+    //case 'IS_DRAG_END':
+    //  {
+    //    console.log('IS_DRAG_END!!');
+    //    return state_fcd;
+    //  }
     case 'TEST_SEND_MSG':
       console.log('TEST_SEND_MSG');
       return state_fcd;

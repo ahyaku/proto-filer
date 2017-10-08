@@ -3,33 +3,10 @@
 import React from 'react';
 //import { KEY_INPUT_MODE } from '../core/item_type';
 //import { KEY_INPUT_MODE } from '../util/item_type';
-import { NarrowDownItems } from '../actions/index.js';
+import { NarrowDownItems } from '../actions/index';
+import { RES } from '../../res/res';
 
-//const Cmd = ({msg_cmd, input_mode}) => {
-//  return (
-//    <CmdView msg_cmd={msg_cmd}/>
-//  );
-//}
-
-//const Cmd = ({msg_cmd, input_mode, state}) => {
-//  return (
-//    <CmdView msg_cmd={msg_cmd} state={state}/>
-//  );
-//}
-
-const Cmd = ({msg_cmd, input_mode, state_fcd, id, dispatch}) => {
-  return (
-    <CmdView msg_cmd={msg_cmd} state_fcd={state_fcd} id={id} dispatch={dispatch}/>
-  );
-}
-
-//const Cmd = ({msg_cmd, input_mode, state, id, dispatch}) => {
-//  return (
-//    <CmdView msg_cmd={msg_cmd} state={state} id={id} dispatch={dispatch}/>
-//  );
-//}
-
-class CmdView extends React.Component{
+class Cmd extends React.Component{
   constructor(props){
     super(props);
     this.count = 0;
@@ -41,8 +18,10 @@ class CmdView extends React.Component{
       borderBottom: '1px solid #FFFFFF',
       //margin: '0px, 0px 0px',
       //padding: '0px, 0px 0px',
-      minHeight: '16px',
-      maxHeight: '16px',
+      minHeight: RES.CMD.HEIGHT + 'px',
+      maxHeight: RES.CMD.HEIGHT + 'px',
+      //minHeight: '16px',
+      //maxHeight: '16px',
       //overflowX: 'hidden',
       //overflowY: 'hidden'
 

@@ -1,21 +1,15 @@
 'use strict';
 
 import React from 'react';
+import { RES } from '../../res/res';
 
-const PathCur = ({dir_cur, active_pane_id, props}) => {
-  //console.log('PathCur() <> props.id = ' + props.id);
-  return (
-    <PathCurView dir_cur={dir_cur} active_pane_id={active_pane_id} id={props.id}/>
-  );
-}
-
-class PathCurView extends React.Component {
+class PathCur extends React.Component {
   constructor(props){
     super(props);
     this.style = {
       //border: '1px solid #FFFFFF',
-      minHeight: '16px',
-      maxHeight: '16px',
+      minHeight: RES.PATH_CUR.HEIGHT + 'px',
+      maxHeight: RES.PATH_CUR.HEIGHT + 'px',
       display: 'flex',
       flex: 'auto',
       flexDirection: 'row',
