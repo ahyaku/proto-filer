@@ -15,6 +15,7 @@ import { RES } from '../../res/res';
 
 const LIST_MAX = 10000;
 const FONT_SIZE = '13px';
+const LINE_DISP_MARGIN = 1;
 //const OFFSET_DELTA = 5;
 //const OFFSET_DELTA = 0;
 
@@ -63,8 +64,8 @@ class ItemList extends React.Component {
     this._onRowsRendered = this._onRowsRendered.bind(this);
 
     this.state = {
-      scroll_to_index: 0,
-      scroll_align: 'auto'
+      scroll_align: 'auto',
+      scroll_to_index: 0
       //line_top: 0,
       //line_bottom: 0
     }
@@ -356,7 +357,7 @@ class ItemList extends React.Component {
             (nextProps.line_cur === this.id_map_nrw.size - 1) ){
           scroll_to_index = nextProps.line_cur;
         }else{
-          scroll_to_index = nextProps.line_cur - 1;
+          scroll_to_index = nextProps.line_cur - LINE_DISP_MARGIN;
         }
         break;
       case 'MOVE_CURSOR_DOWN':
@@ -364,7 +365,7 @@ class ItemList extends React.Component {
             (nextProps.line_cur === this.id_map_nrw.size - 1) ){
           scroll_to_index = nextProps.line_cur;
         }else{
-          scroll_to_index = nextProps.line_cur + 1;
+          scroll_to_index = nextProps.line_cur + LINE_DISP_MARGIN;
         }
         break;
       case 'UPDATE_FOR_PAGE_UP':
@@ -391,6 +392,11 @@ class ItemList extends React.Component {
         scroll_align = 'end';
         scroll_to_index = this.line_bottom;
         break;
+      case 'CHANGE_DIR_UPPER':
+      case 'CHANGE_DIR_LOWER':
+        scroll_align = 'center';
+        scroll_to_index = nextProps.line_cur;
+        break;
       default:
         scroll_to_index = nextProps.line_cur;
         break;
@@ -402,8 +408,8 @@ class ItemList extends React.Component {
 
 
     this.setState({
-      scroll_to_index: scroll_to_index,
-      scroll_align: scroll_align
+      scroll_align: scroll_align,
+      scroll_to_index: scroll_to_index
     });
 
   }
@@ -439,10 +445,10 @@ class ItemList extends React.Component {
           }
           break;
         case 'MOVE_CURSOR_TO_TOP':
-          this.props.updatePageWithCursorJump( this.props.action_type, this.line_top + 1 );
+          this.props.updatePageWithCursorJump( this.props.action_type, this.line_top + LINE_DISP_MARGIN );
           break;
         case 'MOVE_CURSOR_TO_BOTTOM':
-          this.props.updatePageWithCursorJump( this.props.action_type, this.line_bottom - 1 );
+          this.props.updatePageWithCursorJump( this.props.action_type, this.line_bottom - LINE_DISP_MARGIN );
           break;
         default:
           /* Do Nothing.. */
