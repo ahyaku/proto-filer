@@ -69,9 +69,7 @@ class ItemList extends React.Component {
       //line_top: 0,
       //line_bottom: 0
     }
-    
-    //this.mynode = findDOMNode(this);
-    //console.log('this.node: ', this.mynode);
+
   }
   
 //  componentWillUnmount(){
@@ -83,7 +81,7 @@ class ItemList extends React.Component {
     const rowRenderer = this._rowRenderer;
     const onRowsRendered = this._onRowsRendered;
     const id = this.props.id;
-    const dir_cur = this.props.dir;
+    const dir_cur = this.props.dir_cur;
     const page = this.props.page;
     const id_map_nrw = page.get('id_map_nrw');
     const active_pane_id = this.props.active_pane_id;
@@ -113,28 +111,6 @@ class ItemList extends React.Component {
     //  console.log('ItemList <> pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
     //}
 
-    //console.log('item-list render <> this.scroll_to_index: ' + this.scroll_to_index);
-    //const scroll_to_index = this.props.action_type === 'DIR_CUR_IS_UPDATED'
-    //                          ? this.scroll_to_index
-    //                          : this.props.line_cur;
-
-    //let scroll_to_index;
-    //if( this.props.action_type === 'DIR_CUR_IS_UPDATED' ){
-    //  scroll_to_index = this.scroll_to_index;
-    //}else{
-    //  scroll_to_index = this.props.line_cur;
-    //}
-
-    //console.log('item-list render <> scroll_to_index: ' + scroll_to_index + ', this.scroll_to_index: ' + this.scrill_to_index);
-    //console.log('item-list render <> this.state.scroll_to_index: ' + this.state.scroll_to_index);
-
-    //const onRowsRendered = ({overscanStartIndex, overscanStopIndex, startIndex, stopIndex}) => {
-    //  //console.log('item-list render <> ostart: ' + overscanStartIndex + ', ostop: ' + overscanStopIndex + ', start: ' + startIndex + ', stop: ' + stopIndex);
-    //  this.scroll_to_index = stopIndex - 1;
-    //  //this.setState();
-    //  //this.setState({scroll_to_index: stopIndex - 1});
-    //}
-
     return React.createElement(
       AutoSizer,
       {
@@ -142,6 +118,8 @@ class ItemList extends React.Component {
       },
       ({height, width}) => {
         //console.log('height: ' + height + ', width: ' + width + ', item_num: ' + im_items.size);
+        //console.log('render() return <> ' + this.props.id + ' [arign, index] = [' + this.state.scroll_align + ', ' + this.state.scroll_to_index + '], line_cur: ' + this.props.line_cur + ', action_type: ' + this.props.action_type);
+
         return React.createElement(
           List,
           {
@@ -259,28 +237,39 @@ class ItemList extends React.Component {
 
     //console.log('item-list _rowRenderer <> is_selected: ', parent.props.is_selected);
 
+    /* When current directory is changed from the one which has larger number of items
+     * to the one which has smaller number of items,
+     * this will happen before commponentDidUpdate() in this class updates
+     * the item.size to the latest one (= larger number of items).
+     * */
+    if(index >= parent.props.im_items.size){
+      return (
+        <div></div>
+      );
+    }
+
     return (
       <ViewItem 
         style={style_cell}
         key={key}
         c={index}
-        id={this.props.id}
-        items={parent.props.im_items}
+        id_list_pane={parent.props.id}
+        item={parent.props.im_items.get(index)}
         is_selected={parent.props.is_selected}
         dir_cur={parent.props.dir_cur}
         line_cur={parent.props.line_cur}
         active_pane_id={parent.props.active_pane_id}
         id_map_nrw={parent.props.id_map_nrw}
-        //is_dir_changed={parent.props.is_dir_changed}
         index={index}
+        action_type={parent.props.action_type}
         />
     );
 
   }
 
   _onRowsRendered({overscanStartIndex, overscanStopIndex, startIndex, stopIndex}){
+    //console.log('_onRowsRendered() id: ' + this.props.id);
     //console.log('item-list render <> ostart: ' + overscanStartIndex + ', ostop: ' + overscanStopIndex + ', start: ' + startIndex + ', stop: ' + stopIndex);
-    this.state.scroll_to_index = stopIndex;
     this.line_top = startIndex;
     this.line_bottom = stopIndex;
     const line_disp_num_new = stopIndex - startIndex + 1;
@@ -402,11 +391,6 @@ class ItemList extends React.Component {
         break;
     }
 
-    //console.log('item-list will <> nextProps.line_cur: '+ nextProps.line_cur + ', scroll_to_index: ' + scroll_to_index);
-
-    //console.log('item-list will <> line [top, cur, bottom] = [' + this.state.line_top + ', ' + nextProps.line_cur + ', ' + this.state.line_bottom + ']');
-
-
     this.setState({
       scroll_align: scroll_align,
       scroll_to_index: scroll_to_index
@@ -424,6 +408,7 @@ class ItemList extends React.Component {
   }
 
   componentDidUpdate(prevState, prevProps){
+    //console.log('componentDidUpdate()!!');
 
     //console.log('ItemList componentDidUpdate()');
     if(typeof this.refs.AutoSizer !== 'undefined'){
@@ -455,14 +440,38 @@ class ItemList extends React.Component {
           break;
       }
 
-      if( this.props.input_mode ===  KEY_INPUT_MODE.POPUP ){
-        const node = findDOMNode(this);
-        const rect = node.getBoundingClientRect();
-        //const node_root = this.props.cbGetNodeRoot();
-        //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
-        //console.log('refs: ', this.refs);
-        this.props.dispPopUpForSort(rect.left, rect.top);
+      switch(this.props.input_mode){
+        case KEY_INPUT_MODE.POPUP_SORT:
+          {
+            const node = findDOMNode(this);
+            const rect = node.getBoundingClientRect();
+            //const node_root = this.props.cbGetNodeRoot();
+            //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
+            //console.log('refs: ', this.refs);
+            this.props.dispPopUpForSort(rect.left, rect.top);
+            break;
+          }
+        case KEY_INPUT_MODE.POPUP_RENAME:
+          {
+            const node = findDOMNode(this);
+            const rect = node.getBoundingClientRect();
+            //const node_root = this.props.cbGetNodeRoot();
+            //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
+            //console.log('refs: ', this.refs);
+
+            const page = this.props.page;
+            const id_map_nrw = page.get('id_map_nrw');
+            const id_target = id_map_nrw.get(this.props.line_cur);
+            const item_name = page.getIn(['items', id_target, 'name']);
+
+            this.props.dispPopUpForRename(rect.left, rect.top, item_name, this.props.dir_cur, id_target);
+            break;
+          }
+        default:
+          /* Do Nothing.. */
+          break;
       }
+
     }
 
 

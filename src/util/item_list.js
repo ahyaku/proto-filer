@@ -59,6 +59,16 @@ export const updateItems = (dir_cur) => {
 
 }
 
+export const getItemFromListByIndex = (items, id_map_nrw, index) => {
+  return items.get(id_map_nrw.get(index));
+}
+
+//export const getItemFromPageByIndex = (page, index) => {
+//  const id_map_nrw = page.get('id_map_nrw');
+//  const items = page.get('items');
+//  return items.get(id_map_nrw.get(index));
+//}
+
 export const sortItemsInState = (state, sort_type) => {
   const dir = state.getIn(['dirs', 0]);
   const page = state.getIn(['pages', dir]);

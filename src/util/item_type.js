@@ -21,9 +21,10 @@ export const ITEM_TYPE_KIND = {
 //}
 
 export const KEY_INPUT_MODE = {
-  NORMAL : 0,
-  SEARCH : 1,
-  POPUP  : 2
+  NORMAL        : 0,
+  SEARCH        : 1,
+  POPUP_SORT    : 2,
+  POPUP_RENAME  : 3
 };
 
 export const SORT_TYPE = {

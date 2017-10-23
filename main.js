@@ -29,11 +29,12 @@ const POPUP_POS_MARGIN = 10;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
-let confWindow
-let sortWindow
+let mainWindow;
+let confWindow;
+let sortWindow;
+let renameWindow;
 
-let g_items_selected
+let g_items_selected;
 let g_dir_cur;
 
 //let g_height_win;
@@ -50,20 +51,22 @@ function createWindow () {
   // Create the browser window.
   //mainWindow = new BrowserWindow({width: 800, height: 600}) /* ORG */
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1400,
+    height: 650,
     frame: true,
     useContentSize: false,
     webPreferences: {
       //nodeIntegration: false
     }
-  })
+  });
+
+  mainWindow.setPosition(10, 10);
 
   // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`)
+  mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -71,7 +74,7 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
-  })
+  });
 
   //g_height_win = 0;
   //g_is_resize_first = true;
@@ -226,11 +229,14 @@ function createWindow () {
   sortWindow = createPopupWindow('sort', 150, 240);
   sortWindow.hide();
 
+  renameWindow = createPopupWindow('rename', 800, 400);
+  renameWindow.webContents.openDevTools();
+  renameWindow.hide();
+
 }
 
 function createPopupWindow(ptype, width, height){
   let pwindow;
-  console.log('popup');
   pwindow = new BrowserWindow({parent: mainWindow,
                                   modal: true, 
                                   width: width,
@@ -245,6 +251,9 @@ function createPopupWindow(ptype, width, height){
       break;
     case 'sort':
       pwindow.loadURL(`file://${__dirname}/src/popup/sort/main.html`);
+      break;
+    case 'rename':
+      pwindow.loadURL(`file://${__dirname}/src/popup/rename/main.html`);
       break;
   }
 
@@ -442,38 +451,59 @@ electron.ipcMain.on('popup', (event, mode, params) => {
       confWindow.show();
       break;
     case 'sort':
-      //console.log('sort <> left: ' + params.left + ', top: ' + params.top);
+      {
+        //console.log('sort <> left: ' + params.left + ', top: ' + params.top);
 
-      const wpos = mainWindow.getPosition();
-      const rect = mainWindow.getBounds();
-      const crect = mainWindow.getContentBounds();
+        const wpos = mainWindow.getPosition();
+        const rect = mainWindow.getBounds();
+        const crect = mainWindow.getContentBounds();
 
-      //console.log('sort <> wleft: ' + wpos[0] + ', wtop: ' + wpos[1]);
-      //console.log('sort rect <> x:' + rect.x + ', y:' + rect.y);
-      //console.log('sort crect <> x:' + crect.x + ', y:' + crect.y);
+        //console.log('sort <> wleft: ' + wpos[0] + ', wtop: ' + wpos[1]);
+        //console.log('sort rect <> x:' + rect.x + ', y:' + rect.y);
+        //console.log('sort crect <> x:' + crect.x + ', y:' + crect.y);
 
-      //const trect = Object.assign(
-      //  {},
-      //  crect,
-      //  {
-      //    width: 200,
-      //    height: 100
-      //  }
-      //);
-      //mainWindow.setContentBounds(trect);
+        //const trect = Object.assign(
+        //  {},
+        //  crect,
+        //  {
+        //    width: 200,
+        //    height: 100
+        //  }
+        //);
+        //mainWindow.setContentBounds(trect);
 
-      //{
-      //  const [w, h] = mainWindow.getSize();
-      //  const [cw, ch] = mainWindow.getContentSize();
-      //  console.log('sort <> [w, h] = [' + w + ', ' + h + ']');
-      //  console.log('sort <> [cw, ch] = [' + cw + ', ' + ch + ']');
-      //}
+        //{
+        //  const [w, h] = mainWindow.getSize();
+        //  const [cw, ch] = mainWindow.getContentSize();
+        //  console.log('sort <> [w, h] = [' + w + ', ' + h + ']');
+        //  console.log('sort <> [cw, ch] = [' + cw + ', ' + ch + ']');
+        //}
 
-      const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
-      const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
-      sortWindow.setPosition(left, top);
-      sortWindow.show();
-      break;
+        const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
+        const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
+        sortWindow.setPosition(left, top);
+        sortWindow.show();
+        break;
+      }
+    case 'rename':
+      //console.log('rename <> left: ' + params.left + ', top: ' + params.top, params.item_name);
+      {
+        const wpos = mainWindow.getPosition();
+        const rect = mainWindow.getBounds();
+        const crect = mainWindow.getContentBounds();
+        const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
+        const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
+        renameWindow.setPosition(left, top);
+        //renameWindow.webContents.send('openPopUpRename', params.item_name);
+        renameWindow.webContents.send('openPopUpRename',
+                                      {
+                                        item_name_init: params.item_name,
+                                        dir_cur: params.dir_cur,
+                                        id_target: params.id_target
+                                      });
+        renameWindow.show();
+        break;
+      }
     default:
       /* Do Nothing.. */
       break;
@@ -485,19 +515,23 @@ electron.ipcMain.on('popup', (event, mode, params) => {
 electron.ipcMain.on('closeMainWindow', (event) => {
   console.log('closeMainWindow');
   confWindow.close();
+  renameWindow.close();
   sortWindow.close();
   mainWindow.close();
 })
 
 electron.ipcMain.on('closePopup', (event, ptype) => {
-  console.log('HERE!!');
-
+  //console.log('HERE!!');
   switch(ptype){
     case 'quit':
       confWindow.hide();
       break;
     case 'sort':
       sortWindow.hide();
+      break;
+    case 'rename':
+      renameWindow.hide();
+      mainWindow.webContents.send('isClosedPopup');
       break;
   }
   mainWindow.focus();
@@ -514,9 +548,45 @@ electron.ipcMain.on('sortItems', (event, type) => {
   event.returnValue = true;
 });
 
+electron.ipcMain.on('reqRenameItem', (event, {item_name_dst, item_name_src, dir_cur, id_target}) => {
+  //console.log('renameItems!! <> item_name_dst: ' + item_name_dst + ', item_name_src: ' + item_name_src + ', dir_cur: ' + dir_cur);
+  const full_name_dst = path.join(dir_cur, item_name_dst);
+  const full_name_src = path.join(dir_cur, item_name_src);
+
+  if(item_name_dst !== ''){
+    //const ret = fs.renameSync(full_name_src, full_name_dst);
+    try{
+      fs.renameSync(full_name_src, full_name_dst);
+    }catch(e){
+      console.log('reqRenameItem <> e: ', e);
+    }
+  }
+  
+  const item_name_mdf = getBasename(full_name_dst);
+  mainWindow.webContents.send('renameItem', id_target, dir_cur, item_name_mdf);
+  renameWindow.hide();
+  mainWindow.focus();
+
+  event.returnValue = true;
+});
+
+function getBasename(full_name){
+  switch(process.platform){
+    case 'win32':
+      return path.win32.basename(full_name);
+      break;
+    case 'darwin':
+    case 'linux':
+      return path.posix.basename(full_name);
+      break;
+    default: 
+      console.log('ERROR!! reqRenameItem()');
+      return null;
+  }
+}
+
 electron.ipcMain.on('isearch_start', (event) => {
   console.log('isearch_start @ main process');
-
   event.returnValue = true;
 });
 

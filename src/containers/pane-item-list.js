@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import im from 'immutable';
 import { updateItemList } from '../actions'
 import ItemList from '../components/item-list';
+import { KEY_INPUT_MODE } from '../util/item_type';
 //import { DISK_DRIVE, BOOKMARK, HISTORY } from '../util/item_list';
 
 const mapStateToProps = (state, props) => {
   const active_pane_id = state.active_pane_id;
-  const dir = state.state_core.getIn([props.id, 'dirs', 0]);
-  const page = state.state_core.getIn([props.id, 'pages', dir]);
-  const line_cur = state.state_core.getIn([props.id, 'pages', dir, 'line_cur']);
+  const dir_cur = state.state_core.getIn([props.id, 'dirs', 0]);
+  const page = state.state_core.getIn([props.id, 'pages', dir_cur]);
+  const line_cur = state.state_core.getIn([props.id, 'pages', dir_cur, 'line_cur']);
 
   //const dir = _getDirCur(state, props.id);
   //const page = _getPage(state, props.id);
@@ -27,7 +28,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     active_pane_id: active_pane_id,
-    dir: dir,
+    dir_cur: dir_cur,
     page: page,
     id: props.id,
     line_cur: line_cur,
@@ -106,6 +107,17 @@ const mapDispatchToProps = (dispatch, props) => ({
       type: 'DISP_POPUP_FOR_SORT_ITEM_LIST',
       left: left,
       top: top
+    });
+  },
+  dispPopUpForRename: (left, top, item_name, dir_cur, id_target) => {
+    //console.log('dispPopUpForRename <> item_name: ' + item_name + ', dir_cur: ' + dir_cur);
+    dispatch({
+      type: 'DISP_POPUP_FOR_RENAME_ITEM',
+      left: left,
+      top: top,
+      item_name: item_name,
+      dir_cur: dir_cur,
+      id_target: id_target
     });
   },
   updatePageWithCursorJump: (pre_action, line_new) => {

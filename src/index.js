@@ -232,8 +232,8 @@ store.dispatch(createMainWindowSizeReceiver());
 //});
 //ipcRenderer.send('test_message', 'Here it!!');
 
-store.dispatch(initDirWatcher(state_core_left.get('dir_watcher'), state_core_left.getIn(['dirs', 0])));
-store.dispatch(initDirWatcher(state_core_right.get('dir_watcher'), state_core_right.getIn(['dirs', 0])));
+store.dispatch(initDirWatcher(state_core_left.get('dir_watcher')));
+store.dispatch(initDirWatcher(state_core_right.get('dir_watcher'))); 
 
 const style = {
   overflowY: 'hidden'

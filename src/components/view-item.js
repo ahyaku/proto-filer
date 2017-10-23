@@ -72,13 +72,7 @@ class ViewItem extends React.Component {
       this._arr_pos[i] = [];
     }
 
-    this._cbGetItem = this._cbGetItem.bind(this);
     this._cbGetIsSelected = this._cbGetIsSelected.bind(this);
-  }
-
-  _cbGetItem(items, index){
-    //console.log('_cbGetItem <> items.size: ' + items.size + ', dir_cur: ' + items.get('dir_cur'));
-    return items.get(index);
   }
 
   _cbGetIsSelected(is_selected, index){
@@ -90,65 +84,42 @@ class ViewItem extends React.Component {
     //console.log('ViewItem <> index: ' + this.props.index);
     //console.time('render');
 
-    const items = this.props.items;
-    const index = this.props.index;
+    //const items = this.props.items;
+    //const index = this.props.index;
 
     /* When current directory is changed from the one which has larger number of items
      * to the one which has smaller number of items,
      * this will happen before commponentDidUpdate() in the caller of this class updates
      * the item.size to the latest one (= larger number of items).
      * */
-    if( index >= items.size ){
-      return (
-        <div></div>
-      );
-    }
-
-
-    let style;
-    const line_cur = this.props.line_cur;
-    //console.log('rener() <> line_cur: ' + line_cur);
-    const id = this.props.id;
-    const active_pane_id = this.props.active_pane_id;
-    const item = this._cbGetItem(items, index);
-
-    //if(items.size <= 0){
+    //if( index >= items.size ){
+    ////if( index >= this.props.items_size ){
     //  return (
-    //    <div>
-    //    </div>
+    //    <div></div>
     //  );
     //}
 
+
+    const item = this.props.item;
     this.didupdate = true;
 
-    //style = this._styles[item.kind];
-    //style = this._styles[item.get('kind')];
-
-    //const background = item.get('selected') === true
-    //                     ? '#0000FF'
-    //                     : '#333333';
-
-    //console.log('view-item <> is_selected: ', this.is_selected);
-
-
-    const background = this._cbGetIsSelected(this.props.is_selected, index) === true
+    const background = this._cbGetIsSelected(this.props.is_selected, this.props.c) === true
                          ? '#0000FF'
                          : '#333333';
-    style = Object.assign(
-                           {},
-                           this.props.style,
-                           this._styles[item.get('kind')],
-                           {
-                             background: background
-                           }
-                         );
+    const style = Object.assign(
+                                 {},
+                                 this.props.style,
+                                 this._styles[item.get('kind')],
+                                 {
+                                   background: background
+                                 }
+                               );
 
-    if(this.props.c === line_cur){
+    if(this.props.c === this.props.line_cur){
       //console.log('view-item <> render(), name: ' + item.get('name'));
 
       /* ToDo: Need to judge the currently acive pane. */
-      if(id === active_pane_id){
-        //style['borderBottom'] = 'solid 1px #00FF00';
+      if(this.props.id_list_pane === this.props.active_pane_id){
         style['borderBottom'] = 'solid 1px rgba(0,255,0,1)';
       }
     }
@@ -168,6 +139,15 @@ class ViewItem extends React.Component {
 
 
   shouldComponentUpdate(nextProps, nextState){
+    //console.log('view-item <> action_type: ' + this.props.action_type);
+
+    if( (nextProps.action_type === 'RENAME_ITEM')             &&
+        (nextProps.id_list_pane === nextProps.active_pane_id) &&
+        (nextProps.c === nextProps.line_cur)                  ){
+      //console.log('HERE!!!!!!!! action_type: ' + nextProps.action_type + ', name: ' + nextProps.item.get('name') + ', c: ' + nextProps.c + ', line_cur: ' + nextProps.line_cur);
+      return true;
+    }
+
     /* Displayed items are changed by Narrow Down. */
     if(this.props.id_map_nrw !== nextProps.id_map_nrw){
       return true;
@@ -179,11 +159,6 @@ class ViewItem extends React.Component {
     //if(this.props.im_items !== nextProps.im_items){
       //console.log('now <> name: ' + this.props.name + ', line_cur: ' + this.props.line_cur + ', c: ' + this.props.c);
       //console.log('next <> name: ' + nextProps.name + ', line_cur: ' + nextProps.line_cur + ', c: ' + nextProps.c);
-      
-      //if(this.props.c === 0){
-      //  this.props.cbForceUpdate();
-      //}
-      //this.props.cbForceUpdate();
       return true;
     }
 
@@ -204,9 +179,8 @@ class ViewItem extends React.Component {
       //console.log('view-item should <> c: ' + this.props.c + ', line_cur: ' + this.props.line_cur + ', nextProps.line_cur: ' + nextProps.line_cur);
 
       return true;
+
     }else{
-      //const item = this._cbGetItem(this.props.items, id);
-      //const item_next = this._cbGetItem(nextProps.items, id);
 
       const is_selected = this._cbGetIsSelected(this.props.is_selected, id);
       const is_selected_next = this._cbGetIsSelected(nextProps.is_selected, id);
@@ -222,6 +196,7 @@ class ViewItem extends React.Component {
       }else{
         return false;
       }
+
     }
 
   }

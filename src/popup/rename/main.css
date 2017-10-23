@@ -1,0 +1,21 @@
+body
+{
+  margin: 0;
+  padding: 0;
+}
+
+#root
+{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  color: #FFFFFF;
+  /*background: #cccccc;*/
+  background: #444444;
+
+  height: 100%;
+  width: 100%;
+}

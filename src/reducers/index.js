@@ -7,6 +7,7 @@ import { ipcRenderer } from 'electron'
 import { changeDirUpper, changeDirLower, updatePageCur, changeDrive, getDirIndex, showBookmark, showHistory, loadPage } from '../util/item_list_pages';
 import { KEY_INPUT_MODE, ITEM_TYPE_KIND /*, SORT_TYPE */ } from '../util/item_type';
 import { sortItemsInState, sortItemsInPage } from '../util/item_list';
+import { initAsItem } from '../util/item';
 
 const rootReducer = (state_fcd, action) => {
   //console.log('reducer <> state_fcd.input_mode: ', state_fcd.input_mode);
@@ -15,10 +16,11 @@ const rootReducer = (state_fcd, action) => {
   const id = state_fcd.active_pane_id;
   const state = state_fcd.state_core.get(id);
 
+  //console.log('reducer <> action_type: ' + action.type);
   switch(action.type){
     case 'OPEN_ITEM':
       {
-        return openItem(state_fcd);
+        return openItem(state_fcd, action.type);
       }
     case 'MOVE_CURSOR_UP':
       {
@@ -108,6 +110,7 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  { 
                    state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -212,13 +215,19 @@ const rootReducer = (state_fcd, action) => {
           return Object.assign(
                    {},
                    state_fcd,
-                   { active_pane_id: 1 }
+                   { 
+                     active_pane_id: 1,
+                     action_type: action.type
+                   }
                  );
         case 1:
           return Object.assign(
                    {},
                    state_fcd,
-                   { active_pane_id: 0 }
+                   { 
+                     active_pane_id: 0,
+                     action_type: action.type
+                   }
                  );
         default:
           /* Do Nothing.. */
@@ -233,7 +242,7 @@ const rootReducer = (state_fcd, action) => {
         const idx_other = idx_cur === 1
                           ? 0
                           : 1;
-        return syncDirFcd(state_fcd, idx_cur, idx_other);
+        return syncDirFcd(state_fcd, idx_cur, idx_other, action.type);
       }
 
     case 'SYNC_DIR_OTHER_TO_CUR':
@@ -243,7 +252,7 @@ const rootReducer = (state_fcd, action) => {
         const idx_other = idx_cur === 1
                           ? 0
                           : 1;
-        return syncDirFcd(state_fcd, idx_other, idx_cur);
+        return syncDirFcd(state_fcd, idx_other, idx_cur, action.type);
       }
 
     case 'SWITCH_INPUT_MODE_NARROW_DOWN_ITEMS':
@@ -255,7 +264,8 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  {
                    input_mode: KEY_INPUT_MODE.SEARCH,
-                   state_core: state_fcd.state_core.set(id, state_new)
+                   state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -264,7 +274,10 @@ const rootReducer = (state_fcd, action) => {
         return Object.assign(
                  {},
                  state_fcd,
-                 { input_mode: KEY_INPUT_MODE.NORMAL }
+                 { 
+                   input_mode: KEY_INPUT_MODE.NORMAL,
+                   action_type: action.type
+                 }
                );
       }
     case 'SWITCH_INPUT_MODE_NORMAL_WITH_CLEAR':
@@ -286,19 +299,34 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  { 
                    state_core: state_fcd.state_core.set(id, state_new),
-                   input_mode: KEY_INPUT_MODE.NORMAL
+                   input_mode: KEY_INPUT_MODE.NORMAL,
+                   action_type: action.type
                  }
                );
       }
     case 'DISP_POPUP_FOR_QUIT':
       {
         dispPopUp('quit', null);
-        return state_fcd;
+        //return state_fcd;
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   action_type: action.type
+                 }
+               );
       }
     case 'CLOSE_MAIN_WINDOW':
       {
         closeMainWindow();
-        return state_fcd;
+        //return state_fcd;
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   action_type: action.type
+                 }
+               );
       }
     case 'TOGGLE_ITEM_SELECT_UP':
       {
@@ -308,7 +336,8 @@ const rootReducer = (state_fcd, action) => {
                  {},
                  state_fcd,
                  {
-                   state_core: state_core_new
+                   state_core: state_core_new,
+                   action_type: action.type
                  }
                );
       }
@@ -320,7 +349,8 @@ const rootReducer = (state_fcd, action) => {
                  {},
                  state_fcd,
                  {
-                   state_core: state_core_new
+                   state_core: state_core_new,
+                   action_type: action.type
                  }
                );
       }
@@ -346,7 +376,8 @@ const rootReducer = (state_fcd, action) => {
                  {},
                  state_fcd,
                  {
-                   state_core: state_fcd.state_core.set(id, state_new)
+                   state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -360,7 +391,8 @@ const rootReducer = (state_fcd, action) => {
                  {},
                  state_fcd,
                  {
-                   state_core: state_fcd.state_core.set(id, state_new)
+                   state_core: state_fcd.state_core.set(id, state_new),
+                   action_type: action.type
                  }
                );
       }
@@ -369,15 +401,24 @@ const rootReducer = (state_fcd, action) => {
         return Object.assign(
                  {},
                  state_fcd,
-                 { input_mode: KEY_INPUT_MODE.POPUP }
+                 { 
+                   input_mode: KEY_INPUT_MODE.POPUP_SORT,
+                   action_type: action.type
+                 }
                );
       }
     case 'DISP_POPUP_FOR_SORT_ITEM_LIST':
       {
         //console.log('DISP_POPUP_FOR_SORT_ITEM_LIST <> left: ' + action.left + ', top: ' + action.top);
         dispPopUp('sort', {left: action.left, top: action.top});
-        return state_fcd;
-
+        //return state_fcd;
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   action_type: action.type
+                 }
+               );
       }
     //case 'CLOSE_POPUP_FOR_SORT_ITEM_LIST':
     //  {
@@ -395,31 +436,87 @@ const rootReducer = (state_fcd, action) => {
                  state_fcd,
                  {
                    state_core: state_fcd.state_core.set(id, state_new),
-                   input_mode: KEY_INPUT_MODE.NORMAL
+                   input_mode: KEY_INPUT_MODE.NORMAL,
+                   action_type: action.type
                  }
                );
       }
-    case 'CLOSE_POPUP_FOR_SORT_ITEM_LIST':
+    case 'WILL_DISP_POPUP_FOR_RENAME_ITEM':
       {
+        //console.log('WILL_DISP_POPUP_FOR_RENAME_ITEM');
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   input_mode: KEY_INPUT_MODE.POPUP_RENAME,
+                   action_type: action.type
+                 }
+               );
+      }
+    case 'DISP_POPUP_FOR_RENAME_ITEM':
+      {
+        //console.log('DISP_POPUP_FOR_RENAME_ITEM');
+        dispPopUp('rename', 
+                  {
+                    left: action.left,
+                    top: action.top,
+                    item_name: action.item_name,
+                    dir_cur: action.dir_cur,
+                    id_target: action.id_target
+                  });
+        //return state_fcd;
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   action_type: action.type
+                 }
+               );
+
+      }
+    case 'RENAME_ITEM':
+      {
+        const item_new = initAsItem(action.id_target, action.item_name_mdf, action.dir_cur);
+        const item = state.getIn(['pages', action.dir_cur, 'items', action.id_target, 'name']);
+        //console.log('RENAME_ITEM <> name(new): ' + item_new.get('name'));
+        const state_new = state.setIn(['pages', action.dir_cur, 'items', action.id_target], item_new);
+
         return Object.assign(
                  {},
                  state_fcd,
                  {
-                   input_mode: KEY_INPUT_MODE.NORMAL
+                   state_core: state_fcd.state_core.set(id, state_new),
+                   input_mode: KEY_INPUT_MODE.NORMAL,
+                   action_type: action.type
+                 }
+               );
+      }
+    case 'IS_CLOSED_POPUP':
+      {
+        if(state_fcd.input_mode === KEY_INPUT_MODE.POPUP_RENAME){
+          console.log('reducer <> IS_CLOSED_POPUP input_mode: POPUP_RENAME');
+        }
+
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   input_mode: KEY_INPUT_MODE.NORMAL,
+                   action_type: action.type
                  }
                );
       }
     case 'COPY_ITEMS':
       {
-        return handleItems(state_fcd, 'copy');
+        return handleItems(state_fcd, 'copy', action.type);
       }
     case 'MOVE_ITEMS':
       {
-        return handleItems(state_fcd, 'move');
+        return handleItems(state_fcd, 'move', action.type);
       }
     case 'DELETE_ITEMS':
       {
-        return deleteItems(state_fcd);
+        return deleteItems(state_fcd, action.type);
       }
     case 'DIR_CUR_IS_UPDATED':
       {
@@ -427,9 +524,7 @@ const rootReducer = (state_fcd, action) => {
         const state = state_fcd.state_core.get(id);
 
         const dir_cur = state.getIn(['dirs', 0]);
-        console.log('DIR_CUR_IS_UPDATED <> dir_cur: ', dir_cur);
-
-        //const state_new = loadPage(state, dir_cur, state.getIn(['pages', dir_cur, 'line_cur']));
+        //console.log('DIR_CUR_IS_UPDATED <> dir_cur: ', dir_cur);
 
         const state_tmp = loadPage(state, dir_cur, state.getIn(['pages', dir_cur, 'line_cur']));
         const sort_type = state_tmp.get('sort_type');
@@ -482,12 +577,19 @@ const rootReducer = (state_fcd, action) => {
       console.log('TEST_RECEIVE_MSG <> ret_msg: ' + action.ret_msg);
       return state_fcd;
     default:
-      return state_fcd;
+      //return state_fcd;
+      return Object.assign(
+               {},
+               state_fcd,
+               {
+                 action_type: ''
+               }
+             );
   }
 
 }
 
-const handleItems = (state_fcd, operation) => {
+const handleItems = (state_fcd, operation, action_type) => {
   const id_cur = state_fcd.active_pane_id;
   const id_other = (id_cur + 1) % 2;
   //console.log('id_cur: ' + id_cur + ', id_other: ' + id_other);
@@ -523,12 +625,13 @@ const handleItems = (state_fcd, operation) => {
     {},
     state_fcd,
     {
-      state_core: state_core_new
+      state_core: state_core_new,
+      action_type: action_type
     }
   );
 }
 
-const deleteItems = (state_fcd) => {
+const deleteItems = (state_fcd, action_type) => {
   const id_cur = state_fcd.active_pane_id;
   //console.log('id_cur: ' + id_cur + ', id_other: ' + id_other);
   const state_core = state_fcd.state_core;
@@ -558,12 +661,13 @@ const deleteItems = (state_fcd) => {
     {},
     state_fcd,
     {
-      state_core: state_core_new
+      state_core: state_core_new,
+      action_type: action_type
     }
   );
 }
 
-const openItem = (state_fcd) => {
+const openItem = (state_fcd, action_type) => {
   const id_cur = state_fcd.active_pane_id;
   const state_core = state_fcd.state_core;
   const state_cur = state_core.get(id_cur);
@@ -588,7 +692,14 @@ const openItem = (state_fcd) => {
   //}
 
   const ret = ipcRenderer.sendSync('open_item', path_cur, item_names);
-  return state_fcd;
+  //return state_fcd;
+  return Object.assign(
+           {},
+           state_fcd,
+           {
+             action_type: action_type
+           }
+         );
 }
 
 const updatePage = (state) => {

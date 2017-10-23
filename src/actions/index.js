@@ -176,6 +176,11 @@ export const _checkKeyNormal = (state_fcd, e) => {
       //return {
       //  type: 'DISP_POPUP_FOR_SORT_ITEM_LIST'
       //}
+    case 'r': /* 'r' */
+      event.preventDefault();
+      return {
+        type: 'WILL_DISP_POPUP_FOR_RENAME_ITEM'
+      };
     case 'e':
       return {
         type: 'DEBUG_COUNT_END'
@@ -550,16 +555,11 @@ const _changeDirUpper = () => {
     }
 
     state_new.get('dir_watcher').close();
-    const dir_new = state_new.getIn(['dirs', 0]);
-    const watcher_new = chokidar.watch(dir_new,
-                                      {
-                                        ignoreInitial: true,
-                                        depth: 0
-                                      });
-    dispatch(initDirWatcher(watcher_new, dir_new));
+    const watcher = createDirWatcher(state_new.getIn(['dirs', 0]));
+    dispatch(initDirWatcher(watcher));
     dispatch({
       type: 'CHANGE_DIR_UPPER',
-      state_new: state_new.set('dir_watcher', watcher_new),
+      state_new: state_new.set('dir_watcher', watcher),
       id: id
     });
   };
@@ -586,16 +586,11 @@ const _changeDirLower = () => {
     }
 
     state_new.get('dir_watcher').close();
-    const dir_new = state_new.getIn(['dirs', 0]);
-    const watcher_new = chokidar.watch(dir_new,
-                                      {
-                                        ignoreInitial: true,
-                                        depth: 0
-                                      });
-    dispatch(initDirWatcher(watcher_new, dir_new));
+    const watcher = createDirWatcher(state_new.getIn(['dirs', 0]));
+    dispatch(initDirWatcher(watcher));
     dispatch({
       type: 'CHANGE_DIR_LOWER',
-      state_new: state_new.set('dir_watcher', watcher_new),
+      state_new: state_new.set('dir_watcher', watcher),
       id: id
     });
 
@@ -603,9 +598,16 @@ const _changeDirLower = () => {
 
 }
 
+const createDirWatcher = (dir_target) => {
+  return chokidar.watch(dir_target,
+                        {
+                          ignoreInitial: true,
+                          depth: 0
+                        });
+}
 
 const INTERVAL_WATCH = 1000;
-export const initDirWatcher = (watcher, dir_cur) => {
+export const initDirWatcher = (watcher) => {
   let timer = null;
 
   return (dispatch) => {
@@ -622,7 +624,7 @@ export const initDirWatcher = (watcher, dir_cur) => {
         clearTimeout(timer);
       }
       timer = setTimeout(() => {
-        //console.log('watcher: ', event, path);
+        //console.log('watcher: ', event, path, details);
         timer = null;
         dispatch({
           type: 'DIR_CUR_IS_UPDATED'

@@ -189,7 +189,9 @@ class CmdAndItemList extends React.Component {
 class App extends React.Component {
   constructor(props){
     super(props);
+    this.cbIsClosedPopup = this.cbIsClosedPopup.bind(this);
     this.cbSortItems = this.cbSortItems.bind(this);
+    this.cbRenameItem = this.cbRenameItem.bind(this);
   }
 
   render(){
@@ -242,11 +244,22 @@ class App extends React.Component {
   }
 
   componentDidMount(){
+    ipcRenderer.on('isClosedPopup', this.cbIsClosedPopup);
     ipcRenderer.on('sortItems', this.cbSortItems);
+    ipcRenderer.on('renameItem', this.cbRenameItem);
   }
 
   componentWillUnmount(){
+    ipcRenderer.removeListener('isClosedPopup', this.cbIsClosedPopup);
     ipcRenderer.removeListener('sortItems', this.cbSortItems);
+    ipcRenderer.removeListener('renameItem', this.cbRenameItem);
+  }
+
+  cbIsClosedPopup(event){
+    //console.log('app.js <> cbRenameItem()');
+    this.props.dispatch({
+      type: 'IS_CLOSED_POPUP'
+    });
   }
 
   cbSortItems(event, sort_type){
@@ -257,12 +270,22 @@ class App extends React.Component {
     });
   }
 
+  cbRenameItem(event, id_target, dir_cur, item_name_mdf){
+    //console.log('app.js cbRenameItem() <> id_target: ' + id_target + ', dir_cur: ' + dir_cur + ', item_name_mdf: ' + item_name_mdf);
+    this.props.dispatch({
+      type: 'RENAME_ITEM',
+      id_target: id_target,
+      dir_cur: dir_cur,
+      item_name_mdf: item_name_mdf
+    });
+  }
+
   componentDidUpdate(prevState, prevProps){
     //console.log('app <> componentDidUpdate() input_mode: ' + this.props.input_mode);
     const node = findDOMNode(this);
     const rect = node.getBoundingClientRect();
     //const rect_root = node_root.getBoundingClientRect();
-    console.log('app <> rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
+    //console.log('app <> rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
     //console.log('refs: ', this.refs);
   }
 
