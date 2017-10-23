@@ -20,20 +20,14 @@ import chokidar from 'chokidar';
 
 import App from './components/app';
 import { checkKeyNormal, checkKeySearch, initDirWatcher } from './actions';
-import { updatePageCur } from './util/item_list_pages';
+import { createStateCore } from './util/item_list_pages';
 import reducer from './reducers';
 import { KEY_INPUT_MODE } from './util/item_type';
-//import { updateItemNameList } from './reducers/combined-item-list';
 
 process.env.NODE_ENV = 'production';
 
-//const state_core_left = updatePageCur(null, 'C:\\msys64', true);
-//const pages_left = updatePageCur(null, 'C:\\tmp\\many_items', true);
-const state_core_left = updatePageCur(null, 'C:\\tmp\\test', true);
-//const state_core_right = updatePageCur(null, 'C:\\Go', true);
-//const pages_left = updatePageCur(null, 'C:\\Go', true);
-//const pages_right = updatePageCur(null, 'C:\\tmp\\many_items', true);
-const state_core_right = updatePageCur(null, 'C:\\tmp\\many_items', true);
+const state_core_left = createStateCore(null, 'C:\\tmp\\test');
+const state_core_right = createStateCore(null, 'C:\\tmp\\many_items');
 
 const state_core = im.List.of(state_core_left, state_core_right);
 //console.log('index <> state_core: ', state_core);
@@ -232,8 +226,8 @@ store.dispatch(createMainWindowSizeReceiver());
 //});
 //ipcRenderer.send('test_message', 'Here it!!');
 
-store.dispatch(initDirWatcher(state_core_left.get('dir_watcher')));
-store.dispatch(initDirWatcher(state_core_right.get('dir_watcher'))); 
+store.dispatch(initDirWatcher(state_core_left.get('dir_watcher'), 0));
+store.dispatch(initDirWatcher(state_core_right.get('dir_watcher'), 1)); 
 
 const style = {
   overflowY: 'hidden'

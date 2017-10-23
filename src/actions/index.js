@@ -95,14 +95,14 @@ export const _checkKeyNormal = (state_fcd, e) => {
           type: 'OPEN_HISTORY'
         };
       }else{
-        return _changeDirUpper();
+        return changeDir('CHANGE_DIR_UPPER');
       }
     case 'H': /* 'H' */
       return {
         type: 'MOVE_CURSOR_TO_TOP'
       };
     case 'l': /* 'l' */
-      return _changeDirLower();
+      return changeDir('CHANGE_DIR_LOWER');
     case 'L': /* 'L' */
       return {
         type: 'MOVE_CURSOR_TO_BOTTOM'
@@ -519,86 +519,40 @@ const switchInputModeNormalWithClear = () => {
 //  });
 //}
 
-const _changeDirUpper = () => {
-  /* ORG */
-  //return {
-  //  type: 'CHANGE_DIR_UPPER'
-  //};
+const changeDir = (type) => (dispatch, getState) => {
+  const state_fcd = getState();
+  const id = state_fcd.active_pane_id;
+  const state = state_fcd.state_core.get(id);
 
-  /* NG */
-  //return dispatch({
-  //  type: 'CHANGE_DIR_UPPER'
-  //});
+  let state_new = null;
+  switch(type){
+    case 'CHANGE_DIR_UPPER':
+      state_new = changeDirUpper(state);
+      break;
+    case 'CHANGE_DIR_LOWER':
+      state_new = changeDirLower(state);
+      break;
+  }
 
-  /* OK */
-  //return (dispatch) => {
-  //  return dispatch({
-  //    type: 'CHANGE_DIR_UPPER'
-  //  });
-  //  //return dispatch({
-  //  //  type: 'CHANGE_DIR_UPPER'
-  //  //});
-  //};
-
-  return (dispatch, getState) => {
-    const state_fcd = getState();
-    const id = state_fcd.active_pane_id;
-    const state = state_fcd.state_core.get(id);
-    const state_new = changeDirUpper(state);
-
-    if(state === state_new){
-      return dispatch({
-        type: 'CHANGE_DIR_UPPER',
-        state_new: state,
-        id: id
-      });
-    }
-
-    state_new.get('dir_watcher').close();
-    const watcher = createDirWatcher(state_new.getIn(['dirs', 0]));
-    dispatch(initDirWatcher(watcher));
-    dispatch({
-      type: 'CHANGE_DIR_UPPER',
-      state_new: state_new.set('dir_watcher', watcher),
+  if(state === state_new){
+    return dispatch({
+      type: type,
+      state_new: state,
       id: id
     });
-  };
+  }
 
+  state_new.get('dir_watcher').close();
+  const watcher = createDirWatcher(state_new.getIn(['dirs', 0]));
+  dispatch(initDirWatcher(watcher, id));
+  dispatch({
+    type: type,
+    state_new: state_new.set('dir_watcher', watcher),
+    id: id
+  });
 }
 
-const _changeDirLower = () => {
-  /* ORG */
-  //return {
-  //  type: 'CHANGE_DIR_LOWER'
-  //};
-  return (dispatch, getState) => {
-    const state_fcd = getState();
-    const id = state_fcd.active_pane_id;
-    const state = state_fcd.state_core.get(id);
-    const state_new = changeDirLower(state);
-
-    if(state === state_new){
-      return dispatch({
-        type: 'CHANGE_DIR_LOWER',
-        state_new: state,
-        id: id
-      });
-    }
-
-    state_new.get('dir_watcher').close();
-    const watcher = createDirWatcher(state_new.getIn(['dirs', 0]));
-    dispatch(initDirWatcher(watcher));
-    dispatch({
-      type: 'CHANGE_DIR_LOWER',
-      state_new: state_new.set('dir_watcher', watcher),
-      id: id
-    });
-
-  };
-
-}
-
-const createDirWatcher = (dir_target) => {
+export const createDirWatcher = (dir_target) => {
   return chokidar.watch(dir_target,
                         {
                           ignoreInitial: true,
@@ -607,7 +561,7 @@ const createDirWatcher = (dir_target) => {
 }
 
 const INTERVAL_WATCH = 1000;
-export const initDirWatcher = (watcher) => {
+export const initDirWatcher = (watcher, id) => {
   let timer = null;
 
   return (dispatch) => {
@@ -627,7 +581,8 @@ export const initDirWatcher = (watcher) => {
         //console.log('watcher: ', event, path, details);
         timer = null;
         dispatch({
-          type: 'DIR_CUR_IS_UPDATED'
+          type: 'DIR_CUR_IS_UPDATED',
+          id: id
         });
         //console.log('dir_cur: ' + dir_cur + ', getWatched: ', watcher.getWatched());
       },

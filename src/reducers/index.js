@@ -520,7 +520,7 @@ const rootReducer = (state_fcd, action) => {
       }
     case 'DIR_CUR_IS_UPDATED':
       {
-        const id = state_fcd.active_pane_id;
+        const id = action.id;
         const state = state_fcd.state_core.get(id);
 
         const dir_cur = state.getIn(['dirs', 0]);

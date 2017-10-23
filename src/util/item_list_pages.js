@@ -9,6 +9,7 @@ import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK, HISTORY } from './item_li
 import { initAsItem, initAsDiskDrive, initAsBookmark, initAsHistory } from './item';
 import { SORT_TYPE } from './item_type';
 import { sortItemsInPage } from './item_list';
+import { createDirWatcher, initDirWatcher } from '../actions';
 
 export const getDirIndex = (dirs, dir_cur) => {
   const ret = dirs.findIndex((dir)=>{
@@ -264,42 +265,8 @@ export const showHistory = (state) => {
                                    .set('dirs', dirs_new));
 }
 
-/* Need to rename this function. */
-export const updatePageCur = (state, _dir_cur, line_cur_zero) => {
+export const createStateCore = (state, _dir_cur) => {
   const dir_cur = fs.realpathSync(_dir_cur);
-  //console.log('updatePageCur <> dir_cur: ' + dir_cur + ', _dir_cur: ' + _dir_cur);
-
-  if(state === null){
-    return _constructNewPage(dir_cur);
-  }else{
-    const dirs_tmp = state.get('dirs');
-    let dirs;
-
-    switch(dirs_tmp.get(0)){
-      case dir_cur: /* "dir_cur" is the current directory. */
-        return loadPage(state, dir_cur, 0); /* reload page to reflesh the displayed item lists as the latest one. */
-
-      /* Remove DISK_DRIVE and BOOKMARK from history. */
-      case DISK_DRIVE:
-      case BOOKMARK:
-      case HISTORY:
-        dirs = dirs_tmp.delete(0);
-        break;
-      default:
-        dirs = dirs_tmp;
-        break;
-    }
-
-    const idx_dir = getDirIndex(dirs, dir_cur);
-    if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
-      return _makeRegisteredPageAsCurrent(state, dirs, idx_dir, line_cur_zero);
-    }else{ /* "dir_cur" is not yet registered in "dirs" */
-      return loadPage(state, dir_cur, 0).set('dirs', dirs.unshift(dir_cur));
-    }
-  }
-}
-
-const _constructNewPage = (dir_cur) => {
   const items = _updateItems(dir_cur);
   //console.log('updatePageCur <> items.getIn(1, name) ' + items.getIn([1, 'name']));
 
@@ -324,22 +291,53 @@ const _constructNewPage = (dir_cur) => {
                  'is_selected': is_selected
                });
 
-  const dir_watcher = chokidar.watch(fs.realpathSync(dir_cur),
-                                    {
-                                      ignoreInitial: true,
-                                      depth: 0
-                                    });
-
+  const dir_watcher = createDirWatcher(dir_cur);
   
   return im.Map({
            'dirs': im.List.of(dir_cur),
            'pages': im.Map({[dir_cur]: page}),
-           //'pages_sc': im.Map({}),
            'item_names': _updateItemNames(items),
            'msg_cmd': '',
            'sort_type': SORT_TYPE.NAME_ASC,
            'dir_watcher': dir_watcher
          });
+
+}
+
+/* Need to rename this function. */
+export const updatePageCur = (state, _dir_cur, line_cur_zero) => {
+  const dir_cur = fs.realpathSync(_dir_cur);
+  //console.log('updatePageCur <> dir_cur: ' + dir_cur + ', _dir_cur: ' + _dir_cur);
+
+  if(state === null){
+    console.log('ERROR!! @ updatePageCur() <> state is null.');
+    return null;
+  }
+
+  const dirs_tmp = state.get('dirs');
+  let dirs;
+
+  switch(dirs_tmp.get(0)){
+    case dir_cur: /* "dir_cur" is the current directory. */
+      return loadPage(state, dir_cur, 0); /* reload page to reflesh the displayed item lists as the latest one. */
+
+    /* Remove DISK_DRIVE and BOOKMARK from history. */
+    case DISK_DRIVE:
+    case BOOKMARK:
+    case HISTORY:
+      dirs = dirs_tmp.delete(0);
+      break;
+    default:
+      dirs = dirs_tmp;
+      break;
+  }
+
+  const idx_dir = getDirIndex(dirs, dir_cur);
+  if( idx_dir !== -1 ){ /* "dir_cur" is not the current directory but already registered in "dirs" */
+    return _makeRegisteredPageAsCurrent(state, dirs, idx_dir, line_cur_zero);
+  }else{ /* "dir_cur" is not yet registered in "dirs" */
+    return loadPage(state, dir_cur, 0).set('dirs', dirs.unshift(dir_cur));
+  }
 }
 
 const _makeRegisteredPageAsCurrent = (state, dirs, idx_dir, line_cur_zero) => {
