@@ -398,12 +398,13 @@ class ItemList extends React.Component {
 
   }
 
-  shouldComponentUpdate(nextState, nextProps){
+  shouldComponentUpdate(nextProps, nextState){
     //const node = findDOMNode(this);
     //console.log('ItemList <> node: ', node);
     //console.log('ItemList <> node: ', node.getBoundingClientRect());
     //console.log('ItemList <> node: ', node.offsetTop);
     //console.log('ItemList <> node: ', node.scrollTop);
+
     return true;
   }
 

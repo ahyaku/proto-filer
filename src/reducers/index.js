@@ -464,7 +464,7 @@ const rootReducer = (state_fcd, action) => {
                     dir_cur: action.dir_cur,
                     id_target: action.id_target
                   });
-        //return state_fcd;
+
         return Object.assign(
                  {},
                  state_fcd,
@@ -477,9 +477,8 @@ const rootReducer = (state_fcd, action) => {
     case 'RENAME_ITEM':
       {
         const item_new = initAsItem(action.id_target, action.item_name_mdf, action.dir_cur);
-        const item = state.getIn(['pages', action.dir_cur, 'items', action.id_target, 'name']);
-        //console.log('RENAME_ITEM <> name(new): ' + item_new.get('name'));
-        const state_new = state.setIn(['pages', action.dir_cur, 'items', action.id_target], item_new);
+        const state_new = state.withMutations(s => s.setIn(['pages', action.dir_cur, 'items', action.id_target], item_new)
+                                                    .setIn(['dir_watcher', 'is_active'], false));
 
         return Object.assign(
                  {},
@@ -506,6 +505,19 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+    case 'DIR_WATCHER_SET_ACTIVATION_MODE':
+      {
+        const state = state_fcd.state_core.get(action.id);
+        const state_new = state.setIn(['dir_watcher', 'is_active'], action.mode);
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   state_core: state_fcd.state_core.set(action.id, state_new),
+                   action_type: action.type
+                 }
+               );
+      }
     case 'COPY_ITEMS':
       {
         return handleItems(state_fcd, 'copy', action.type);
@@ -522,25 +534,36 @@ const rootReducer = (state_fcd, action) => {
       {
         const id = action.id;
         const state = state_fcd.state_core.get(id);
+        const is_active = state.getIn(['dir_watcher', 'is_active']);
 
-        const dir_cur = state.getIn(['dirs', 0]);
-        //console.log('DIR_CUR_IS_UPDATED <> dir_cur: ', dir_cur);
+        if(is_active === true){
+          const dir_cur = state.getIn(['dirs', 0]);
+          const state_tmp = loadPage(state, dir_cur, state.getIn(['pages', dir_cur, 'line_cur']));
+          const sort_type = state_tmp.get('sort_type');
+          const page_tmp = state_tmp.getIn(['pages', state_tmp.getIn(['dirs', 0])]);
+          const page_new = sortItemsInPage(page_tmp, sort_type);
+          const state_new = state_tmp.setIn(['pages', dir_cur], page_new);
 
-        const state_tmp = loadPage(state, dir_cur, state.getIn(['pages', dir_cur, 'line_cur']));
-        const sort_type = state_tmp.get('sort_type');
-        const page_tmp = state_tmp.getIn(['pages', state_tmp.getIn(['dirs', 0])]);
-        const page_new = sortItemsInPage(page_tmp, sort_type);
-        const state_new = state_tmp.setIn(['pages', dir_cur], page_new);
-
-        return Object.assign(
-                 {},
-                 state_fcd,
-                 {
-                   state_core: state_fcd.state_core.set(id, state_new),
-                   action_type: action.type
-                 }
-               );
+          return Object.assign(
+                   {},
+                   state_fcd,
+                   {
+                     state_core: state_fcd.state_core.set(id, state_new),
+                     action_type: action.type
+                   }
+                 );
+        }else{
+          return Object.assign(
+                   {},
+                   state_fcd,
+                   {
+                     state_core: state_fcd.state_core.setIn([id, 'dir_watcher', 'is_active'], true),
+                     action_type: action.type
+                   }
+                 );
+        }
       }
+
     //case 'IS_CHANGED_MAIN_WINDOW_SIZE':
     //  {
     //    return Object.assign(

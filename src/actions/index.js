@@ -542,43 +542,59 @@ const changeDir = (type) => (dispatch, getState) => {
     });
   }
 
-  state_new.get('dir_watcher').close();
-  const watcher = createDirWatcher(state_new.getIn(['dirs', 0]));
-  dispatch(initDirWatcher(watcher, id));
+  dirWatcher_close(state_new.get('dir_watcher'));
+  const dir_watcher = dirWatcher(state_new.getIn(['dirs', 0]));
+  dispatch(dirWatcher_initialize(dir_watcher, id));
   dispatch({
     type: type,
-    state_new: state_new.set('dir_watcher', watcher),
+    state_new: state_new.set('dir_watcher', dir_watcher),
     id: id
   });
 }
 
-export const createDirWatcher = (dir_target) => {
-  return chokidar.watch(dir_target,
-                        {
-                          ignoreInitial: true,
-                          depth: 0
-                        });
+export const dirWatcher = (dir_target) => {
+  //console.log('createDirWatcher() <> dir_target: ' + dir_target);
+  const watcher = chokidar.watch(dir_target,
+                                 {
+                                   ignoreInitial: true,
+                                   depth: 0
+                                 });
+
+  return im.Map({
+           watcher: watcher,
+           is_active: true
+         });
 }
 
 const INTERVAL_WATCH = 1000;
-export const initDirWatcher = (watcher, id) => {
+export const dirWatcher_initialize = (dir_watcher, id) => {
   let timer = null;
 
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const watcher = dir_watcher.get('watcher');
+
     /* Do not use 'all' because it leads to 'unlinkdir' of 'C:/' when dir_cur is changed to 'C:/'
      * Not sure the reason why..
-     * */
-    /*
-    watcher.on('all', (event, path) => {
-      console.log('watcher: ', event, path);
-    */
-    watcher.on('raw', (event, path, details) => {
-      //console.log('watcher: ', event, path, details);
+     *
+     */
+    //watcher.on('all', (event, item_path) => {
+    //  console.log('watcher: ', event, item_path);
+    watcher.on('raw', (event, item_path, details) => {
+
       if(timer !== null){
         clearTimeout(timer);
       }
+
       timer = setTimeout(() => {
-        //console.log('watcher: ', event, path, details);
+        //console.log('watcher: ', event, item_path, details);
+        //console.log('watchedPath List: ', watcher.getWatched());
+        //console.log('details: ', Object.keys(details));
+        //console.log('watchedPath: ', details['watchedPath']);
+
+        //const state = getState().state_core.get(id);
+        //const is_active = state.getIn(['dir_watcher', 'is_active']);
+        //console.log('watcher is active? [1] : ' + is_active);
+
         timer = null;
         dispatch({
           type: 'DIR_CUR_IS_UPDATED',
@@ -587,10 +603,32 @@ export const initDirWatcher = (watcher, id) => {
         //console.log('dir_cur: ' + dir_cur + ', getWatched: ', watcher.getWatched());
       },
       INTERVAL_WATCH);
+
     });
 
     //console.log('dir_cur: ' + dir_cur + ', getWatched: ', watcher.getWatched());
   }
+}
+
+export const dirWatcher_setActivationMode = (dir_watcher, mode) => {
+  if(dir_watcher === null){
+    console.log('ERROR!! @dirWatcher_setActivationMode()');
+    return null;
+  }
+  if( (mode !== true)  ||
+      (mode !== false) ){
+    console.log('ERROR!! @dirWatcher_setActivationMode()');
+    return null;
+  }
+  return dir_watcher.set('is_active', mode);
+}
+
+export const dirWatcher_close = (dir_watcher) => {
+  if(dir_watcher === null){
+    console.log('ERROR!! @dirWatcher_close()');
+    return;
+  }
+  dir_watcher.get('watcher').close();
 }
 
 const TestSendMsg = () => (dispatch) => {

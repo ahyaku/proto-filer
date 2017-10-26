@@ -9,7 +9,7 @@ import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK, HISTORY } from './item_li
 import { initAsItem, initAsDiskDrive, initAsBookmark, initAsHistory } from './item';
 import { SORT_TYPE } from './item_type';
 import { sortItemsInPage } from './item_list';
-import { createDirWatcher, initDirWatcher } from '../actions';
+import { dirWatcher, dirWatcher_initialize } from '../actions';
 
 export const getDirIndex = (dirs, dir_cur) => {
   const ret = dirs.findIndex((dir)=>{
@@ -291,7 +291,7 @@ export const createStateCore = (state, _dir_cur) => {
                  'is_selected': is_selected
                });
 
-  const dir_watcher = createDirWatcher(dir_cur);
+  const dir_watcher = dirWatcher(dir_cur);
   
   return im.Map({
            'dirs': im.List.of(dir_cur),
