@@ -5,18 +5,11 @@ process.env.NODE_ENV = 'production';
 import { remote, ipcRenderer } from 'electron';
 import { SORT_TYPE } from '../../util/item_type';
 
-let procYes;
-let procNo;
-
 const init = () => {
   let e = document.getElementById('window');
   e.addEventListener('keydown', onKeyDown);
 
   console.log('sort!!');
-  procYes = function(){
-    closeMainWindow();
-  };
-  procNo = closePopup;
   showMsgSort();
 }
 
