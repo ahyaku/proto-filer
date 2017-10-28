@@ -97,8 +97,9 @@ class ItemList extends React.Component {
       );
     }
 
-    const im_items = this._getItemsByMap(page);
-    const is_selected = this._getIsSelectedByMap(page);
+    const im_items = this.getElemsByMap(page, 'items');
+    const is_selected = this.getElemsByMap(page, 'is_selected');
+
     //console.log('item-list <> is_selected: ', is_selected);
 
 //    if(id === active_pane_id){
@@ -118,7 +119,7 @@ class ItemList extends React.Component {
       },
       ({height, width}) => {
         //console.log('height: ' + height + ', width: ' + width + ', item_num: ' + im_items.size);
-        //console.log('render() return <> ' + this.props.id + ' [arign, index] = [' + this.state.scroll_align + ', ' + this.state.scroll_to_index + '], line_cur: ' + this.props.line_cur + ', action_type: ' + this.props.action_type);
+        //console.log('item-list render() return <> action_type: ' + this.props.action_type);
 
         return React.createElement(
           List,
@@ -299,37 +300,16 @@ class ItemList extends React.Component {
 
   }
 
-  _getItemsByMap(page){
-    //console.log('getItemsByMap <> id_map_nrw: ', page.get('id_map_nrw'));
-    //console.log('getItemsByMap <> items: ', page.get('items'));
-    
-    const items = page.get('id_map_nrw').map(
-                    (e, i) => {
-                      //console.log('getItemsByMap <> items[' + i + '].name: ' + page.getIn(['items', e, 'name']));
-                      return page.getIn(['items', e]);
-                    }
-                  );
-
-    //console.log('getItemsByMap <> items.size: ', items.size);
-
-    return items;
+  getElemsByMap(page, key){
+    return page.get('id_map_nrw').map(
+             (e, i) => {
+               //console.log('getItemsByMap <> items[' + i + '].name: ' + page.getIn(['items', e, 'name']));
+               return page.getIn([key, e]);
+             }
+           );
   }
 
-  _getIsSelectedByMap(page){
-    //console.log('getItemsByMap <> id_map_nrw: ', page.get('id_map_nrw'));
-    //console.log('getItemsByMap <> items: ', page.get('items'));
-    
-    const is_selected = page.get('id_map_nrw').map(
-                          (e, i) => {
-                            //console.log('getItemsByMap <> items[' + i + '].name: ' + page.getIn(['items', e, 'name']));
-                            return page.getIn(['is_selected', e]);
-                          }
-                        );
 
-    //console.log('getItemsByMap <> items.size: ', items.size);
-
-    return is_selected;
-  }
 
   componentWillReceiveProps(nextProps){
     //console.log('componentWillReceiveProps()');
@@ -436,29 +416,17 @@ class ItemList extends React.Component {
         case 'MOVE_CURSOR_TO_BOTTOM':
           this.props.updatePageWithCursorJump( this.props.action_type, this.line_bottom - LINE_DISP_MARGIN );
           break;
-        default:
-          /* Do Nothing.. */
-          break;
-      }
-
-      switch(this.props.input_mode){
-        case KEY_INPUT_MODE.POPUP_SORT:
+        case 'WILL_DISP_POPUP_FOR_SORT_ITEM_LIST':
           {
             const node = findDOMNode(this);
             const rect = node.getBoundingClientRect();
-            //const node_root = this.props.cbGetNodeRoot();
-            //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
-            //console.log('refs: ', this.refs);
             this.props.dispPopUpForSort(rect.left, rect.top);
             break;
           }
-        case KEY_INPUT_MODE.POPUP_RENAME:
+        case 'WILL_DISP_POPUP_FOR_RENAME_ITEM':
           {
             const node = findDOMNode(this);
             const rect = node.getBoundingClientRect();
-            //const node_root = this.props.cbGetNodeRoot();
-            //console.log('rect [left, top] = [' + rect.left + ', ' + rect.top + ']');
-            //console.log('refs: ', this.refs);
 
             const page = this.props.page;
             const id_map_nrw = page.get('id_map_nrw');
