@@ -345,7 +345,7 @@ electron.ipcMain.on('fs.isDirectory', (event, arg) => {
 //});
 
 electron.ipcMain.on('copy', (event, path_dst, path_src, item_names) => {
-  console.log('HERE!!!');
+  console.log('copy HERE!!!');
   console.log('path_dst: ' + path_dst);
   console.log('path_src: ' + path_src);
   console.log('item_names: ' + item_names);
@@ -379,7 +379,7 @@ electron.ipcMain.on('copy', (event, path_dst, path_src, item_names) => {
 });
 
 electron.ipcMain.on('move', (event, path_dst, path_src, item_names) => {
-  console.log('HERE!!!');
+  console.log('move HERE!!!');
   console.log('path_dst: ' + path_dst);
   console.log('path_src: ' + path_src);
   console.log('item_names: ' + item_names);

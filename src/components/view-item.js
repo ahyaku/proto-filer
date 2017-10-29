@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 
 //import {ITEM_TYPE_KIND} from '../core/item_type';
 import {ITEM_TYPE_KIND} from '../util/item_type';
+import { RES } from '../../res/res';
 
 
 //class ViewItem extends React.Component {
@@ -125,8 +126,10 @@ class ViewItem extends React.Component {
     }
 
     //console.log('view-item <> c: ' + this.props.c + ', name: ' + item.get('name') + ', selected: ' + item.get('selected'));
+
     return (
       <div style={style}>
+        <Icon icon={this.props.icon} action_type={this.props.action_type} />
         <Basename basename={item.get('basename')} />
         <Props ext={item.get('ext')}
                fsize={item.get('fsize')}
@@ -135,11 +138,20 @@ class ViewItem extends React.Component {
       </div>
     );
 
+
   }
 
 
   shouldComponentUpdate(nextProps, nextState){
     //console.log('view-item <> action_type: ' + this.props.action_type);
+
+    //if(nextProps.id === 0){
+    //  console.log('view-item <> action_type: ' + nextProps.action_type + ', icon: ' + nextProps.icon);
+    //}
+
+    if( nextProps.action_type === 'RENDER_ICON' ){
+      return true;
+    }
 
     if( (nextProps.action_type === 'RENAME_ITEM')             &&
         (nextProps.id_list_pane === nextProps.active_pane_id) &&
@@ -202,73 +214,10 @@ class ViewItem extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState){
-
-    //if(this.props.c === this.props.line_cur){
-    //  //console.time('componentDidUpdate1');
-    //  let scrollTop;
-
-    //  let ref_item_list = ReactDOM.findDOMNode(this).parentNode;
-    //  //console.log('ref_item_list: ' + ref_item_list);
-    //  let ref_item_cur = ReactDOM.findDOMNode(this);
-
-    //  if(ref_item_cur == null){
-    //    return;
-    //  }
-
-    //  let id = this.props.id;
-    //  let dir_cur = this.props.dir_cur;
-
-    //  switch(this.props.action_type){
-    //    case 'CHANGE_DIR_UPPER':
-    //    case 'CHANGE_DIR_LOWER':
-    //      ref_item_list.scrollTop = this._arr_pos[id][dir_cur];
-    //      return;
-    //    default:
-    //      {
-    //        let line_pos = ref_item_cur.offsetTop + ref_item_cur.clientHeight;
-    //        let scrollTop_abs = ref_item_list.scrollTop + ref_item_list.offsetTop;
-    //        let scrollBottom_abs = scrollTop_abs + ref_item_list.clientHeight;
-    //        let delta = 5;
-
-    //        //console.log('list <> offsetTop: ' + ref_item_list.offsetTop + ', clientHeight: ' + ref_item_list.clientHeight + ', scrollHeight: ' + ref_item_list.scrollHeight);
-    //        //console.log('line <> offsetTop: ' + ref_item_cur.offsetTop + ', clientHeight: ' + ref_item_cur.clientHeight + ', scrollHeight: ' + ref_item_cur.scrollHeight);
-    //        //console.log('scrollTop_abs: ' + scrollTop_abs + ', scrollBottom_abs: ' + scrollBottom_abs + ', line_pos: ' + line_pos);
-
-    //        if(ref_item_cur.offsetTop < scrollTop_abs){
-    //          //console.log('scroll: under');
-    //          scrollTop_abs = ref_item_cur.offsetTop;
-    //          scrollTop = scrollTop_abs - ref_item_list.offsetTop; 
-    //          ref_item_list.scrollTop = scrollTop;
-    //        }else if(line_pos > scrollBottom_abs){
-    //          //console.log('scroll: over');
-    //          scrollTop_abs = line_pos - ref_item_list.clientHeight;
-    //          scrollTop = scrollTop_abs - ref_item_list.offsetTop + delta; 
-    //          ref_item_list.scrollTop = scrollTop;
-    //        }else{
-    //          //console.log('scroll: between');
-    //          scrollTop = ref_item_list.scrollTop;
-    //        }
-    //        this._arr_pos[id][dir_cur] = scrollTop;
-    //        //console.timeEnd('componentDidUpdate2');
-    //      }
-
-    //      return;
-    //  }
-
-    //  if(this.didupdate === true){
-    //    this.didupdate = false;
-    //    this.setState(this.props);
-    //  }
-    //}
-
     if(this.props.c === this.props.line_cur){
-      //console.log('view-item did <> c: ' + this.props.c + ', prevProps.line_cur: ' + prevProps.line_cur + ', line_cur: ' + this.props.line_cur);
       const node = ReactDOM.findDOMNode(this);
-      //const rect = node.getBounds();
-      //const crect = node.getContentBounds();
       const offsetTop = node.offsetTop;
       const clientHeight = node.clientHeight;
-      //console.log('view-item did <> offsetTop: ' + offsetTop + ', clientHeight: ' + clientHeight);
     }
 
     return;
@@ -283,6 +232,7 @@ class Basename extends React.Component{
 
   render(){
     const style = {
+      marginLeft: '2px',
       marginRight: 'auto',
       minWidth: '120px',
       whiteSpace: 'nowrap',
@@ -298,6 +248,58 @@ class Basename extends React.Component{
     );
   }
 }
+
+class Icon extends React.Component{
+  constructor(props){
+    super(props);
+
+    this.style = {
+      display: 'flex',
+      flex: '0 1 auto',
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      width: RES.ITEM.HEIGHT,
+      height: RES.ITEM.HEIGHT,
+      minWidth: RES.ITEM.HEIGHT,
+      minHeight: RES.ITEM.HEIGHT,
+      justifyContent: 'center',
+    }
+    this.style_img = {
+      flex: 'auto',
+      height: '100%',
+      width: '100%',
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    //console.log('view-item <> action_type: ' + this.props.action_type);
+    //if( nextProps.action_type === 'RENDER_ICON' ){
+    //  //console.log('Icon <> action_type: ' + nextProps.action_type + ', icon: ' + nextProps.icon);
+    //  return true;
+    //}
+    return true;
+  }
+
+
+  render(){
+    const icon = this.props.icon;
+
+    if( (icon === null)               || 
+        (typeof icon === 'undefined') ){
+      return (
+        <div style={this.style} />);
+    }else{
+      return (
+        <div style={this.style}>
+          <img style={this.style_img} src={icon.toDataURL()} />
+        </div>
+      );
+    }
+
+  }
+}
+
+
 
 class Props extends React.Component{
   constructor(props){
@@ -345,7 +347,6 @@ class Props extends React.Component{
       overflowY: 'hidden'
     };
 
-    //console.log('size: ' + this.props.size);
     return (
       <div style={style}>
         <PropElem elem={this.props.ext}   style_elem={style_ext}/>

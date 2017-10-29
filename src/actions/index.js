@@ -1,12 +1,12 @@
 'use strict';
 
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
+import im from 'immutable';
 import cp from 'child_process';
 import chokidar from 'chokidar';
+import path from 'path';
 import { KEY_INPUT_MODE } from '../util/item_type';
 import { changeDirUpper, changeDirLower } from '../util/item_list_pages';
-
-import im from 'immutable';
 
 export const updateItemList = (id) => ({
   type: 'UPDATE_ITEM_LIST',
@@ -542,14 +542,18 @@ const changeDir = (type) => (dispatch, getState) => {
     });
   }
 
-  dirWatcher_close(state_new.get('dir_watcher'));
-  const dir_watcher = dirWatcher(state_new.getIn(['dirs', 0]));
-  dispatch(dirWatcher_initialize(dir_watcher, id));
-  dispatch({
-    type: type,
-    state_new: state_new.set('dir_watcher', dir_watcher),
-    id: id
-  });
+  {
+    dirWatcher_close(state_new.get('dir_watcher'));
+    const dir_watcher = dirWatcher(state_new.getIn(['dirs', 0]));
+    dispatch(dirWatcher_initialize(dir_watcher, id));
+    dispatch({
+      type: type,
+      state_new: state_new.set('dir_watcher', dir_watcher),
+      id: id
+    });
+  }
+
+  dispatch(renderIcon(id));
 }
 
 export const dirWatcher = (dir_target) => {
@@ -586,10 +590,8 @@ export const dirWatcher_initialize = (dir_watcher, id) => {
       }
 
       timer = setTimeout(() => {
-        //console.log('watcher: ', event, item_path, details);
+        //console.log('watcher: ', event, item_path, details + ', id: ' + id);
         //console.log('watchedPath List: ', watcher.getWatched());
-        //console.log('details: ', Object.keys(details));
-        //console.log('watchedPath: ', details['watchedPath']);
 
         //const state = getState().state_core.get(id);
         //const is_active = state.getIn(['dir_watcher', 'is_active']);
@@ -630,6 +632,77 @@ export const dirWatcher_close = (dir_watcher) => {
   }
   dir_watcher.get('watcher').close();
 }
+
+export const renderIcon = (id) => {
+
+  return (dispatch, getState) => {
+    const app = remote.app;
+    const state_fcd = getState();
+    const state = state_fcd.state_core.get(id);
+    const dir = state.getIn(['dirs', 0]);
+    const page = state.getIn(['pages', dir]);
+    const items = page.get('items');
+
+    const getIcons = (icons, _items) => {
+
+      if(_items.size > 0){
+        const name = _items.getIn([0, 'name']);
+
+        //app.getFileIcon(path.join(dir, '\\'), {size: 'small'}, function (err, icon) {
+        //app.getFileIcon('C:\tmp\proto-filer.zip', {size: 'small'}, function (err, icon) {
+
+        const str_tmp = path.join(dir, name);
+
+        /* ORG */
+        app.getFileIcon(path.resolve(path.join(dir, name)), {size: 'small'}, function (err, icon) {
+          if(err !== null){
+            console.log('ERROR!! @getFileIcon: ', err);
+          }
+          getIcons(icons.push(icon), _items.shift());
+        });
+
+        /* MDF */
+        //if( _items.getIn([0, 'ext']) === '' ){
+        //  getIcons(icons.push(null), _items.shift());
+        //}else{
+        //  app.getFileIcon(path.resolve(path.join(dir, name)), {size: 'small'}, function (err, icon) {
+        //    getIcons(icons.push(icon), _items.shift());
+        //  });
+        //}
+
+      }else{
+        //console.log('dispatch RENDER_ICON <> icons.size: ' + icons.size + ', dir: ' + dir);
+        dispatch({
+          type: 'RENDER_ICON',
+          icons: icons,
+          id: id
+        });
+      }
+
+    }
+
+    /* remove 1st element as the parent directory '..' */
+    getIcons(im.List.of(null), items.shift());
+
+  }
+
+}
+
+//const getIcons = (dispatch, icons, dir_cur, item_name, id) = {
+//  app.getFileIcon(path.resolve(path.join(dir_cur, item_name)), {size: 'small'}, function (err, icon) {
+//    if(item_name.size > 0){
+//      getIcons(dispatch, icons.push(icon), dir_cur, item_name.shift(), id);
+//    }else{
+//      dispatch({
+//        type: 'RENDER_ICON',
+//        icons: icons,
+//        id: id
+//      });
+//    }
+//  }
+//}
+
+
 
 const TestSendMsg = () => (dispatch) => {
   console.log('TestSendMsg');

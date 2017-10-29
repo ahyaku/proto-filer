@@ -2,7 +2,7 @@
 
 import { connect } from 'react-redux';
 import im from 'immutable';
-import { updateItemList } from '../actions'
+import { renderIcon } from '../actions'
 import ItemList from '../components/item-list';
 import { KEY_INPUT_MODE } from '../util/item_type';
 //import { DISK_DRIVE, BOOKMARK, HISTORY } from '../util/item_list';
@@ -12,6 +12,7 @@ const mapStateToProps = (state, props) => {
   const dir_cur = state.state_core.getIn([props.id, 'dirs', 0]);
   const page = state.state_core.getIn([props.id, 'pages', dir_cur]);
   const line_cur = state.state_core.getIn([props.id, 'pages', dir_cur, 'line_cur']);
+  const icons = page.get('icons');
 
   //const dir = _getDirCur(state, props.id);
   //const page = _getPage(state, props.id);
@@ -33,6 +34,7 @@ const mapStateToProps = (state, props) => {
     id: props.id,
     line_cur: line_cur,
     input_mode: state.input_mode,
+    icons: icons,
     action_type: state.action_type
   };
 }
@@ -125,6 +127,10 @@ const mapDispatchToProps = (dispatch, props) => ({
       type: 'UPDATE_FOR_' + pre_action,
       line_new: line_new,
     });
+  },
+  renderIconFcd: (id) => {
+    //console.log('pane-item-list renderIconFcd() <> id: ' + id);
+    dispatch(renderIcon(id));
   },
   //updateInfoPaneHeight: (height_delta) => {
   //  dispatch({

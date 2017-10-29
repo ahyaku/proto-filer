@@ -411,7 +411,6 @@ const rootReducer = (state_fcd, action) => {
       {
         //console.log('DISP_POPUP_FOR_SORT_ITEM_LIST <> left: ' + action.left + ', top: ' + action.top);
         dispPopUp('sort', {left: action.left, top: action.top});
-        //return state_fcd;
         return Object.assign(
                  {},
                  state_fcd,
@@ -563,7 +562,22 @@ const rootReducer = (state_fcd, action) => {
                  );
         }
       }
+    case 'RENDER_ICON':
+      {
+        //console.log('reducer <> RENDER_ICON');
+        const state = state_fcd.state_core.get(action.id);
+        const dir = state.getIn(['dirs', 0]);
+        const page = state.getIn(['pages', dir]);
 
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   state_core: state_fcd.state_core.setIn([action.id, 'pages', dir, 'icons'], action.icons),
+                   action_type: action.type
+                 }
+               );
+      }
     //case 'IS_CHANGED_MAIN_WINDOW_SIZE':
     //  {
     //    return Object.assign(
@@ -642,8 +656,28 @@ const handleItems = (state_fcd, operation, action_type) => {
 
   const ret = ipcRenderer.sendSync(operation, path_other, path_cur, names_selected);
 
-  const state_core_new = state_core.withMutations(s => s.set(id_cur, updatePage(state_cur))
+  let state_core_new;
+  switch(operation){
+    case 'copy':
+      {
+        const ids_selected_new = im.List(im.Range(0, ids_selected.size))
+                                   .map((e, i) => {
+                                      return false;
+                                    });
+        state_core_new = state_core.withMutations(s => s.setIn([id_cur, 'pages', path_cur, 'is_selected'], ids_selected_new)
                                                         .set(id_other, updatePage(state_other)));
+        break;
+      }
+    case 'move':
+      state_core_new = state_core.withMutations(s => s.set(id_cur, updatePage(state_cur))
+                                                      .set(id_other, updatePage(state_other)));
+      break;
+    default:
+      /* Do Nothing.. */
+      console.log('ERROR!! @ handleItems()');
+      break;
+  }
+
   return Object.assign(
     {},
     state_fcd,
@@ -837,6 +871,7 @@ const syncDir = (state_mdf, state_ref) => {
   const pages_mdf = state_mdf.get('pages');
   const dir_ref = state_ref.getIn(['dirs', 0]);
   const items_ref = state_ref.getIn(['pages', dir_ref, 'items']);
+  const icons_ref = state_ref.getIn(['pages', dir_ref, 'icons']);
   let dirs_new;
 
   const idx_dir = getDirIndex( dirs, dir_ref );
@@ -864,7 +899,8 @@ const syncDir = (state_mdf, state_ref) => {
                                'id_map': id_map,
                                'id_map_nrw': id_map,
                                'is_matched': is_matched,
-                               'is_selected': is_selected
+                               'is_selected': is_selected,
+                               'icons': icons_ref
                              });
 
   return state_mdf.withMutations(s => s.set('dirs', dirs_new)

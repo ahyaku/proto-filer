@@ -9,7 +9,7 @@ import { updateItemsAsDiskDrive, DISK_DRIVE, BOOKMARK, HISTORY } from './item_li
 import { initAsItem, initAsDiskDrive, initAsBookmark, initAsHistory } from './item';
 import { SORT_TYPE } from './item_type';
 import { sortItemsInPage } from './item_list';
-import { dirWatcher, dirWatcher_initialize } from '../actions';
+import { dirWatcher } from '../actions';
 
 export const getDirIndex = (dirs, dir_cur) => {
   const ret = dirs.findIndex((dir)=>{

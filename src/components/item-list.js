@@ -19,6 +19,8 @@ const LINE_DISP_MARGIN = 1;
 //const OFFSET_DELTA = 5;
 //const OFFSET_DELTA = 0;
 
+const PANE_NUM_MAX = 2;
+
 class ItemList extends React.Component {
 
   constructor(props){
@@ -63,6 +65,9 @@ class ItemList extends React.Component {
     this._rowRenderer = this._rowRenderer.bind(this);
     this._onRowsRendered = this._onRowsRendered.bind(this);
 
+    this.postProcActivePane = this.postProcActivePane.bind(this);
+    this.postProc = this.postProc.bind(this);
+
     this.state = {
       scroll_align: 'auto',
       scroll_to_index: 0
@@ -98,19 +103,8 @@ class ItemList extends React.Component {
     }
 
     const im_items = this.getElemsByMap(page, 'items');
+    const im_icons = this.getElemsByMap(page, 'icons');
     const is_selected = this.getElemsByMap(page, 'is_selected');
-
-    //console.log('item-list <> is_selected: ', is_selected);
-
-//    if(id === active_pane_id){
-//      console.log('item-list <> ', page.getIn(['items', dir_cur, 1, 'name']));
-//      console.log('item-list <> im_items: ', im_items);
-//      console.log('item-list <> im_items.get(0): ', im_items.get(0));
-//    }
-
-    //if(this.props.id === 0){
-    //  console.log('ItemList <> pane_id: ' + this.props.id + ', line_cur: ' + this.props.line_cur);
-    //}
 
     return React.createElement(
       AutoSizer,
@@ -132,13 +126,12 @@ class ItemList extends React.Component {
             scrollToIndex: this.state.scroll_to_index/* this.props.line_cur */,
             line_cur: this.props.line_cur/* this.props.line_cur */,
             im_items: im_items,
+            im_icons: im_icons,
             is_selected: is_selected,
             id: id,
             active_pane_id: active_pane_id,
             dir_cur: dir_cur,
             id_map_nrw: id_map_nrw,
-            //is_dir_changed: is_dir_changed,
-            //ref: 'ListClass',
             ref: 'List',
             style: {overflowY: 'scroll'},
             rowRenderer: rowRenderer,
@@ -165,6 +158,8 @@ class ItemList extends React.Component {
       {},
       style,
       {
+        display: 'flex',
+        flex: 'auto',
         //color: '#FFFFFF',
         //background: '#333333FF',
         color: 'rgba(255,255,255,1)',
@@ -256,6 +251,7 @@ class ItemList extends React.Component {
         c={index}
         id_list_pane={parent.props.id}
         item={parent.props.im_items.get(index)}
+        icon={parent.props.im_icons.get(index)}
         is_selected={parent.props.is_selected}
         dir_cur={parent.props.dir_cur}
         line_cur={parent.props.line_cur}
@@ -396,6 +392,12 @@ class ItemList extends React.Component {
       this.refs.AutoSizer.refs.List.forceUpdateGrid();
     }
     //console.log('item-list <> componentDidUpdate() input_mode: ' + this.props.input_mode);
+
+    this.postProcActivePane(prevState, prevProps);
+    this.postProc(prevState, prevProps);
+  }
+
+  postProcActivePane(prevState, prevProps){
     if( this.props.active_pane_id === this.props.id ){
       switch( this.props.action_type ){
         case 'PAGE_UP':
@@ -440,64 +442,20 @@ class ItemList extends React.Component {
           /* Do Nothing.. */
           break;
       }
-
     }
+  }
 
-
-    //if(typeof this.refs.AutoSizer !== 'undefined'){
-    //  let ref = findDOMNode(this.refs.AutoSizer.refs.List);
-    //  let offset_top = ref.offsetTop;
-    //  let client_width = ref.clientWidth;
-    //  let client_height = ref.clientHeight;
-    //  let scroll_top = ref.scrollTop;
-    //  let scroll_width = ref.scrollWidth;
-    //  let scroll_height = ref.scrollHeight;
-
-    //  //let line_disp_top = scroll_top / RES.ITEM.HEIGHT;
-    //  let line_disp_top = Math.ceil(scroll_top / RES.ITEM.HEIGHT);
-    //  let line_disp_bottom = (scroll_top + client_height) / RES.ITEM.HEIGHT;
-    //  //let line_disp_bottom = Math.floor( (scroll_top + client_height) / RES.ITEM.HEIGHT ) - 1;
-    //  let line_disp_num = line_disp_bottom - line_disp_top + 1;
-
-    //  //console.log('ItemList componentDidUpdate <> client [offset_top, w, h] = [' + offset_top +  ', ' + client_width + ', ' + client_height + ']');
-    //  //console.log('ItemList componentDidUpdate <> scroll [scroll_top, w, h ,line_disp_top, line_cur, line_disp_bottom] = [' + scroll_top +  ', ' + scroll_width + ', ' + scroll_height + ', ' + line_disp_top + ', ' + this.props.line_cur + ', ' + line_disp_bottom + ']');
-    //  
-    //  if(this.props.action_type === 'IS_CHANGED_MAIN_WINDOW_SIZE'){
-    //    const num_item_disp = Math.floor( client_height / RES.ITEM.HEIGHT );
-    //    const offset_height = ref.offsetHeight;
-    //    //console.log('ItemList componentDidUpdate <> client_height( ' + client_height +  ') / H(' + RES.ITEM.HEIGHT + ') = ' + client_height / RES.ITEM.HEIGHT);
-    //    //console.log('ItemList componentDidUpdate <> client_height: ' + client_height +  ', num(' + num_item_disp + ')* h: ' + num_item_disp * RES.ITEM.HEIGHT);
-    //    //console.log('ItemList componentDidUpdate <> offset_height: ' + offset_height);
-
-    //    //{
-    //    //  const ref_this = findDOMNode(this);
-    //    //  const client_height_this = ref_this.clientHeight;
-    //    //  console.log('ItemList componentDidUpdate <> client_height_this: ' + client_height_this);
-    //    //}
-
-    //    const height_sum = RES.PATH_CUR.HEIGHT * 2 + RES.CMD.HEIGHT + RES.ITEM.HEIGHT * num_item_disp + RES.INFO.HEIGHT;
-    //    //console.log('ItemList componentDidUpdate(' + this.props.id + ') <> num_item_disp: ' + num_item_disp + ', this.line_disp_num: ' + this.line_disp_num +  ', height_sum: ' + height_sum);
-
-    //    const height_delta = client_height - num_item_disp * RES.ITEM.HEIGHT;
-    //    this.props.updateInfoPaneHeight(height_delta);
-    //  }
-    //}
-
-
-    //if( (prevProps.line_cur === 0) &&
-    //    (this.props.line_cur === (this.props.rowCount - 1)) ){
-    //  this.scrollToPosition(offset + OFFSET_DELTA);
-    //}else if( (prevProps.line_cur === (this.props.rowCount - 1)) &&
-    //          (this.props.line_cur === 0) ){
-    //}else if(this.props.line_cur > prevProps.line_cur){
-    //  if(offset > prevState.offset){
-    //    this.scrollToPosition(offset + OFFSET_DELTA);
-    //  }
-    //}else if(this.props.line_cur < prevProps.line_cur){
-    //}else{
-    //}
-    //this.state.offset = offset;
-
+  postProc(prevState, prevProps){
+    switch( this.props.action_type ){
+      case 'DIR_CUR_IS_UPDATED':
+        {
+          this.props.renderIconFcd(this.props.id);
+          break;
+        }
+      default:
+        /* Do Nothing.. */
+        break;
+    }
   }
 
 }

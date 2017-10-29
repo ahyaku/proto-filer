@@ -15,11 +15,9 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import im from 'immutable';
 import { ipcRenderer } from 'electron';
-import chokidar from 'chokidar';
-//import cp from 'child_process';
 
 import App from './components/app';
-import { checkKeyNormal, checkKeySearch, dirWatcher_initialize } from './actions';
+import { checkKeyNormal, checkKeySearch, dirWatcher_initialize, renderIcon } from './actions';
 import { createStateCore } from './util/item_list_pages';
 import reducer from './reducers';
 import { KEY_INPUT_MODE } from './util/item_type';
@@ -228,6 +226,9 @@ store.dispatch(createMainWindowSizeReceiver());
 
 store.dispatch(dirWatcher_initialize(state_core_left.get('dir_watcher'), 0));
 store.dispatch(dirWatcher_initialize(state_core_right.get('dir_watcher'), 1)); 
+
+store.dispatch(renderIcon(0));
+store.dispatch(renderIcon(1));
 
 const style = {
   overflowY: 'hidden'

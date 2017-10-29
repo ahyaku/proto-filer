@@ -4,7 +4,7 @@ import electron, { ipcRenderer } from 'electron';
 import fs from 'fs';
 import util from 'util';
 import im from 'immutable';
-import { initAsItem, initAsDiskDrive } from './item';
+import { initAsDiskDrive } from './item';
 import { ITEM_TYPE_KIND, SORT_TYPE } from './item_type';
 
 export const DISK_DRIVE = 'Disk Drives';
@@ -24,33 +24,6 @@ export const updateItemsAsDiskDrive = (drive_list) => {
 
   return im.Map({
            'dir_cur': DISK_DRIVE,
-           'reg_pat': '',
-           'line_cur': 0,
-           'items': items,
-           'items_match': items
-         });
-
-}
-
-//export function updateItems(dir_cur){
-export const updateItems = (dir_cur) => {
-  let es = ['..'];
-  let es_tail = ipcRenderer.sendSync('fs.readdirSync', dir_cur);
-  Array.prototype.push.apply(es, es_tail);
-
-  /* If file access of fs.readdirSync is denied, es == null */
-  if(es == null){
-    console.log('ERROR <> es is null!!');
-    return null;
-  }
-
-  const items = im.List(im.Range(0, es.length))
-                  .map((e, i) => {
-                    return initAsItem(i, es[i], dir_cur);
-                  });
-
-  return im.Map({
-           'dir_cur': dir_cur,
            'reg_pat': '',
            'line_cur': 0,
            'items': items,
