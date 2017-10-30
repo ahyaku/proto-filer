@@ -111,7 +111,7 @@ const mapDispatchToProps = (dispatch, props) => ({
       top: top
     });
   },
-  dispPopUpForRename: (left, top, item_name, dir_cur, id_target) => {
+  dispPopUpForRename: (left, top, item_name, dir_cur, id_target, cursor_pos) => {
     //console.log('dispPopUpForRename <> item_name: ' + item_name + ', dir_cur: ' + dir_cur);
     dispatch({
       type: 'DISP_POPUP_FOR_RENAME_ITEM',
@@ -119,7 +119,8 @@ const mapDispatchToProps = (dispatch, props) => ({
       top: top,
       item_name: item_name,
       dir_cur: dir_cur,
-      id_target: id_target
+      id_target: id_target,
+      cursor_pos: cursor_pos
     });
   },
   updatePageWithCursorJump: (pre_action, line_new) => {

@@ -487,6 +487,7 @@ electron.ipcMain.on('popup', (event, mode, params) => {
       }
     case 'rename':
       //console.log('rename <> left: ' + params.left + ', top: ' + params.top, params.item_name);
+      //console.log('rename <> cursor_pos: ' + params.cursor_pos);
       {
         const wpos = mainWindow.getPosition();
         const rect = mainWindow.getBounds();
@@ -499,9 +500,11 @@ electron.ipcMain.on('popup', (event, mode, params) => {
                                       {
                                         item_name_init: params.item_name,
                                         dir_cur: params.dir_cur,
-                                        id_target: params.id_target
+                                        id_target: params.id_target,
+                                        cursor_pos: params.cursor_pos
                                       });
         renameWindow.show();
+        renameWindow.focus();
         break;
       }
     default:

@@ -461,7 +461,8 @@ const rootReducer = (state_fcd, action) => {
                     top: action.top,
                     item_name: action.item_name,
                     dir_cur: action.dir_cur,
-                    id_target: action.id_target
+                    id_target: action.id_target,
+                    cursor_pos: action.cursor_pos
                   });
 
         return Object.assign(

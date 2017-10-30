@@ -429,13 +429,12 @@ class ItemList extends React.Component {
           {
             const node = findDOMNode(this);
             const rect = node.getBoundingClientRect();
-
             const page = this.props.page;
             const id_map_nrw = page.get('id_map_nrw');
             const id_target = id_map_nrw.get(this.props.line_cur);
             const item_name = page.getIn(['items', id_target, 'name']);
-
-            this.props.dispPopUpForRename(rect.left, rect.top, item_name, this.props.dir_cur, id_target);
+            const cursor_pos = page.getIn(['items', id_target, 'basename']).length;
+            this.props.dispPopUpForRename(rect.left, rect.top, item_name, this.props.dir_cur, id_target, cursor_pos);
             break;
           }
         default:

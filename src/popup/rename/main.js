@@ -253,7 +253,7 @@ class NameFormCore extends React.Component {
         </div>
         <form /* onSubmit={this.handleSubmit} */ >
           <label>
-            <input type="text" value={this.props.item_name_dst} onChange={this.onFormChange} />
+            <input type="text" value={this.props.item_name_dst} onChange={this.onFormChange} autoFocus={focus} ref='input' />
           </label>
         </form>
       </div>
@@ -282,9 +282,9 @@ class NameFormCore extends React.Component {
   //  event.preventDefault();
   //}
 
-  cbRenameItem(event, {item_name_init, dir_cur, id_target}){
-    //console.log('cbRenameItem() <> item_name_init: ' + item_name_init + ', dir_cur: ' + dir_cur);
+  cbRenameItem(event, {item_name_init, dir_cur, id_target, cursor_pos}){
     this.props.initItemNameCur(item_name_init, dir_cur, id_target);
+    this.refs.input.selectionStart = this.refs.input.selectionEnd = cursor_pos;
   }
 
 }
