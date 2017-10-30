@@ -7,6 +7,11 @@ import chokidar from 'chokidar';
 import path from 'path';
 import { KEY_INPUT_MODE } from '../util/item_type';
 import { changeDirUpper, changeDirLower } from '../util/item_list_pages';
+import { ITEM_TYPE_KIND } from '../util/item_type';
+
+const PATH_ICON_ROOT = path.resolve(remote.app.getAppPath(), 'assets/icons');
+const PATH_ICON_FOLDER = path.resolve(PATH_ICON_ROOT, 'icon_0101_1033.ico');
+const PATH_ICON_BIN = path.resolve(PATH_ICON_ROOT, 'icon_0077_1033.ico');
 
 export const updateItemList = (id) => ({
   type: 'UPDATE_ITEM_LIST',
@@ -636,71 +641,112 @@ export const dirWatcher_close = (dir_watcher) => {
 export const renderIcon = (id) => {
 
   return (dispatch, getState) => {
-    const app = remote.app;
     const state_fcd = getState();
     const state = state_fcd.state_core.get(id);
     const dir = state.getIn(['dirs', 0]);
     const page = state.getIn(['pages', dir]);
     const items = page.get('items');
 
-    const getIcons = (icons, _items) => {
-
-      if(_items.size > 0){
-        const name = _items.getIn([0, 'name']);
-
-        //app.getFileIcon(path.join(dir, '\\'), {size: 'small'}, function (err, icon) {
-        //app.getFileIcon('C:\tmp\proto-filer.zip', {size: 'small'}, function (err, icon) {
-
-        const str_tmp = path.join(dir, name);
-
-        /* ORG */
-        app.getFileIcon(path.resolve(path.join(dir, name)), {size: 'small'}, function (err, icon) {
-          if(err !== null){
-            console.log('ERROR!! @getFileIcon: ', err);
-          }
-          getIcons(icons.push(icon), _items.shift());
-        });
-
-        /* MDF */
-        //if( _items.getIn([0, 'ext']) === '' ){
-        //  getIcons(icons.push(null), _items.shift());
-        //}else{
-        //  app.getFileIcon(path.resolve(path.join(dir, name)), {size: 'small'}, function (err, icon) {
-        //    getIcons(icons.push(icon), _items.shift());
-        //  });
-        //}
-
-      }else{
-        //console.log('dispatch RENDER_ICON <> icons.size: ' + icons.size + ', dir: ' + dir);
-        dispatch({
-          type: 'RENDER_ICON',
-          icons: icons,
-          id: id
-        });
-      }
-
+    switch(process.platform){
+      case 'win32':
+        /* remove 1st element as the parent directory '..' */
+        getIconsWin32(dispatch, id, dir, im.List.of(null), items.shift());
+        break;
+      default:
+        /* remove 1st element as the parent directory '..' */
+        getIcons(dispatch, id, dir, im.List.of(null), items.shift());
+        break;
     }
-
-    /* remove 1st element as the parent directory '..' */
-    getIcons(im.List.of(null), items.shift());
 
   }
 
 }
 
-//const getIcons = (dispatch, icons, dir_cur, item_name, id) = {
-//  app.getFileIcon(path.resolve(path.join(dir_cur, item_name)), {size: 'small'}, function (err, icon) {
-//    if(item_name.size > 0){
-//      getIcons(dispatch, icons.push(icon), dir_cur, item_name.shift(), id);
-//    }else{
-//      dispatch({
-//        type: 'RENDER_ICON',
-//        icons: icons,
-//        id: id
-//      });
-//    }
-//  }
-//}
+/* 
+ * Workaround for Windows OS environment.
+ * electron's getFileIcon() API seems not to work correctly for folders and binary files. */
+const getIconsWin32 = (dispatch, id, dir, icons, items) => {
+
+  const _getIcons = (_icons, _items) => {
+
+    if(_items.size > 0){
+
+      let path_icon;
+      switch(_items.getIn([0, 'kind'])){
+        case ITEM_TYPE_KIND.DIR:
+          path_icon = PATH_ICON_FOLDER;
+          break;
+        case ITEM_TYPE_KIND.BIN:
+          path_icon = PATH_ICON_BIN;
+          break;
+        default:
+          path_icon = path.resolve(path.join(dir, _items.getIn([0, 'name'])));
+          break;
+      }
+
+      remote.app.getFileIcon(path_icon, {size: 'small'}, function (err, icon) {
+        if(err !== null){
+          console.log('ERROR!! @getFileIcon: ', err);
+        }
+        _getIcons(_icons.push(icon), _items.shift());
+      });
+
+    }else{
+      //console.log('dispatch RENDER_ICON <> icons.size: ' + icons.size + ', dir: ' + dir);
+      dispatch({
+        type: 'RENDER_ICON',
+        icons: _icons,
+        id: id
+      });
+    }
+
+  }
+
+  /* remove 1st element as the parent directory '..' */
+  _getIcons(icons, items);
+
+}
+
+const getIcons = (dispatch, id, dir, icons, items) => {
+
+  const _getIcons = (_icons, _items) => {
+
+    if(_items.size > 0){
+      const name = _items.getIn([0, 'name']);
+
+      /* ORG */
+      remote.app.getFileIcon(path.resolve(path.join(dir, name)), {size: 'small'}, function (err, icon) {
+        if(err !== null){
+          console.log('ERROR!! @getFileIcon: ', err);
+        }
+        _getIcons(_icons.push(icon), _items.shift());
+      });
+
+      /* MDF */
+      //if( _items.getIn([0, 'ext']) === '' ){
+      //  _getIcons(_icons.push(null), _items.shift());
+      //}else{
+      //  app.getFileIcon(path.resolve(path.join(dir, name)), {size: 'small'}, function (err, icon) {
+      //    _getIcons(_icons.push(icon), _items.shift());
+      //  });
+      //}
+
+    }else{
+      //console.log('dispatch RENDER_ICON <> icons.size: ' + icons.size + ', dir: ' + dir);
+      dispatch({
+        type: 'RENDER_ICON',
+        icons: _icons,
+        id: id
+      });
+    }
+
+  }
+
+  /* remove 1st element as the parent directory '..' */
+  _getIcons(icons, items);
+
+}
+
 
 
 

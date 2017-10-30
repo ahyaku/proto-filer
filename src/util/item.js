@@ -122,7 +122,8 @@ function getItemTypeKind(ext){
   }else if( (ext.localeCompare('.lib', 'en', opt) == 0) ||
             (ext.localeCompare('.dll', 'en', opt) == 0) ||
             (ext.localeCompare('.a',   'en', opt) == 0) ||
-            (ext.localeCompare('.so',  'en', opt) == 0) ){
+            (ext.localeCompare('.so',   'en', opt) == 0) ||
+            (ext.localeCompare('',  'en', opt) == 0) ){
     return ITEM_TYPE_KIND.BIN;
   }else if( (ext.localeCompare('.jpg',  'en', opt) == 0) ||
             (ext.localeCompare('.jpeg', 'en', opt) == 0) ||
