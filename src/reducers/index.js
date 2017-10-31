@@ -477,7 +477,11 @@ const rootReducer = (state_fcd, action) => {
     case 'RENAME_ITEM':
       {
         const item_new = initAsItem(action.id_target, action.item_name_mdf, action.dir_cur);
+        const item_name_new = state.get('item_names');
+        item_name_new[action.id_target] = item_new.get('name');
+
         const state_new = state.withMutations(s => s.setIn(['pages', action.dir_cur, 'items', action.id_target], item_new)
+                                                    .setIn(['item_names'], item_name_new)
                                                     .setIn(['dir_watcher', 'is_active'], false));
 
         return Object.assign(
