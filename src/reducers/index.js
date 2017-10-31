@@ -638,9 +638,6 @@ const handleItems = (state_fcd, operation, action_type) => {
   const state_core = state_fcd.state_core;
   const state_cur = state_core.get(id_cur);
   const state_other = state_core.get(id_other);
-
-  
-
   const path_cur = state_cur.getIn(['dirs', 0]);
   const path_other = state_other.getIn(['dirs', 0]);
 
@@ -657,6 +654,14 @@ const handleItems = (state_fcd, operation, action_type) => {
       names_selected.push(items.getIn([i, 'name']));
     }
   }
+  
+  if(names_selected.length === 0){
+    return Object.assign(
+             {},
+             state_fcd
+           );
+  }
+
   //console.log('names_selected: ', names_selected);
 
   const ret = ipcRenderer.sendSync(operation, path_other, path_cur, names_selected);
