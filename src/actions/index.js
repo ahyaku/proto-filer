@@ -186,6 +186,16 @@ export const _checkKeyNormal = (state_fcd, e) => {
       return {
         type: 'WILL_DISP_POPUP_FOR_RENAME_ITEM'
       };
+    case 'n': /* 'n' */
+      event.preventDefault();
+      return {
+        type: 'WILL_DISP_POPUP_FOR_CREATE_FILE'
+      };
+    case 'N': /* 'N' */
+      event.preventDefault();
+      return {
+        type: 'WILL_DISP_POPUP_FOR_CREATE_DIR'
+      };
     case 'e':
       return {
         type: 'DEBUG_COUNT_END'

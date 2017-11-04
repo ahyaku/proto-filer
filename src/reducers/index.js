@@ -494,6 +494,54 @@ const rootReducer = (state_fcd, action) => {
                  }
                );
       }
+    case 'WILL_DISP_POPUP_FOR_CREATE_DIR':
+    case 'WILL_DISP_POPUP_FOR_CREATE_FILE':
+      {
+        //console.log('WILL_DISP_POPUP_FOR_CREATE_ITEM');
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   input_mode: KEY_INPUT_MODE.POPUP_CREATE,
+                   action_type: action.type
+                 }
+               );
+      }
+    case 'DISP_POPUP_FOR_CREATE_DIR':
+    case 'DISP_POPUP_FOR_CREATE_FILE':
+      {
+        //console.log(action.type);
+        dispPopUp('create', 
+                  {
+                    left: action.left,
+                    top: action.top,
+                    action_type: action.type,
+                    dir_cur: action.dir_cur,
+                    id_target: action.id_target,
+                    //cursor_pos: action.cursor_pos
+                  });
+
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 { 
+                   action_type: action.type
+                 }
+               );
+
+      }
+    case 'CREATE_DIR':
+    case 'CREATE_FILE':
+      {
+        return Object.assign(
+                 {},
+                 state_fcd,
+                 {
+                   input_mode: KEY_INPUT_MODE.NORMAL,
+                   action_type: action.type
+                 }
+               );
+      }
     case 'IS_CLOSED_POPUP':
       {
         if(state_fcd.input_mode === KEY_INPUT_MODE.POPUP_RENAME){
@@ -744,7 +792,7 @@ const openItem = (state_fcd, action_type) => {
   const line_cur = page_cur.get('line_cur');
   const id_map_nrw = page_cur.get('id_map_nrw');
   const item_name = page_cur.getIn(['items', id_map_nrw.get(line_cur), 'name']);
-  console.log('item_name: ' + item_name);
+  //console.log('item_name: ' + item_name);
 
   let item_names = [];
   item_names.push(item_name);

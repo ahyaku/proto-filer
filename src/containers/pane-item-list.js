@@ -123,6 +123,18 @@ const mapDispatchToProps = (dispatch, props) => ({
       cursor_pos: cursor_pos
     });
   },
+  dispPopUpForCreate: (left, top, action_type, dir_cur, id_target/*, cursor_pos*/) => {
+    //console.log('dispPopUpForCreate <> action_type: ' + action_type.replace('WILL_', ''));
+    dispatch({
+      type: action_type.replace('WILL_', ''),
+      left: left,
+      top: top,
+      action_type: action_type,
+      dir_cur: dir_cur,
+      id_target: id_target,
+      /*cursor_pos: cursor_pos*/
+    });
+  },
   updatePageWithCursorJump: (pre_action, line_new) => {
     dispatch({
       type: 'UPDATE_FOR_' + pre_action,

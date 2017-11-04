@@ -33,6 +33,7 @@ let mainWindow;
 let confWindow;
 let sortWindow;
 let renameWindow;
+let createWindow;
 
 let g_items_selected;
 let g_dir_cur;
@@ -42,7 +43,7 @@ let g_dir_cur;
 //let g_is_resize_fit;
 //let g_resize_state = RESIZE_STATE.NONE;
 
-function createWindow () {
+function constructWindow () {
   console.log(process.versions);
   const path_react_devtool = app.getPath('userData') + '\\extensions\\fmkadmapgofadopljbjfkapdkoienihi';
   console.log('path_react_devtool: ' + path_react_devtool);
@@ -233,6 +234,10 @@ function createWindow () {
   renameWindow.webContents.openDevTools();
   renameWindow.hide();
 
+  createWindow = createPopupWindow('create', 800, 400);
+  createWindow.webContents.openDevTools();
+  createWindow.hide();
+
 }
 
 function createPopupWindow(ptype, width, height){
@@ -255,6 +260,9 @@ function createPopupWindow(ptype, width, height){
     case 'rename':
       pwindow.loadURL(`file://${__dirname}/src/popup/rename/main.html`);
       break;
+    case 'create':
+      pwindow.loadURL(`file://${__dirname}/src/popup/create/main.html`);
+      break;
   }
 
   //pwindow.webContents.openDevTools();
@@ -271,7 +279,7 @@ function createPopupWindow(ptype, width, height){
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', constructWindow)
 
 
 // Quit when all windows are closed.
@@ -287,7 +295,7 @@ app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
-    createWindow()
+    constructWindow()
   }
 })
 
@@ -507,6 +515,30 @@ electron.ipcMain.on('popup', (event, mode, params) => {
         renameWindow.focus();
         break;
       }
+    case 'create':
+      //console.log('creatre <> left: ' + params.left + ', top: ' + params.top, params.item_name);
+      console.log('creatre <> dir_cur: ' + params.dir_cur);
+      //console.log('creatre <> cursor_pos: ' + params.cursor_pos);
+      {
+        const wpos = mainWindow.getPosition();
+        const rect = mainWindow.getBounds();
+        const crect = mainWindow.getContentBounds();
+        const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
+        const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
+        createWindow.setPosition(left, top);
+        //createWindow.webContents.send('openPopUpRename', params.item_name);
+        createWindow.webContents.send('openPopUpCreate',
+                                      {
+                                        action_type: params.action_type,
+                                        /*item_name_init: params.item_name,*/
+                                        dir_cur: params.dir_cur,
+                                        id_target: params.id_target,
+                                        /*cursor_pos: params.cursor_pos*/
+                                      });
+        createWindow.show();
+        createWindow.focus();
+        break;
+      }
     default:
       /* Do Nothing.. */
       break;
@@ -519,6 +551,7 @@ electron.ipcMain.on('closeMainWindow', (event) => {
   console.log('closeMainWindow');
   confWindow.close();
   renameWindow.close();
+  createWindow.close();
   sortWindow.close();
   mainWindow.close();
 })
@@ -534,6 +567,10 @@ electron.ipcMain.on('closePopup', (event, ptype) => {
       break;
     case 'rename':
       renameWindow.hide();
+      mainWindow.webContents.send('isClosedPopup');
+    case 'create':
+      console.log('closePopup <> ptype: create');
+      createWindow.hide();
       mainWindow.webContents.send('isClosedPopup');
       break;
   }
@@ -568,10 +605,58 @@ electron.ipcMain.on('reqRenameItem', (event, {item_name_dst, item_name_src, dir_
   const item_name_mdf = getBasename(full_name_dst);
   mainWindow.webContents.send('renameItem', id_target, dir_cur, item_name_mdf);
   renameWindow.hide();
+  createWindow.hide();
   mainWindow.focus();
 
   event.returnValue = true;
 });
+
+electron.ipcMain.on('reqCreateItem', (event, {mode, item_name, dir_cur, id_target}) => {
+  console.log('reqCreateItem() <> mode: ' + mode);
+  event.returnValue = true;
+
+  if(item_name === ''){
+    console.log('ERROR!! @ reqCreateItem <> item name is empty.');
+    return;
+  }
+
+  if(fs.existsSync(path.resolve(dir_cur, item_name)) === true){
+    console.log('ERROR!! @ reqCreateItem <> item: ' + item_name + ' already exists.');
+    return;
+  }
+
+  switch(mode){
+    case 'MODE_CREATE_DIR':
+      console.log('MODE_CREATE_DIR <> item_name: ' + item_name + ', dir_cur: ' + dir_cur);
+      createDir(item_name, dir_cur);
+      break;
+    case 'MODE_CREATE_FILE':
+      console.log('MODE_CREATE_FILE <> item_name: ' + item_name + ', dir_cur: ' + dir_cur);
+      createFile(item_name, dir_cur);
+      break;
+    default:
+      console.log('ERROR!! @ reqCreateItem');
+      break;
+  }
+});
+
+function createDir(item_name, dir_cur){
+  console.log('createDir <> item_name: ' + item_name + ', dir_cur: ' + dir_cur);
+  try{
+    fs.mkdirSync(path.resolve(dir_cur, item_name));
+  }catch(e){
+    console.log('createDir <> e: ', e);
+  }
+}
+
+function createFile(item_name, dir_cur){
+  console.log('createFile <> item_name: ' + item_name + ', dir_cur: ' + dir_cur);
+  try{
+    fs.writeFileSync(path.resolve(dir_cur, item_name), '');
+  }catch(e){
+    console.log('createFile <> e: ', e);
+  }
+}
 
 function getBasename(full_name){
   switch(process.platform){
