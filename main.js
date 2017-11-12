@@ -30,7 +30,7 @@ const POPUP_POS_MARGIN = 10;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-let confWindow;
+let quitWindow;
 let sortWindow;
 let renameWindow;
 let createWindow;
@@ -224,8 +224,8 @@ function constructWindow () {
   console.log(webContents);
 
 
-  confWindow = createPopupWindow('quit', 320, 240);
-  confWindow.hide();
+  quitWindow = createPopupWindow('quit', 320, 240);
+  quitWindow.hide();
 
   sortWindow = createPopupWindow('sort', 150, 240);
   sortWindow.hide();
@@ -252,7 +252,7 @@ function createPopupWindow(ptype, width, height){
   pwindow.setMenu(null);
   switch(ptype){
     case 'quit':
-      pwindow.loadURL(`file://${__dirname}/src/popup/confirm/main.html`);
+      pwindow.loadURL(`file://${__dirname}/src/popup/quit/main.html`);
       break;
     case 'sort':
       pwindow.loadURL(`file://${__dirname}/src/popup/sort/main.html`);
@@ -456,7 +456,7 @@ electron.ipcMain.on('popup', (event, mode, params) => {
       }
       break;
     case 'quit':
-      confWindow.show();
+      quitWindow.show();
       break;
     case 'sort':
       {
@@ -549,7 +549,7 @@ electron.ipcMain.on('popup', (event, mode, params) => {
 
 electron.ipcMain.on('closeMainWindow', (event) => {
   console.log('closeMainWindow');
-  confWindow.close();
+  quitWindow.close();
   renameWindow.close();
   createWindow.close();
   sortWindow.close();
@@ -560,7 +560,7 @@ electron.ipcMain.on('closePopup', (event, ptype) => {
   //console.log('HERE!!');
   switch(ptype){
     case 'quit':
-      confWindow.hide();
+      quitWindow.hide();
       break;
     case 'sort':
       sortWindow.hide();

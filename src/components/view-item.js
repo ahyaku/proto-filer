@@ -271,23 +271,23 @@ class Icon extends React.Component{
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState){
-    //console.log('view-item <> action_type: ' + this.props.action_type);
-    //if( nextProps.action_type === 'RENDER_ICON' ){
-    //  //console.log('Icon <> action_type: ' + nextProps.action_type + ', icon: ' + nextProps.icon);
-    //  return true;
-    //}
-    return true;
-  }
+  //shouldComponentUpdate(nextProps, nextState){
+  //  //console.log('view-item <> action_type: ' + this.props.action_type);
+  //  //if( nextProps.action_type === 'RENDER_ICON' ){
+  //  //  //console.log('Icon <> action_type: ' + nextProps.action_type + ', icon: ' + nextProps.icon);
+  //  //  return true;
+  //  //}
+  //  return true;
+  //}
 
 
   render(){
     const icon = this.props.icon;
-
     if( (icon === null)               || 
         (typeof icon === 'undefined') ){
       return (
-        <div style={this.style} />);
+        <div style={this.style} />
+      );
     }else{
       return (
         <div style={this.style}>
