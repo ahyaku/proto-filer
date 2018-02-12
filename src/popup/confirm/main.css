@@ -1,0 +1,33 @@
+body
+{
+  margin: 0;
+  padding: 0;
+}
+
+#main
+{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  /*background: #cccccc;*/
+  background: #444444;
+
+  height: 100%;
+  width: 100%;
+}
+
+.item:nth-child(1)
+{
+  /*background: rgba(0, 0, 255, .1);*/
+  /*color: rgba(255, 255, 255, 1);*/
+  color: #FFFFFF;
+}
+
+.item:nth-child(2)
+{
+  color: #00FF00;
+}
+

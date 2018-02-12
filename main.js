@@ -34,6 +34,7 @@ let quitWindow;
 let sortWindow;
 let renameWindow;
 let createWindow;
+let confWindow;
 
 let g_items_selected;
 let g_dir_cur;
@@ -238,6 +239,10 @@ function constructWindow () {
   createWindow.webContents.openDevTools();
   createWindow.hide();
 
+  confWindow = createPopupWindow('confirm', 320, 240);
+  confWindow.webContents.openDevTools();
+  confWindow.hide();
+
 }
 
 function createPopupWindow(ptype, width, height){
@@ -262,6 +267,9 @@ function createPopupWindow(ptype, width, height){
       break;
     case 'create':
       pwindow.loadURL(`file://${__dirname}/src/popup/create/main.html`);
+      break;
+    case 'confirm':
+      pwindow.loadURL(`file://${__dirname}/src/popup/confirm/main.html`);
       break;
   }
 
@@ -307,12 +315,10 @@ app.on('activate', function () {
 //});
 
 electron.ipcMain.on('synchronous-message', (event, arg) => {
-  //console.log(arg);
   event.returnValue = 'pong';
 });
 
 electron.ipcMain.on('fs.readdirSync', (event, arg) => {
-  //console.log(arg);
   try{
     event.returnValue = fs.readdirSync(arg);
   }catch(e){
@@ -338,77 +344,227 @@ electron.ipcMain.on('fs.isDirectory', (event, arg) => {
   }
 });
 
-//electron.ipcMain.on('copy', (event, item_dst, item_src) => {
-//  console.log('HERE!!!');
-//  console.log(item_src);
-//  console.log(item_dst);
-//
-//  try{
-//    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
-//  }catch(e){
-//    console.log('catch: ' + e);
-//    event.returnValue = false;
-//  }
-//
-//});
-
 electron.ipcMain.on('copy', (event, path_dst, path_src, item_names) => {
-  console.log('copy HERE!!!');
-  console.log('path_dst: ' + path_dst);
-  console.log('path_src: ' + path_src);
-  console.log('item_names: ' + item_names);
-  console.log('item_names.length: ' + item_names.length);
+  //console.log('copy Start!!!');
+  //console.log('path_dst: ' + path_dst);
+  //console.log('path_src: ' + path_src);
+  //console.log('item_names: ' + item_names);
+  //console.log('item_names.length: ' + item_names.length);
 
-  for(let i=0; i<item_names.length; i++){
-    let item_src = path.join(path_src, item_names[i]);
-    let item_dst = path.join(path_dst, item_names[i]);
-    console.log('item_src[' + i + ']: ' + item_src);
-    console.log('item_dst[' + i + ']: ' + item_dst);
-
-    //let rstream = fs.createReadStream(item_src);
-    //let wstream = fs.createWriteStream(item_dst);
-    //rstream.pipe(wstream);
-
-    fs.copySync(item_src, item_dst);
-    //let ret = fs.copySync(item_src, item_dst, {errorOnExist: true});
-    //console.log('ret: ' + ret);
-  }
-
-
-//  try{
-//    event.returnValue = fs.createReadStream(item_src).pipe(fs.createWriteStream(item_dst));
-//  }catch(e){
-//    console.log('catch: ' + e);
-//    event.returnValue = false;
-//  }
-
+  handleItems('copy', path_dst, path_src, item_names);
   event.returnValue = true;
-
 });
 
 electron.ipcMain.on('move', (event, path_dst, path_src, item_names) => {
-  console.log('move HERE!!!');
-  console.log('path_dst: ' + path_dst);
-  console.log('path_src: ' + path_src);
-  console.log('item_names: ' + item_names);
-  console.log('item_names.length: ' + item_names.length);
+  //console.log('move Start!!!');
+  //console.log('path_dst: ' + path_dst);
+  //console.log('path_src: ' + path_src);
+  //console.log('item_names: ' + item_names);
+  //console.log('item_names.length: ' + item_names.length);
 
-  for(let i=0; i<item_names.length; i++){
-    let item_src = path.join(path_src, item_names[i]);
-    let item_dst = path.join(path_dst, item_names[i]);
-    console.log('item_src[' + i + ']: ' + item_src);
-    console.log('item_dst[' + i + ']: ' + item_dst);
+  handleItems('move', path_dst, path_src, item_names);
+  event.returnValue = true;
+});
 
-    //let rstream = fs.createReadStream(item_src);
-    //let wstream = fs.createWriteStream(item_dst);
-    //rstream.pipe(wstream);
+const handleItems = (mode, path_dst_root, path_src_root, items_root) => {
+  //console.log('handleItems() Start!!');
+  //console.log('handleItems() path_dst_root: ' + path_dst_root + ', path_src_root: ' + path_src_root);
+  let del_list = [];
 
-    fs.moveSync(item_src, item_dst, {overwrite: true});
+  const { procWriteFile,
+          procWriteDir,
+          procOwFileYes,
+          procOwFileNo,
+          procOwDir,
+          procPost 
+        } = getProcsMC(mode);
+
+  const proc = (_path_dst, _path_src, _item, _del_list, _depth) => {
+    return new Promise((resolve, reject) => {
+      const _item_src = path.resolve(_path_src, _item);
+      const _item_dst = path.resolve(_path_dst, _item);
+
+      if(fs.existsSync(_item_dst) === true){ /* Target item already exists in _path_dst. */
+        if( (fs.statSync(_item_dst).isDirectory() === false) && 
+            (fs.statSync(_item_src).isDirectory() === false) ){
+          const prom = new Promise((_resolve, _reject) => {
+            electron.ipcMain.once('receiveOverwriteFlag', (event, flag) => {
+              confWindow.hide();
+              mainWindow.focus();
+              if(flag === true){ /* Overwrite the target item in _path_dst by the one in _path_src. */
+                  procOwFileYes(_item_dst, _item_src);
+                  _resolve(_del_list);
+                  return;
+              }else{
+                _resolve( procOwFileNo(_item_src, _del_list) );
+                return;
+              }
+            });
+
+            electron.ipcMain.once('showConfWindow', (event, arg) => {
+              confWindow.show();
+            });
+
+            const ret = confWindow.webContents.send('transferItemName',
+                                                        {
+                                                          item_name: _item
+                                                        });
+          });
+
+          prom.then((_del_list_new) => {
+            resolve(_del_list_new);
+          });
+          return;
+        }else if( fs.statSync(_item_dst).isDirectory() && 
+                  fs.statSync(_item_src).isDirectory() ){
+          const dl = procOwDir(_item_dst, _item_src, _del_list, _depth);
+          walk_cur(_item_dst, _item_src, fs.readdirSync(_item_src), dl, (_depth + 1))
+            .then((_del_list_new) => {
+              resolve(_del_list_new);
+            });
+          return;
+        }else{
+          resolve(_del_list);
+          return;
+        }
+      }else{ /* Target item does NOT exist in _path_dst. */
+        if( fs.statSync(_item_src).isDirectory() ){
+          const dl = procWriteDir(_item_dst, _item_src, _del_list);
+          const prom = new Promise((_resolve, _reject) => {
+            walk_cur(_item_dst, _item_src, fs.readdirSync(_item_src), dl, (_depth + 1))
+              .then((_del_list_new) => {
+                _resolve(_del_list_new);
+              });
+          });
+
+          prom.then((_del_list_new) => {
+            resolve(_del_list_new);
+          });
+          return;
+        }else{
+          procWriteFile(_item_dst, _item_src);
+          resolve(_del_list);
+          return;
+        }
+      }
+    });
   }
 
-  event.returnValue = true;
+  const walk_cur = (_path_dst, _path_src, _items, _del_list, _depth) => {
+    let p = Promise.resolve(_del_list);
+    for(let i = 0; i < _items.length; i++){
+      p = p.then((_del_list_new) => {
+             return proc(_path_dst, _path_src, _items[i], _del_list_new, _depth);
+            });
+    }
+    return p;
+  }
 
-});
+  walk_cur(path_dst_root, path_src_root, items_root, del_list, 0)
+    .then((_del_list_new) => {
+      procPost(_del_list_new);
+    });
+
+};
+
+const getProcsMC = (mode) => {
+  switch(mode){
+    case 'move':
+      return getProcsMove();
+    case 'copy':
+      return getProcsCopy();
+    default:
+      console.log('handleItems() <> Error!!: Incorrect mode');
+      return null;
+  }
+};
+
+const getProcsMove = () => {
+  return {
+    procWriteFile: (item_dst, item_src) => {
+      fs.moveSync(item_src, item_dst, {overwrite: true});
+    },
+    procWriteDir: (item_dst, item_src, del_list) => {
+      fs.mkdirSync(item_dst);
+      del_list.push(item_dst);
+      return del_list;
+    },
+    procOwFileYes: (item_dst, item_src) => {
+      fs.moveSync(item_src, item_dst, {overwrite: true});
+    },
+    procOwFileNo: (item_src, del_list) => {
+      return removeParentDirsFromDelList(del_list, item_src);
+    },
+    procOwDir: (item_dst, item_src, del_list, depth) => {
+      del_list.push(item_src);
+      return del_list;
+    },
+    procPost: (del_list) => {
+      console.log('procPost() <> del_list: ' + del_list);
+
+      for(let i=0; i<del_list.length; i++){
+        try{
+          fs.rmdirSync(del_list[i]);
+        }catch(err){
+          console.log("procPost() <> ERROR!!: " + err);
+        }
+      }
+    }
+  };
+
+};
+
+const getProcsCopy = () => {
+  return {
+    procWriteFile: (item_dst, item_src) => {
+      fs.copySync(item_src, item_dst, {overwrite: true});
+    },
+    procWriteDir: (item_dst, item_src, del_list) => {
+      fs.mkdirSync(item_dst);
+      return null;
+    },
+    procOwFileYes: (item_dst, item_src) => {
+      fs.copySync(item_src, item_dst, {overwrite: true});
+    },
+    procOwFileNo: (item_src, del_list) => {
+      /* Do Nothing.. */
+      return null;
+    },
+    procOwDir: (item_dst, item_src, del_list, depth) => {
+      /* Do Nothing.. */
+      return null;
+    },
+    procPost: (del_list) => {
+      /* Do Nothing.. */
+    }
+  };
+
+};
+
+const removeParentDirsFromDelList = (del_list, path_cur) => {
+  const pdlist = getParentDirList(path_cur);
+  for(let i=0; i<pdlist.length; i++){
+    const idx = del_list.indexOf(pdlist[i]);
+    del_list.splice(idx, 1);
+  }
+  return del_list;
+}
+
+const getParentDirList = (path_init, root_limit) => {
+  let pdlist = [];
+  let path_tmp = path_init;
+  while(true){
+    path_tmp = path.dirname(path_tmp);
+    if(path_tmp === pdlist[pdlist.length - 1]){
+      return pdlist;
+    }else if(path_tmp === root_limit){
+      pdlist.push(path_tmp);
+      return pdlist;
+    }else{
+      pdlist.push(path_tmp);
+    }
+  }
+}
 
 electron.ipcMain.on('trash', (event, path_src, item_names) => {
   console.log('trash!!!');
@@ -460,33 +616,9 @@ electron.ipcMain.on('popup', (event, mode, params) => {
       break;
     case 'sort':
       {
-        //console.log('sort <> left: ' + params.left + ', top: ' + params.top);
-
         const wpos = mainWindow.getPosition();
         const rect = mainWindow.getBounds();
         const crect = mainWindow.getContentBounds();
-
-        //console.log('sort <> wleft: ' + wpos[0] + ', wtop: ' + wpos[1]);
-        //console.log('sort rect <> x:' + rect.x + ', y:' + rect.y);
-        //console.log('sort crect <> x:' + crect.x + ', y:' + crect.y);
-
-        //const trect = Object.assign(
-        //  {},
-        //  crect,
-        //  {
-        //    width: 200,
-        //    height: 100
-        //  }
-        //);
-        //mainWindow.setContentBounds(trect);
-
-        //{
-        //  const [w, h] = mainWindow.getSize();
-        //  const [cw, ch] = mainWindow.getContentSize();
-        //  console.log('sort <> [w, h] = [' + w + ', ' + h + ']');
-        //  console.log('sort <> [cw, ch] = [' + cw + ', ' + ch + ']');
-        //}
-
         const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
         const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
         sortWindow.setPosition(left, top);
@@ -494,8 +626,6 @@ electron.ipcMain.on('popup', (event, mode, params) => {
         break;
       }
     case 'rename':
-      //console.log('rename <> left: ' + params.left + ', top: ' + params.top, params.item_name);
-      //console.log('rename <> cursor_pos: ' + params.cursor_pos);
       {
         const wpos = mainWindow.getPosition();
         const rect = mainWindow.getBounds();
@@ -503,7 +633,6 @@ electron.ipcMain.on('popup', (event, mode, params) => {
         const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
         const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
         renameWindow.setPosition(left, top);
-        //renameWindow.webContents.send('openPopUpRename', params.item_name);
         renameWindow.webContents.send('openPopUpRename',
                                       {
                                         item_name_init: params.item_name,
@@ -516,9 +645,7 @@ electron.ipcMain.on('popup', (event, mode, params) => {
         break;
       }
     case 'create':
-      //console.log('creatre <> left: ' + params.left + ', top: ' + params.top, params.item_name);
       console.log('creatre <> dir_cur: ' + params.dir_cur);
-      //console.log('creatre <> cursor_pos: ' + params.cursor_pos);
       {
         const wpos = mainWindow.getPosition();
         const rect = mainWindow.getBounds();
@@ -526,14 +653,11 @@ electron.ipcMain.on('popup', (event, mode, params) => {
         const left = Math.round(rect.x + params.left + POPUP_POS_MARGIN);
         const top = Math.round(crect.y + params.top + POPUP_POS_MARGIN);
         createWindow.setPosition(left, top);
-        //createWindow.webContents.send('openPopUpRename', params.item_name);
         createWindow.webContents.send('openPopUpCreate',
                                       {
                                         action_type: params.action_type,
-                                        /*item_name_init: params.item_name,*/
                                         dir_cur: params.dir_cur,
                                         id_target: params.id_target,
-                                        /*cursor_pos: params.cursor_pos*/
                                       });
         createWindow.show();
         createWindow.focus();
@@ -549,6 +673,7 @@ electron.ipcMain.on('popup', (event, mode, params) => {
 
 electron.ipcMain.on('closeMainWindow', (event) => {
   console.log('closeMainWindow');
+  confWindow.close();
   quitWindow.close();
   renameWindow.close();
   createWindow.close();
@@ -557,7 +682,6 @@ electron.ipcMain.on('closeMainWindow', (event) => {
 })
 
 electron.ipcMain.on('closePopup', (event, ptype) => {
-  //console.log('HERE!!');
   switch(ptype){
     case 'quit':
       quitWindow.hide();
@@ -573,6 +697,9 @@ electron.ipcMain.on('closePopup', (event, ptype) => {
       createWindow.hide();
       mainWindow.webContents.send('isClosedPopup');
       break;
+    case 'confirm':
+      confWindow.hide();
+      break;
   }
   mainWindow.focus();
 
@@ -580,7 +707,6 @@ electron.ipcMain.on('closePopup', (event, ptype) => {
 });
 
 electron.ipcMain.on('sortItems', (event, type) => {
-  //console.log('sortItems!!');
   mainWindow.webContents.send('sortItems', type);
   sortWindow.hide();
   mainWindow.focus();
@@ -589,12 +715,10 @@ electron.ipcMain.on('sortItems', (event, type) => {
 });
 
 electron.ipcMain.on('reqRenameItem', (event, {item_name_dst, item_name_src, dir_cur, id_target}) => {
-  //console.log('renameItems!! <> item_name_dst: ' + item_name_dst + ', item_name_src: ' + item_name_src + ', dir_cur: ' + dir_cur);
   const full_name_dst = path.join(dir_cur, item_name_dst);
   const full_name_src = path.join(dir_cur, item_name_src);
 
   if(item_name_dst !== ''){
-    //const ret = fs.renameSync(full_name_src, full_name_dst);
     try{
       fs.renameSync(full_name_src, full_name_dst);
     }catch(e){
@@ -703,8 +827,6 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, msg) => {
   const pattern = msg.slice(1, msg.length);
 
   if(pattern.length > 0){
-    //console.log('pattern.length > 0');
-    //console.log('pattern: ' + pattern);
     const reg = new RegExp(pattern);
 
     for(let i=0; i<item_names.length; i++){
@@ -715,9 +837,6 @@ electron.ipcMain.on('narrow_down_items', (event, item_names, msg) => {
       is_matched.push(true);
     }
   }
-
-  //console.log('item_names.length: ' + item_names.length);
-  //console.log('is_matched: ' + is_matched);
 
   event.sender.send(
     'narrow_down_items_cb',
@@ -768,18 +887,13 @@ const detectDiskDriveWin32 = (event) => {
         console.error('stderr', stderr);
         throw error;
     }
-    //console.log('stdout', stdout);
 
     const arr = stdout.split('\n');
     const drive_list = arr.slice(1, arr.length - 2).map((e) => {
       return e.trim(' ');
     });
 
-    //console.log('drive_list: ' + drive_list);
-
     event.returnValue = drive_list;
-
-
   });
 }
 
